@@ -49,13 +49,13 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
 
    // comprobamos que los extremos no estén sobre el eje Y, si están, los guardamos aparte
 
-   if(perfil_original[0](X) == 0){
+   if(fabs(perfil_original[0](X)-perfil_original[0](Z)) < EPSILON){
       tapa_inf = 1;
       p_sur = perfil_original.front();
       perfil_original.erase(perfil_original.begin());
    }
 
-   if(perfil_original[perfil_original.size()-1](X) == 0){
+   if(fabs(perfil_original[m-1](X)-perfil_original[m-1](Z)) < EPSILON){
       tapa_sup = 1;
       p_norte = perfil_original.back();
       perfil_original.pop_back();
