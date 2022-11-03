@@ -17,7 +17,7 @@
 //
 // *****************************************************************************
 
-enum {PUNTOS, LINEAS, SOLIDO, CULL};
+enum {PUNTOS, LINEAS, SOLIDO, CULL, SUAVE, PLANO};
 class Malla3D
 {
    public:
@@ -36,6 +36,7 @@ class Malla3D
    std::vector<Tupla3f> nv;               //normales de vertices
 
    GLuint id_vbo_v=0;
+   GLuint id_vbo_nv = 0;
    GLuint id_vbo_f=0;
    std::vector<GLuint> id_vbos_c{0, 0, 0}; // inicializado con tamaño 3 y todos a 0
    const float PI = 3.14159265f;

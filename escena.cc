@@ -129,6 +129,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
    using namespace std ;
    cout << "Tecla pulsada: '" << tecla << "'" << endl;
    bool salir=false;
+   bool apagar_luz=false;
 
    switch( toupper(tecla) )
    {
@@ -159,7 +160,15 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       case 'S' :
          if(modoMenu==SELVISUALIZACION) activo[SOLIDO] = !activo[SOLIDO];
          break;
+      case 'G' :
+         if(modoMenu==SELVISUALIZACION) activo[SUAVE] = !activo[SUAVE];
+         break;
    }
+
+   // si iluminacion activa y (puntos ó lineas ó solido) están activos, apagar luz
+   apagar_luz = activo[PUNTOS] | activo[LINEAS] | activo[SOLIDO];
+   if (activo[SUAVE] && apagar_luz) activo[SUAVE] = 0;
+
    return salir;
 }
 //**************************************************************************

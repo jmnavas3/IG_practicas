@@ -13,21 +13,34 @@ void Malla3D::draw(std::vector<bool> a, int color)
 {
 
    if(id_vbo_v == 0) id_vbo_v = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
+   if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
    if(id_vbo_f == 0) id_vbo_f = CrearVBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(f[0]) * f.size(), f.data());
    for ( int i=0; i<3; i++ ) {
       if(id_vbos_c[i] == 0) id_vbos_c[i] = CrearVBO(GL_ARRAY_BUFFER, cl[i].size()*sizeof(cl[i][0]), cl[i].data());
    }
    glEnableClientState(GL_COLOR_ARRAY);
 
+
+   if(a[SUAVE] && id_vbo_nv != 0){
+      glShadeModel(GL_SMOOTH);
+      color = 0;
+      glBindBuffer(GL_ARRAY_BUFFER, id_vbo_nv);
+      glVertexPointer(3,GL_FLOAT,0,0);
+      glBindBuffer(GL_ARRAY_BUFFER,0);
+
+   }
+   
    if(id_vbo_v != 0){
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_v);
       glVertexPointer(3, GL_FLOAT, 0, 0);
       glBindBuffer(GL_ARRAY_BUFFER,0);
-      glEnableClientState(GL_VERTEX_ARRAY);
    }
+   glEnableClientState(GL_VERTEX_ARRAY);
+
 
    if(a[CULL]) glEnable(GL_CULL_FACE);
    else glDisable(GL_CULL_FACE);
+
 
    if (color==0) {
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);

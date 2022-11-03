@@ -20,7 +20,9 @@ class Escena
    private:
 
  // ** PARÁMETROS P1
-   std::vector<bool> activo{0,0,1,1};
+
+   // activo {PUNTOS,LINEAS,SOLIDO,CULL,SUAVE,PLANO}
+   std::vector<bool> activo{0,0,1,1,0,0};
    float var = 0.0f;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
