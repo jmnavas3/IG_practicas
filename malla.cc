@@ -118,3 +118,46 @@ void Malla3D::genColor(float r, float g, float b, int n_vert){
       }
    }
 }
+
+// -----------------------------------------------------------------------------
+// Función de generación de normales de las caras
+void Malla3D::genNormales(){
+   Tupla3f va;
+   Tupla3f vb;
+   Tupla3f pvectorial;
+   std::vector<Tupla3f> nCaras;
+   int p,q,r;
+   
+
+   nv.resize(v.size());
+
+   // nota: no es necesario puesto que todas las tuplas se inicializan a 0
+   // nv = std::vector<Tupla3f>(v.size(),Tupla3f(0.0f,0.0f,0.0f));
+
+   // El vector normal a un vertice se define como la normalización de la suma de todos los vectores normales de los triángulos adyacentes a dicho vértice.
+   // Para cada triángulo ó cara de la tabla de caras (f), guardamos los índices de sus vértices en 'p', 'q' y 'r' y calculamos la normal a dicho triangulo.
+   // Seguidamente, sumamos dicha normal a la posición correspondiente a cada uno de los vértices del triángulo dentro de la tabla de normales de vertices.
+   // Tras recorrer todos los triángulos, se habrá obtenido para cada vértice su vector perpendicular, sólo quedaría normalizar cada perpendicular.
+
+   for(int i = 0; i < f.size(); i++){
+      // indice de vertices del triangulo i-esimo
+      p = f[i](0);
+      q = f[i](1);
+      r = f[i](2);
+
+      // obtencion del vector normal al triangulo i-esimo
+      va = v[q] - v[p];
+      vb = v[r] - v[p];
+      pvectorial = va.cross(vb);
+      pvectorial = pvectorial.normalized();
+
+      // suma del vector normal obtenido a cada uno de los vertices del triangulo
+      nv[p] = nv[p] + pvectorial;
+      nv[q] = nv[q] + pvectorial;
+      nv[r] = nv[r] + pvectorial;
+   }
+
+   // obtencion de tabla de normales de vértices
+   for (int i = 0; i < nv.size(); i++)
+      nv[i] = nv[i].normalized();
+}

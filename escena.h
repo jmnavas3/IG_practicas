@@ -21,6 +21,7 @@ class Escena
 
  // ** PARÁMETROS P1
    std::vector<bool> activo{0,0,1,1};
+   float var = 0.0f;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
        

@@ -94,7 +94,7 @@ void Escena::dibujar()
    glPopMatrix();
 
    glPushMatrix();
-      glTranslatef(0,120,0);
+      glTranslatef(0,var,0);
       esfera->draw(activo,1);
    glPopMatrix();
 
@@ -104,7 +104,7 @@ void Escena::dibujar()
       lata->draw(activo,1);
    glPopMatrix();
 
-
+   var += 0.5;
 /*    glPushMatrix();
       glScalef(3,3,3);
       glTranslatef(0,40,0);

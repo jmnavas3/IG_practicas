@@ -33,6 +33,7 @@ class Malla3D
    std::vector<Tupla3f> v ;               // tabla de coordenadas de vértices (una tupla por vértice, con tres floats) vertices
    std::vector<Tupla3i> f ;               // una terna de 3 enteros por cada cara o triángulo  caras (faces)
    std::vector<std::vector<Tupla3f>> cl;  // tablas de colores que se inicializan en método genColor
+   std::vector<Tupla3f> nv;               //normales de vertices
 
    GLuint id_vbo_v=0;
    GLuint id_vbo_f=0;
@@ -44,6 +45,7 @@ class Malla3D
 
    // Inicializa la tabla de colores para cada vbo de colores pasandole los vertices
    void genColor(float r, float g, float b, int n_vert);
+   void genNormales();
    
 } ;
 
