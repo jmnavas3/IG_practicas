@@ -12,56 +12,67 @@
 #include "cono.h"
 #include "esfera.h"
 #include "lata.h"
+// luces
+#include "luz.h"
+#include "luzDireccional.h"
+#include "luzPosicional.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION} menu;
 class Escena
 {
 
-   private:
+  private:
 
- // ** PARÁMETROS P1
+ // ** PARÁMETROS DE OBJETOS
 
-   // activo {PUNTOS,LINEAS,SOLIDO,CULL,SUAVE,PLANO}
-   std::vector<bool> activo{0,0,1,1,0,0};
-   float var = 0.0f;
+  // {PUNTOS,LINEAS,SOLIDO,CULL,SUAVE,PLANO}
+  std::vector<bool> activo{0,0,1,1,0,0};
+  float var = 0.0f;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
        
-       // variables que definen la posicion de la camara en coordenadas polares
-   GLfloat Observer_distance;
-   GLfloat Observer_angle_x;
-   GLfloat Observer_angle_y;
+      // variables que definen la posicion de la camara en coordenadas polares
+  GLfloat Observer_distance;
+  GLfloat Observer_angle_x;
+  GLfloat Observer_angle_y;
 
-   // variables que controlan la ventana y la transformacion de perspectiva
-   GLfloat Width, Height, Front_plane, Back_plane;
+  // variables que controlan la ventana y la transformacion de perspectiva
+  GLfloat Width, Height, Front_plane, Back_plane;
 
-    // Transformación de cámara
+  // Transformación de cámara
 	void change_projection( const float ratio_xy );
 	void change_observer();
     
 
 
-   void clear_window();
+  void clear_window();
 
-   menu modoMenu=NADA;
+  menu modoMenu=NADA;
 
-   // Objetos de la escena
-   Ejes ejes;
-   //P1
-   Cubo                 *cubo = nullptr ;
-   PiramidePentagonal   *piramide= nullptr ;
-   //P2
-   ObjPLY               *objetoply = nullptr;
-   ObjRevolucion        *objrevolucion = nullptr;
-   Cilindro             *cilindro = nullptr;
-   Cono                 *cono = nullptr;
-   Esfera               *esfera = nullptr;
-   Lata                 *lata = nullptr;
+ // ** OBJETOS DE LA ESCENA
+
+  Ejes ejes;
+  
+  // P1
+  Cubo                 *cubo = nullptr ;
+  PiramidePentagonal   *piramide= nullptr ;
+  
+  // P2
+  ObjPLY               *objetoply = nullptr;
+  ObjRevolucion        *objrevolucion = nullptr;
+  Cilindro             *cilindro = nullptr;
+  Cono                 *cono = nullptr;
+  Esfera               *esfera = nullptr;
+  Lata                 *lata = nullptr;
+
+  //  ILUMINACION
+  LuzDireccional       *ld = nullptr;
+  LuzPosicional        *lp = nullptr;
 
    
-   public:
+  public:
 
-    Escena();
+  Escena();
 	void inicializar( int UI_window_width, int UI_window_height );
 	void redimensionar( int newWidth, int newHeight ) ;
 

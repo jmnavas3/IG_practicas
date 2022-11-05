@@ -11,6 +11,7 @@
 #define MALLA3D_H_INCLUDED
 
 #include "auxiliar.h"
+#include "material.h"
 // *****************************************************************************
 //
 // clase para objetos 3D (mallas indexadas)
@@ -22,31 +23,34 @@ class Malla3D
 {
    public:
 
-   // función que dibuja el objeto en modo diferido (usando VBOs)
-   // si color==0 dibuja sin usar buffer de colores
-   void draw(std::vector<bool> a, int color) ;
+   void draw(std::vector<bool> a, bool color) ;
+   void setMaterial (Material mat);
+
 
    protected:
 
+   // material para los objetos con iluminacion
+   Material m;
 
+   // tablas de datos para las mallas
+   std::vector<Tupla3f> nv;               // tabla de normales de vértices
+   std::vector<Tupla3f> v ;               // tabla de coordenadas xyz de vértices
+   std::vector<Tupla3i> f ;               // tabla de triángulos (caras) con los índices de los vértices que los forman
+   std::vector<std::vector<Tupla3f>> cl;  // tablas de colores RGB para los vértices en modo punto, línea y sólido
 
-   std::vector<Tupla3f> v ;               // tabla de coordenadas de vértices (una tupla por vértice, con tres floats) vertices
-   std::vector<Tupla3i> f ;               // una terna de 3 enteros por cada cara o triángulo  caras (faces)
-   std::vector<std::vector<Tupla3f>> cl;  // tablas de colores que se inicializan en método genColor
-   std::vector<Tupla3f> nv;               //normales de vertices
+   // identificadores de cada vbo
+   std::vector<GLuint> id_vbos_c{0, 0, 0};   // puntos, lineas y sólido
+   GLuint id_vbo_nv = 0;                     // normales de vértices
+   GLuint id_vbo_v=0;                        // vértices
+   GLuint id_vbo_f=0;                        // caras
 
-   GLuint id_vbo_v=0;
-   GLuint id_vbo_nv = 0;
-   GLuint id_vbo_f=0;
-   std::vector<GLuint> id_vbos_c{0, 0, 0}; // inicializado con tamaño 3 y todos a 0
+   // otros atributos de Malla3D
    const float PI = 3.14159265f;
    
-   GLuint CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram);
-   void setBufferColor(GLuint id_c);
-
-   // Inicializa la tabla de colores para cada vbo de colores pasandole los vertices
-   void genColor(float r, float g, float b, int n_vert);
    void genNormales();
+   void setBufferColor(GLuint id_c);
+   void genColor(float r, float g, float b, int n_vert);
+   GLuint CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram);
    
 } ;
 
