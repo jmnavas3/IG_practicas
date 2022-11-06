@@ -7,9 +7,14 @@
 //
 // *****************************************************************************
 // -----------------------------------------------------------------------------
-// Función de visualización de la malla,
 
-void Malla3D::draw(std::vector<bool> a, int color)
+/**
+  * Dibuja y visualiza la malla en modo diferido
+  * @param a booleanos que activan los modos de visualizacion
+  * @param color si es 0, no usa las tablas de colores
+  */
+
+void Malla3D::draw(std::vector<bool> a, bool color)
 {
 
    if(id_vbo_v == 0) id_vbo_v = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
@@ -19,30 +24,29 @@ void Malla3D::draw(std::vector<bool> a, int color)
       if(id_vbos_c[i] == 0) id_vbos_c[i] = CrearVBO(GL_ARRAY_BUFFER, cl[i].size()*sizeof(cl[i][0]), cl[i].data());
    }
    glEnableClientState(GL_COLOR_ARRAY);
-
-
-   if(a[SUAVE] && id_vbo_nv != 0){
-      glShadeModel(GL_SMOOTH);
-      color = 0;
-      glBindBuffer(GL_ARRAY_BUFFER, id_vbo_nv);
-      glVertexPointer(3,GL_FLOAT,0,0);
-      glBindBuffer(GL_ARRAY_BUFFER,0);
-
-   }
    
    if(id_vbo_v != 0){
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_v);
       glVertexPointer(3, GL_FLOAT, 0, 0);
       glBindBuffer(GL_ARRAY_BUFFER,0);
+      glEnableClientState(GL_VERTEX_ARRAY);
    }
-   glEnableClientState(GL_VERTEX_ARRAY);
+   
+   if(a[SUAVE] && id_vbo_nv != 0){
+      glShadeModel(GL_SMOOTH);
+      color = 0;
+      glBindBuffer(GL_ARRAY_BUFFER, id_vbo_nv);
+      glNormalPointer(GL_FLOAT,0,0);
+      glBindBuffer(GL_ARRAY_BUFFER,0);
+      glEnableClientState(GL_NORMAL_ARRAY);
+   }
 
 
    if(a[CULL]) glEnable(GL_CULL_FACE);
    else glDisable(GL_CULL_FACE);
 
 
-   if (color==0) {
+   if (color) {
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);
       glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);
@@ -80,6 +84,7 @@ void Malla3D::draw(std::vector<bool> a, int color)
    //desactivar uso de array de vertices
    glDisableClientState(GL_COLOR_ARRAY);
    glDisableClientState(GL_VERTEX_ARRAY);
+   if(a[SUAVE]) glDisableClientState(GL_NORMAL_ARRAY);
 
 }
 
@@ -115,14 +120,14 @@ void Malla3D::setBufferColor(GLuint id_c){
 }
 
 // -----------------------------------------------------------------------------
-// Función de generación de colores para los distintos modos: 0.puntos 1.lineas 2.solido
+// Redimensiona las tablas de colores en caso de no estar redimensionadas y les asigna diferentes valores a cada una
 
 void Malla3D::genColor(float r, float g, float b, int n_vert){
    if (cl.size()!=3){
       cl.resize(3);
-      cl[0].resize(n_vert);
-      cl[1].resize(n_vert);
-      cl[2].resize(n_vert);
+      cl[0].resize(n_vert);   // puntos
+      cl[1].resize(n_vert);   // líneas
+      cl[2].resize(n_vert);   // sólido
       
       for(int j=0; j<n_vert; j++){
          cl[0][j] = {r,g,b};

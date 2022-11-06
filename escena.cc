@@ -43,6 +43,10 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
 
 	glEnable( GL_DEPTH_TEST );	// se habilita el z-bufer
 
+   // FLAGS INICIALES
+   // glEnable(CULL_FACE);
+   glEnable(GL_NORMALIZE);
+
 	Width  = UI_window_width/10;
 	Height = UI_window_height/10;
 
@@ -64,6 +68,8 @@ void Escena::dibujar()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
 	change_observer();
    ejes.draw();
+
+   // ld.activar();
 
 
    glPushMatrix();

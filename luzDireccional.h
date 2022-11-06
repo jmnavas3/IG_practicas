@@ -12,7 +12,11 @@ class LuzDireccional : public Luz
 
 
     public:
-        LuzDireccional(const Tupla2f & orientacion) ;
+        LuzDireccional(const Tupla2f & orientacion,
+                       GLenum idLuz,
+                       Tupla4f colorAmbiente,
+                       Tupla4f colorEspecular,
+                       Tupla4f colorDifuso) ;
 
         void variarAnguloAlpha (float incremento) ;
         void variarAnguloBeta (float incremento) ;
