@@ -11,19 +11,29 @@
 /**
   * Dibuja y visualiza la malla en modo diferido
   * @param a booleanos que activan los modos de visualizacion
-  * @param color si es 0, no usa las tablas de colores
+  * @param luz si es 0, se usan las tablas de colores
   */
 
-void Malla3D::draw(std::vector<bool> a, bool color)
+void Malla3D::draw(std::vector<bool> a, bool luz)
 {
-
-   if(id_vbo_v == 0) id_vbo_v = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
-   if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
-   if(id_vbo_f == 0) id_vbo_f = CrearVBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(f[0]) * f.size(), f.data());
-   for ( int i=0; i<3; i++ ) {
-      if(id_vbos_c[i] == 0) id_vbos_c[i] = CrearVBO(GL_ARRAY_BUFFER, cl[i].size()*sizeof(cl[i][0]), cl[i].data());
+   // generamos normales solo una vez
+   if ( nv.empty() ) {
+      genNormales();
    }
-   glEnableClientState(GL_COLOR_ARRAY);
+
+
+   if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
+   if(id_vbo_v == 0) id_vbo_v   = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
+   if(id_vbo_f == 0) id_vbo_f   = CrearVBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(f[0]) * f.size(), f.data());
+   for ( int i=0; i<3; i++ ) {
+      if(id_vbos_c[i] == 0)id_vbos_c[i] = CrearVBO(GL_ARRAY_BUFFER, cl[i].size()*sizeof(cl[i][0]), cl[i].data());
+   }
+
+
+   // temporal
+   if(a[CULL]) glEnable(GL_CULL_FACE);
+   else glDisable(GL_CULL_FACE);
+   // glEnableClientState(GL_COLOR_ARRAY);
    
    if(id_vbo_v != 0){
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_v);
@@ -32,31 +42,25 @@ void Malla3D::draw(std::vector<bool> a, bool color)
       glEnableClientState(GL_VERTEX_ARRAY);
    }
    
-   if(a[SUAVE] && id_vbo_nv != 0){
-      glShadeModel(GL_SMOOTH);
-      color = 0;
+   if(luz && id_vbo_nv != 0){
+      m.aplicar();
+      if (a[SOMBRA]) glShadeModel(GL_FLAT);
+      else glShadeModel(GL_SMOOTH);
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_nv);
       glNormalPointer(GL_FLOAT,0,0);
       glBindBuffer(GL_ARRAY_BUFFER,0);
       glEnableClientState(GL_NORMAL_ARRAY);
    }
 
+   // Activamos buffer VBO de índices
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);
 
-   if(a[CULL]) glEnable(GL_CULL_FACE);
-   else glDisable(GL_CULL_FACE);
-
-
-   if (color) {
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);
+   if (luz) {
       glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);
    }
    else {
-
-      // Activamos buffer VBO de índices
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vbo_f);
-
-      //MODO DE VISUALIZACIÓN
+      //MODOS DE VISUALIZACIÓN SIN ILUMINACIÓN
+      glEnableClientState(GL_COLOR_ARRAY);
       if(a[SOLIDO]){
          glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
          setBufferColor(id_vbos_c[SOLIDO]);
@@ -77,14 +81,17 @@ void Malla3D::draw(std::vector<bool> a, bool color)
          glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT,0);
       }
 
-      // Desactivamos buffer de índices
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+      glDisableClientState(GL_COLOR_ARRAY);
    }
+
+   // Desactivamos buffer de índices
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
    
-   //desactivar uso de array de vertices
+   
+   // Desactivamos uso de arrays
    glDisableClientState(GL_COLOR_ARRAY);
    glDisableClientState(GL_VERTEX_ARRAY);
-   if(a[SUAVE]) glDisableClientState(GL_NORMAL_ARRAY);
+   if(luz) glDisableClientState(GL_NORMAL_ARRAY);
 
 }
 
@@ -135,6 +142,12 @@ void Malla3D::genColor(float r, float g, float b, int n_vert){
          cl[2][j] = {g,b,r};
       }
    }
+}
+
+// -----------------------------------------------------------------------------
+// Método para aplicar un material a una instancia de malla
+void Malla3D::setMaterial (Material mat) {
+   m = mat;
 }
 
 // -----------------------------------------------------------------------------

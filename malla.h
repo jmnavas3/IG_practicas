@@ -18,12 +18,12 @@
 //
 // *****************************************************************************
 
-enum {PUNTOS, LINEAS, SOLIDO, CULL, SUAVE, PLANO};
+enum {PUNTOS, LINEAS, SOLIDO, CULL, SOMBRA};
 class Malla3D
 {
    public:
 
-   void draw(std::vector<bool> a, bool color) ;
+   void draw(std::vector<bool> a, bool luz) ;
    void setMaterial (Material mat);
 
 
