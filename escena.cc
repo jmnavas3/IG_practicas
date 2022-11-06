@@ -19,28 +19,36 @@ Escena::Escena()
     ejes.changeAxisSize( 5000 );
 
    //** objetos P1
+   #ifdef P1
    this->cubo = new Cubo(50.0);
    this->piramide = new PiramidePentagonal(90.0,45.0);
-
+   #endif
    //** objetos P2
+   #ifdef P2
    this->lata = new Lata(20);
    this->esfera = new Esfera(20,20,40.0);
    this->cono = new Cono(20,20,80.0,40.0);
    this->cilindro = new Cilindro(10,10,80.0,40.0);
-   this->objrevolucion = new ObjRevolucion("./plys/peon",15);
    // this->objetoply = new ObjPLY("./plys/beethoven");
+   #endif
 
    //** objetos + iluminacion P3
-   luz = false;
     // Cap.6, Color, Pág.138. RedBook OpenGL: "if u want realistic effect, set GL_SPECULAR = GL_DIFFUSE"
-   posicionLuz = Tupla3f(50.0f, 100.0f, 50.0f);
-   Tupla4f ambiental(0.0, 0.0, 1.0, 1.0);
-   Tupla4f difusa(0.7,0.0,1.0,1.0);
-   Tupla4f especular = difusa;
+   luz = false;
+   posicionLuz = Tupla3f(30.0f, 30.0f, 50.0f);
+   Tupla4f ambiental(0.6, 0.6, 1.0, 1.0);
+   Tupla4f difusa(0.5,0.4,0.7,1.0);
+   Tupla4f especular(1.0,1.0,1.0,0.7);
 
-   this->peonNegro = new ObjRevolucion("./plys/peon",15);
-   this->peonBlanco = new ObjRevolucion("./plys/peon",15);
-   this->luzPosicional = new LuzPosicional(posicionLuz, GL_LIGHT0, ambiental, especular, difusa);
+   this->peon = new ObjRevolucion("./plys/peon",20);
+   this->luzPosicional = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
+   this->cubo = new Cubo();
+   this->piramide = new PiramidePentagonal();
+
+   Material nuevo(ambiental,difusa,especular,100.0);
+   Material defecto;
+   this->cubo->setMaterial(defecto);
+   this->piramide->setMaterial(nuevo);
 
 }
 
@@ -52,7 +60,7 @@ Escena::Escena()
 
 void Escena::inicializar( int UI_window_width, int UI_window_height )
 {
-	glClearColor( 1.0, 1.0, 1.0, 1.0 );// se indica cual sera el color para limpiar la ventana	(r,v,a,al)
+	glClearColor( 1.0, 1.0, 1.0, 1.0 );// se indica cual sera el color para limpiar la ventana	(RGBA)
 
 	glEnable( GL_DEPTH_TEST );	// se habilita el z-bufer
 
@@ -82,11 +90,15 @@ void Escena::dibujar()
 	change_observer();
    ejes.draw();
 
+   glScalef(30.0,30.0,30.0);
    if(luz) glEnable(GL_LIGHTING);
    else glDisable(GL_LIGHTING);
    
+   // glEnable(GL_LIGHT0);
    // luzPosicional->activar();
 
+
+   #ifdef P1
    glPushMatrix();
       glTranslatef(-190,0,-150);
       cubo->draw(activo,luz);
@@ -96,13 +108,14 @@ void Escena::dibujar()
       glTranslatef(-100,0,-150);
       piramide->draw(activo,luz);
    glPopMatrix();
+   #endif
 
    // ** objetos practica 2
-   
+   #ifdef P2
    glPushMatrix();
       glTranslatef(-70,0,-80);
       glScalef(30,30,30);
-      objrevolucion->draw(activo,luz);   //peón
+      peon->draw(activo,luz);   //peón
    glPopMatrix();
 
    glPushMatrix();
@@ -124,13 +137,26 @@ void Escena::dibujar()
       glScalef(70,70,70);
       lata->draw(activo,luz);
    glPopMatrix();
+   #endif
 
-   var += 0.5;
-/*    glPushMatrix();
-      glScalef(3,3,3);
-      glTranslatef(0,40,0);
-      objetoply->draw(activo,0);
-   glPopMatrix(); */
+   // ** objetos práctica 3
+   // a nivel de iluminacion, se define el material del peon en el constructor de la escena
+   // en caso de que el booleano luz este activo, se enciende la luz 0
+   // dentro del draw, antes de DrawElements, se aplica dicho material
+   // ERROR con Esfera, Cono y Cilindro por rotar sobre la base o algo asi
+   #ifdef P3
+   glPushMatrix();
+      luzPosicional->activar();
+      cubo->draw(activo,luz);   //peón
+   glPopMatrix();
+
+   glPushMatrix();
+      glTranslatef(2,0,0);
+   glEnable(GL_LIGHT0);
+   piramide->draw(activo,luz);
+   glPopMatrix();
+   #endif
+
 
 
 
@@ -153,7 +179,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
    //bool apagar_luz=false;
 
    // OPCIONES MODO VISUALIZACION
-   if ( modoMenu = SELVISUALIZACION ) {
+   if ( modoMenu == SELVISUALIZACION ) {
       switch ( toupper(tecla) )
       {
       case 'Q' :
@@ -184,8 +210,8 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          break;
       }
    }
-
    // MENU PRINCIPAL
+   else if (modoMenu == NADA)
    switch( toupper(tecla) )
    {
    case 'Q' :

@@ -22,12 +22,12 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
    }
 
 
-   if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
    if(id_vbo_v == 0) id_vbo_v   = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
    if(id_vbo_f == 0) id_vbo_f   = CrearVBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(f[0]) * f.size(), f.data());
    for ( int i=0; i<3; i++ ) {
       if(id_vbos_c[i] == 0)id_vbos_c[i] = CrearVBO(GL_ARRAY_BUFFER, cl[i].size()*sizeof(cl[i][0]), cl[i].data());
    }
+   if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
 
 
    // temporal
@@ -81,7 +81,7 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
          glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT,0);
       }
 
-      glDisableClientState(GL_COLOR_ARRAY);
+      // glDisableClientState(GL_COLOR_ARRAY);
    }
 
    // Desactivamos buffer de índices
@@ -145,7 +145,7 @@ void Malla3D::genColor(float r, float g, float b, int n_vert){
 }
 
 // -----------------------------------------------------------------------------
-// Método para aplicar un material a una instancia de malla
+// Modificador del material de cada malla
 void Malla3D::setMaterial (Material mat) {
    m = mat;
 }
@@ -161,6 +161,7 @@ void Malla3D::genNormales(){
    
 
    nv.resize(v.size());
+   nCaras.resize(f.size());
 
    // nota: no es necesario puesto que todas las tuplas se inicializan a 0
    // nv = std::vector<Tupla3f>(v.size(),Tupla3f(0.0f,0.0f,0.0f));
@@ -172,20 +173,21 @@ void Malla3D::genNormales(){
 
    for(int i = 0; i < f.size(); i++){
       // indice de vertices del triangulo i-esimo
-      p = f[i](0);
-      q = f[i](1);
-      r = f[i](2);
+      p = f[i](X);
+      q = f[i](Y);
+      r = f[i](Z);
 
       // obtencion del vector normal al triangulo i-esimo
       va = v[q] - v[p];
       vb = v[r] - v[p];
       pvectorial = va.cross(vb);
-      pvectorial = pvectorial.normalized();
+      std::cout << "\nvq=" << v[q] << "\nvp=" << v[p] << "\nvr=" << v[r];
+      nCaras[i] = pvectorial.normalized();
 
       // suma del vector normal obtenido a cada uno de los vertices del triangulo
-      nv[p] = nv[p] + pvectorial;
-      nv[q] = nv[q] + pvectorial;
-      nv[r] = nv[r] + pvectorial;
+      nv[p] = nv[p] + nCaras[i];
+      nv[q] = nv[q] + nCaras[i];
+      nv[r] = nv[r] + nCaras[i];
    }
 
    // obtencion de tabla de normales de vértices

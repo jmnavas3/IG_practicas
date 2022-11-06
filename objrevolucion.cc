@@ -105,6 +105,9 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       v.push_back(p_norte);
       v_tam++;
       for(int i = 1; i < n+1; i++){
+         // a = m*(i+1)-1;
+         // b = m*((i+1)%n)+m-1;
+         // f.push_back({a,b,v_tam});
          f.push_back( { v_tam ,              //polo norte
                         m*((i+1)%n)-1 ,      //ultimo vertice de instancia siguiente
                         (m*i)-1} );          //ultimo vertice de instancia actual
@@ -113,6 +116,7 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       // de la tapa superior (m*n)-1 es el vertice final de la tapa superior
    }
 
+   std::cout << "instancias=" << n << " vertices perfil=" << m << "\n";
    // generamos colores, lo suyo seria ponerlo random para cada objeto
    genColor(1.0,0.0,0.3,v_tam);
 }

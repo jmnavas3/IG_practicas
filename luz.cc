@@ -12,6 +12,5 @@ void Luz::activar() {
     // Definir y "dibujar" la posicion de la luz
     glLightfv(id,GL_POSITION,posicion);
 
-    // glEnable(GL_LIGHTING);  // activar modelo de iluminacion local
     glEnable(id);           // activar fuente de luz "GL_LIGHTid"
 }

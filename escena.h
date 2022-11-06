@@ -1,6 +1,10 @@
 #ifndef _ESCENA_H
 #define _ESCENA_H
 
+// #define P1
+// #define P2
+#define P3
+
 #include "ejes.h"
 #include "malla.h"
 #include "objply.h"
@@ -60,7 +64,7 @@ class Escena
   
   // P2
   ObjPLY               *objetoply = nullptr;
-  ObjRevolucion        *objrevolucion = nullptr;
+  ObjRevolucion        *peon = nullptr;
   Cilindro             *cilindro = nullptr;
   Cono                 *cono = nullptr;
   Esfera               *esfera = nullptr;
@@ -71,6 +75,7 @@ class Escena
   LuzPosicional        *luzPosicional = nullptr;
   ObjRevolucion        *peonBlanco = nullptr;
   ObjRevolucion        *peonNegro = nullptr;
+  Material             *defecto = nullptr;
   
   Tupla3f posicionLuz;
 
