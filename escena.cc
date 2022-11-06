@@ -18,16 +18,29 @@ Escena::Escena()
 
     ejes.changeAxisSize( 5000 );
 
-   //objetos de la escena
+   //** objetos P1
    this->cubo = new Cubo(50.0);
    this->piramide = new PiramidePentagonal(90.0,45.0);
 
-   // this->objetoply = new ObjPLY("./plys/beethoven");
-   this->objrevolucion = new ObjRevolucion("./plys/peon",15);
-   this->cilindro = new Cilindro(10,10,80.0,40.0);
-   this->cono = new Cono(20,20,80.0,40.0);
-   this->esfera = new Esfera(20,20,40.0);
+   //** objetos P2
    this->lata = new Lata(20);
+   this->esfera = new Esfera(20,20,40.0);
+   this->cono = new Cono(20,20,80.0,40.0);
+   this->cilindro = new Cilindro(10,10,80.0,40.0);
+   this->objrevolucion = new ObjRevolucion("./plys/peon",15);
+   // this->objetoply = new ObjPLY("./plys/beethoven");
+
+   //** objetos + iluminacion P3
+   luz = false;
+    // Cap.6, Color, Pág.138. RedBook OpenGL: "if u want realistic effect, set GL_SPECULAR = GL_DIFFUSE"
+   posicionLuz = Tupla3f(50.0f, 100.0f, 50.0f);
+   Tupla4f ambiental(0.0, 0.0, 1.0, 1.0);
+   Tupla4f difusa(0.7,0.0,1.0,1.0);
+   Tupla4f especular = difusa;
+
+   this->peonNegro = new ObjRevolucion("./plys/peon",15);
+   this->peonBlanco = new ObjRevolucion("./plys/peon",15);
+   this->luzPosicional = new LuzPosicional(posicionLuz, GL_LIGHT0, ambiental, especular, difusa);
 
 }
 
@@ -69,17 +82,19 @@ void Escena::dibujar()
 	change_observer();
    ejes.draw();
 
-   // ld.activar();
-
+   if(luz) glEnable(GL_LIGHTING);
+   else glDisable(GL_LIGHTING);
+   
+   // luzPosicional->activar();
 
    glPushMatrix();
       glTranslatef(-190,0,-150);
-      cubo->draw(activo,1);
+      cubo->draw(activo,luz);
    glPopMatrix();
 
    glPushMatrix();
       glTranslatef(-100,0,-150);
-      piramide->draw(activo,1);
+      piramide->draw(activo,luz);
    glPopMatrix();
 
    // ** objetos practica 2
@@ -87,34 +102,34 @@ void Escena::dibujar()
    glPushMatrix();
       glTranslatef(-70,0,-80);
       glScalef(30,30,30);
-      objrevolucion->draw(activo,1);   //peón
+      objrevolucion->draw(activo,luz);   //peón
    glPopMatrix();
 
    glPushMatrix();
       glTranslatef(0,-80,0);
-      cilindro->draw(activo,1);
+      cilindro->draw(activo,luz);
    glPopMatrix();
 
    glPushMatrix();
-      cono->draw(activo,1);
+      cono->draw(activo,luz);
    glPopMatrix();
 
    glPushMatrix();
       glTranslatef(0,var,0);
-      esfera->draw(activo,1);
+      esfera->draw(activo,luz);
    glPopMatrix();
 
    glPushMatrix();
       glTranslatef(70,0,0);
       glScalef(70,70,70);
-      lata->draw(activo,1);
+      lata->draw(activo,luz);
    glPopMatrix();
 
    var += 0.5;
 /*    glPushMatrix();
       glScalef(3,3,3);
       glTranslatef(0,40,0);
-      objetoply->draw(activo,1);
+      objetoply->draw(activo,0);
    glPopMatrix(); */
 
 
@@ -135,45 +150,58 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
    using namespace std ;
    cout << "Tecla pulsada: '" << tecla << "'" << endl;
    bool salir=false;
-   bool apagar_luz=false;
+   //bool apagar_luz=false;
 
-   switch( toupper(tecla) )
-   {
+   // OPCIONES MODO VISUALIZACION
+   if ( modoMenu = SELVISUALIZACION ) {
+      switch ( toupper(tecla) )
+      {
       case 'Q' :
-         if(modoMenu == SELVISUALIZACION) {
-            modoMenu=NADA;
-            std::cout << "Saliendo de modo visualización...\n";
-         }
-         else {
-            salir=true ;
-         }
-         break ;
+         modoMenu = NADA;
+         cout << "MENU PRINCIPAL\nV:seleccionar modo visualización\nQ:salir\n";
+         break;
       case 'C' :
          activo[CULL] = !activo[CULL];
+         luz = false;
          break;
-      case 'V' :
-         // ESTAMOS EN MODO SELECCION DE MODO DE VISUALIZACION
-         modoMenu=SELVISUALIZACION;
-         cout << "Modo selección de visualización\n";
-         break ;
-      // OPCIONES MODO VISUALIZACION
-      case 'D' :
-         if(modoMenu==SELVISUALIZACION) activo[PUNTOS] = !activo[PUNTOS];
+      case 'P' :
+         activo[PUNTOS] = !activo[PUNTOS];
+         luz = false;
          break;
       case 'L' :
-         if(modoMenu==SELVISUALIZACION) activo[LINEAS] = !activo[LINEAS];
+         activo[LINEAS] = !activo[LINEAS];
+         luz = false;
          break;
       case 'S' :
-         if(modoMenu==SELVISUALIZACION) activo[SOLIDO] = !activo[SOLIDO];
+         activo[SOLIDO] = !activo[SOLIDO];
+         luz = false;
          break;
-      case 'G' :
-         if(modoMenu==SELVISUALIZACION) activo[SUAVE] = !activo[SUAVE];
+      case 'I' :
+         activo[SOMBRA] = !activo[SOMBRA];
+         luz = true;
          break;
+      default :
+         break;
+      }
+   }
+
+   // MENU PRINCIPAL
+   switch( toupper(tecla) )
+   {
+   case 'Q' :
+      salir=true ;
+      break ;
+   case 'V' :
+      modoMenu=SELVISUALIZACION;
+      cout << "SELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nC:caras trasesras\nI:iluminacion\n";
+      break ;
+   default:
+      break;
    }
 
    // si iluminacion activa y (puntos ó lineas ó solido) están activos, apagar luz
-   apagar_luz = activo[PUNTOS] | activo[LINEAS] | activo[SOLIDO];
-   if (activo[SUAVE] && apagar_luz) activo[SUAVE] = 0;
+   //apagar_luz = activo[PUNTOS] | activo[LINEAS] | activo[SOLIDO];
+   //if (activo[SUAVE] && apagar_luz) activo[SUAVE] = 0;
 
    return salir;
 }

@@ -17,7 +17,7 @@
 #include "luzDireccional.h"
 #include "luzPosicional.h"
 
-typedef enum {NADA, SELOBJETO,SELVISUALIZACION} menu;
+typedef enum {NADA, SELOBJETO,SELVISUALIZACION, SELILUMINACION} menu;
 class Escena
 {
 
@@ -25,8 +25,9 @@ class Escena
 
  // ** PARÁMETROS DE OBJETOS
 
-  // {PUNTOS,LINEAS,SOLIDO,CULL,SUAVE,PLANO}
-  std::vector<bool> activo{0,0,1,1,0,0};
+  // {PUNTOS,LINEAS,SOLIDO,CULL,TIPOILUMINACION}
+  std::vector<bool> activo{0,0,1,1,0}; //iluminacion 0 --> GL_SMOOTH
+  float luz;
   float var = 0.0f;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
@@ -65,9 +66,13 @@ class Escena
   Esfera               *esfera = nullptr;
   Lata                 *lata = nullptr;
 
-  //  ILUMINACION
-  LuzDireccional       *ld = nullptr;
-  LuzPosicional        *lp = nullptr;
+  // P3
+  LuzDireccional       *luzDireccional = nullptr;
+  LuzPosicional        *luzPosicional = nullptr;
+  ObjRevolucion        *peonBlanco = nullptr;
+  ObjRevolucion        *peonNegro = nullptr;
+  
+  Tupla3f posicionLuz;
 
    
   public:
