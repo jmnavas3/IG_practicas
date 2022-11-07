@@ -6,9 +6,25 @@ LuzDireccional::LuzDireccional (const Tupla2f & orientacion,
                               Tupla4f colorEspecular,
                               Tupla4f colorDifuso)
 {
-    this->posicion = Tupla4f(posicion(0), posicion(1), posicion(2), 1.0);
+    this->posicion = Tupla4f(orientacion(0), orientacion(1), 1.0, 0.0);
     this->id = idLuz;
     this->colorAmbiente = colorAmbiente;
     this->colorEspecular = colorEspecular;
     this->colorDifuso = colorDifuso;
+}
+
+void LuzDireccional::variarAnguloAlpha (float incremento) {
+    alpha += incremento;
+}
+
+void LuzDireccional::variarAnguloBeta (float incremento) {
+    beta += incremento;
+}
+
+void LuzDireccional::cambiarAngulo () {
+    glPushMatrix();
+        // glLoadIdentity();
+        glRotatef(alpha,0.0,1.0,0.0);
+        glRotatef(beta,-1.0,0.0,0.0);
+    glPopMatrix();
 }

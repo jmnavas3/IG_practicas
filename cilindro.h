@@ -1,4 +1,3 @@
-// ** P2 26/10/22
 
 #ifndef CILINDRO_H_INCLUDED
 #define CILINDRO_H_INCLUDED
@@ -10,8 +9,8 @@ class Cilindro : public ObjRevolucion
     public:
     Cilindro ( const int num_vert_perfil ,
                const int num_instancias_perf ,
-               const float altura ,
-               const float radio );
+               const float altura=2 ,
+               const float radio=1 );
 } ;
 
 #endif

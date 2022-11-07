@@ -47,7 +47,7 @@ class Malla3D
    // otros atributos de Malla3D
    const float PI = 3.14159265f;
    
-   void genNormales();
+   virtual void genNormales();
    void setBufferColor(GLuint id_c);
    void genColor(float r, float g, float b, int n_vert);
    GLuint CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram);

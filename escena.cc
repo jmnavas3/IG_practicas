@@ -33,22 +33,25 @@ Escena::Escena()
    #endif
 
    //** objetos + iluminacion P3
-    // Cap.6, Color, Pág.138. RedBook OpenGL: "if u want realistic effect, set GL_SPECULAR = GL_DIFFUSE"
    luz = false;
-   posicionLuz = Tupla3f(30.0f, 30.0f, 50.0f);
-   Tupla4f ambiental(0.6, 0.6, 1.0, 1.0);
+   posicionLuz = Tupla3f(0.0f, 0.0f, 5.0f);
+   Tupla4f ambiental(0.7, 0.6, 1.0, 1.0);
    Tupla4f difusa(0.5,0.4,0.7,1.0);
-   Tupla4f especular(1.0,1.0,1.0,0.7);
+   Tupla4f especular(0.7,1.0,1.0,0.7);
 
-   this->peon = new ObjRevolucion("./plys/peon",20);
    this->luzPosicional = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
-   this->cubo = new Cubo();
-   this->piramide = new PiramidePentagonal();
+   this->luzDireccional = new LuzDireccional({0.0f,0.0f}, GL_LIGHT2, ambiental, especular, difusa);
+   // this->cubo = new Cubo();
+   // this->piramide = new PiramidePentagonal();
+   this->peon = new ObjRevolucion("./plys/peon",20);
+   this->esfera = new Esfera(20,20);
 
-   Material nuevo(ambiental,difusa,especular,100.0);
+   Material nuevo(ambiental,difusa,especular,50.0);
    Material defecto;
-   this->cubo->setMaterial(defecto);
-   this->piramide->setMaterial(nuevo);
+   // this->cubo->setMaterial(defecto);
+   this->peon->setMaterial(defecto);
+   // this->piramide->setMaterial(nuevo);
+   this->esfera->setMaterial(defecto);
 
 }
 
@@ -88,15 +91,22 @@ void Escena::dibujar()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
 	change_observer();
+   glPushMatrix();
    ejes.draw();
+   glPopMatrix();
 
-   glScalef(30.0,30.0,30.0);
    if(luz) glEnable(GL_LIGHTING);
    else glDisable(GL_LIGHTING);
    
-   // glEnable(GL_LIGHT0);
-   // luzPosicional->activar();
-
+   glPushMatrix();
+      glScalef(30.0,30.0,30.0);
+      luzPosicional->activar();
+      luzDireccional->activar();
+      //if(alpha_l) luzDireccional->variarAnguloAlpha(var_a);
+      //if(beta_l) luzDireccional->variarAnguloBeta(var_b);
+      //luzDireccional->cambiarAngulo();
+      esfera->draw(activo,luz);   //peón
+   glPopMatrix();
 
    #ifdef P1
    glPushMatrix();
@@ -138,28 +148,6 @@ void Escena::dibujar()
       lata->draw(activo,luz);
    glPopMatrix();
    #endif
-
-   // ** objetos práctica 3
-   // a nivel de iluminacion, se define el material del peon en el constructor de la escena
-   // en caso de que el booleano luz este activo, se enciende la luz 0
-   // dentro del draw, antes de DrawElements, se aplica dicho material
-   // ERROR con Esfera, Cono y Cilindro por rotar sobre la base o algo asi
-   #ifdef P3
-   glPushMatrix();
-      luzPosicional->activar();
-      cubo->draw(activo,luz);   //peón
-   glPopMatrix();
-
-   glPushMatrix();
-      glTranslatef(2,0,0);
-   glEnable(GL_LIGHT0);
-   piramide->draw(activo,luz);
-   glPopMatrix();
-   #endif
-
-
-
-
 }
 
 
@@ -179,7 +167,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
    //bool apagar_luz=false;
 
    // OPCIONES MODO VISUALIZACION
-   if ( modoMenu == SELVISUALIZACION ) {
+   if ( modoMenu == SELVISUALIZACION || modoMenu == SELILUMINACION ) {
       switch ( toupper(tecla) )
       {
       case 'Q' :
@@ -205,6 +193,31 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       case 'I' :
          activo[SOMBRA] = !activo[SOMBRA];
          luz = true;
+         modoMenu = SELILUMINACION;
+         break;
+      case 'A':
+         if(modoMenu==SELILUMINACION){
+            alpha_l = true;
+            beta_l = false;
+         }
+         break;
+      case 'B':
+         if(modoMenu==SELILUMINACION){
+            alpha_l = false;
+            beta_l = true;
+         }
+         break;
+      case '<':
+         if(modoMenu==SELILUMINACION && alpha_l)
+            var_a=10;
+         if(modoMenu==SELILUMINACION && beta_l)
+            var_b=10;
+         break;
+      case '>':
+         if(modoMenu==SELILUMINACION && alpha_l)
+            var_a= -10;
+         if(modoMenu==SELILUMINACION && beta_l)
+            var_b= -10;
          break;
       default :
          break;

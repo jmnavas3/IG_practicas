@@ -17,9 +17,9 @@
 void Malla3D::draw(std::vector<bool> a, bool luz)
 {
    // generamos normales solo una vez
-   if ( nv.empty() ) {
-      genNormales();
-   }
+   //if ( nv.empty() ) {
+      // genNormales();
+   //}
 
 
    if(id_vbo_v == 0) id_vbo_v   = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
@@ -161,7 +161,6 @@ void Malla3D::genNormales(){
    
 
    nv.resize(v.size());
-   nCaras.resize(f.size());
 
    // nota: no es necesario puesto que todas las tuplas se inicializan a 0
    // nv = std::vector<Tupla3f>(v.size(),Tupla3f(0.0f,0.0f,0.0f));
@@ -181,14 +180,17 @@ void Malla3D::genNormales(){
       va = v[q] - v[p];
       vb = v[r] - v[p];
       pvectorial = va.cross(vb);
-      std::cout << "\nvq=" << v[q] << "\nvp=" << v[p] << "\nvr=" << v[r];
-      nCaras[i] = pvectorial.normalized();
+      // std::cout << "\nvq=" << v[q] << "\nvp=" << v[p] << "\nvr=" << v[r];
+      std::cout << "\n\ttam ncaras=" << i;
+      if(pvectorial.lengthSq()>0.0)
+         nCaras.push_back(pvectorial.normalized());
 
       // suma del vector normal obtenido a cada uno de los vertices del triangulo
-      nv[p] = nv[p] + nCaras[i];
-      nv[q] = nv[q] + nCaras[i];
-      nv[r] = nv[r] + nCaras[i];
+      nv[p] = nv[p] + nCaras.back();
+      nv[q] = nv[q] + nCaras.back();
+      nv[r] = nv[r] + nCaras.back();
    }
+   std::cout << "\n----------------------\n";
 
    // obtencion de tabla de normales de vértices
    for (int i = 0; i < nv.size(); i++)

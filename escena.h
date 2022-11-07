@@ -3,7 +3,6 @@
 
 // #define P1
 // #define P2
-#define P3
 
 #include "ejes.h"
 #include "malla.h"
@@ -31,8 +30,8 @@ class Escena
 
   // {PUNTOS,LINEAS,SOLIDO,CULL,TIPOILUMINACION}
   std::vector<bool> activo{0,0,1,1,0}; //iluminacion 0 --> GL_SMOOTH
-  float luz;
-  float var = 0.0f;
+  float luz, alpha_l,beta_l;
+  float var_a = 0.0f, var_b=0.0f;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
        

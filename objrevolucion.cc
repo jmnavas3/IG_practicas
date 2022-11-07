@@ -37,12 +37,13 @@ ObjRevolucion::ObjRevolucion(std::vector<Tupla3f> archivo, int num_instancias) {
 
 // *****************************************************************************
 // malla de revolución obtenida a partir de un perfil y un numero de instancias
+// nota: para los objetos cilindro, cono y esfera no se pasan los vertices
 // **                                               M                N
 void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias) {
    int n = num_instancias;
    int m = perfil_original.size();
    int v_tam = (n*m)-1; // indice de ultimo vertice de la tabla
-   float angulo = (2*PI)/n;
+   float angulo = (2*PI)/(float)n;
    Tupla3f p_norte, p_sur, tupla;
    bool tapa_inf = 0,
         tapa_sup = 0;
@@ -116,7 +117,6 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       // de la tapa superior (m*n)-1 es el vertice final de la tapa superior
    }
 
-   std::cout << "instancias=" << n << " vertices perfil=" << m << "\n";
    // generamos colores, lo suyo seria ponerlo random para cada objeto
    genColor(1.0,0.0,0.3,v_tam);
 }

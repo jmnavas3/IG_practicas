@@ -34,6 +34,6 @@ Cubo::Cubo(float lado)
    f[11] = {5,4,0}; //c62
    
    genColor(1.0,1.0,0.0,8); //generar color
-
+   genNormales();
 }
 

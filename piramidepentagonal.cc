@@ -24,9 +24,9 @@ PiramidePentagonal::PiramidePentagonal(float h, float r)
    f[6] = {3,5,4}; // cara trasera izda.
    f[7] = {4,5,0}; // cara trasera dcha.
 
-   // inicializar la/s tabla/s de colores
+   // generar colores y normales
    genColor(0.0,0.5,1.0,6);
-   
+   genNormales();
 
    
 }

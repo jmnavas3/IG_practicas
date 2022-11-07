@@ -20,6 +20,7 @@ class LuzDireccional : public Luz
 
         void variarAnguloAlpha (float incremento) ;
         void variarAnguloBeta (float incremento) ;
+        void cambiarAngulo();
 };
 
 #endif
