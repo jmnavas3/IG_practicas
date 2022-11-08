@@ -74,12 +74,15 @@ class Escena
   //    fuentes de luz
   LuzDireccional       *luzDireccional = nullptr;
   LuzPosicional        *luzPosicional = nullptr;
+  LuzPosicional        *luzPosicional1 = nullptr;
   //    control luces
   Tupla3f posicionLuz;
   Tupla4f ambiental, difusa, especular;
   float luz, alpha_l, beta_l;
   //    materiales
-  Material             *defecto = nullptr;
+  Material             *defecto         = nullptr;
+  Material             *blanco_difuso   = nullptr;
+  Material             *negro_especular = nullptr;
 
    
   public:

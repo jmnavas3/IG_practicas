@@ -64,9 +64,9 @@ Material::Material ( Tupla4f mdifuso,
  */
 void Material::aplicar () {
 
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,especular);
+    glMaterialfv(GL_FRONT,GL_SPECULAR,especular);
     // glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, amb_dif_defecto);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,ambiente);
+    glMaterialfv(GL_FRONT,GL_AMBIENT,ambiente);
     glMaterialfv(GL_FRONT,GL_DIFFUSE,difuso);
 
 

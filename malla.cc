@@ -16,12 +16,6 @@
 
 void Malla3D::draw(std::vector<bool> a, bool luz)
 {
-   // generamos normales solo una vez
-   //if ( nv.empty() ) {
-      // genNormales();
-   //}
-
-
    if(id_vbo_v == 0) id_vbo_v   = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
    if(id_vbo_f == 0) id_vbo_f   = CrearVBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(f[0]) * f.size(), f.data());
    for ( int i=0; i<3; i++ ) {
@@ -130,17 +124,17 @@ void Malla3D::setBufferColor(GLuint id_c){
 // Redimensiona las tablas de colores en caso de no estar redimensionadas y les asigna diferentes valores a cada una
 
 void Malla3D::genColor(float r, float g, float b){
-   int n_vert = v.size();
    if (cl.size()!=3){
+      int n_vert = v.size();
       cl.resize(3);
       cl[0].resize(n_vert);   // puntos
       cl[1].resize(n_vert);   // líneas
       cl[2].resize(n_vert);   // sólido
       
       for(int j=0; j<n_vert; j++){
-         cl[0][j] = {r,g,b};
+         cl[2][j] = {r,g,b};
          cl[1][j] = {b,r,g};
-         cl[2][j] = {g,b,r};
+         cl[0][j] = {g,b,r};
       }
    }
 }
@@ -181,8 +175,6 @@ void Malla3D::genNormales(){
       va = v[q] - v[p];
       vb = v[r] - v[p];
       pvectorial = va.cross(vb);
-      // std::cout << "\nvq=" << v[q] << "\nvp=" << v[p] << "\nvr=" << v[r];
-      std::cout << "\n\ttam ncaras=" << i;
       if(pvectorial.lengthSq()>0.0)
          nCaras.push_back(pvectorial.normalized());
 

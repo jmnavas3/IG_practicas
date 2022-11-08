@@ -42,15 +42,19 @@ Escena::Escena()
    //       fuentes de luz
    this->luzPosicional  = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
    this->luzDireccional = new LuzDireccional({0.0f,0.0f}, GL_LIGHT2, ambiental, especular, difusa);
+   this->luzPosicional1 = new LuzPosicional(posicionLuz, GL_LIGHT3, ambiental, especular, difusa);
    //       materiales
-   Material defecto;
-   Material nuevo(ambiental,difusa,especular,50.0);
+   this->defecto         = new Material();
+   this->blanco_difuso   = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0} , {1.0, 1.0, 1.0, 1.0}, 60.0);
+   this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 60.0);
    //       objetos
    this->esfera = new Esfera(20,20);
-   this->prueba = new ObjRevolucion("./plys/peon",20);
+   this->peonNegro = new ObjRevolucion("./plys/peon_inverso",20);
+   this->peonBlanco = new ObjRevolucion("./plys/peon",20);
 
-   this->esfera->setMaterial(defecto);
-   this->prueba->setMaterial(defecto);
+   this->esfera->setMaterial(*negro_especular);
+   this->peonNegro->setMaterial(*negro_especular);
+   this->peonBlanco->setMaterial(*blanco_difuso);
 
 }
 
@@ -62,7 +66,7 @@ Escena::Escena()
 
 void Escena::inicializar( int UI_window_width, int UI_window_height )
 {
-	glClearColor( 1.0, 1.0, 1.0, 1.0 );// se indica cual sera el color para limpiar la ventana	(RGBA)
+	// glClearColor( 1.0, 1.0, 1.0, 1.0 );// se indica cual sera el color para limpiar la ventana	(RGBA)
 
 	glEnable( GL_DEPTH_TEST );	// se habilita el z-bufer
 
@@ -97,11 +101,18 @@ void Escena::dibujar()
    if(luz) glEnable(GL_LIGHTING);
    else    glDisable(GL_LIGHTING);
    
+   
+   /* P3 peones blanco y negro
    glPushMatrix();
       glScalef(escala,escala,escala);
-      prueba->draw(activo,luz);
+      luzPosicional1->activar();
+      peonBlanco->draw(activo,luz);
+      glPushMatrix();
+         glTranslatef(3,0,0);
+         peonNegro->draw(activo,luz);
+      glPopMatrix();
    glPopMatrix();
-
+   */
 
    /* P3
    glPushMatrix();

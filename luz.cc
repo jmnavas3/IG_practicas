@@ -14,19 +14,19 @@ void Luz::activar() {
         if(id == GL_LIGHT1){
             // SPOT_CUTOFF: define el doble del angulo pasado por parametro,
             // por defecto, es 180(maximo) (2*180=360º), así, ilumina toda la escena. No poner en Direccionales
-            glLightf(id,GL_SPOT_CUTOFF,20.0);
+            glLightf(id,GL_SPOT_CUTOFF,45.0);
             
             // SPOT_DIRECTION: define los ejes a los que apunta la luz, por defecto (0,0,1)
-            // glLightfv(id,GL_SPOT_DIRECTION,{-1.0,})
+            // glLightfv(id,GL_SPOT_DIRECTION,...);
             
             // SPOT_EXPONENT: indica la intensidad de la luz en el centro del angulo (Default=0)
             // RedBook, pg.141.
-            // glLightf(id,GL_SPOT_EXPONENT,2.0);
+            glLightf(id,GL_SPOT_EXPONENT,2.0);
 
             // ATENUACIONES
-            glLightf(id,GL_CONSTANT_ATTENUATION,1.5);
-            // glLightf(id,GL_LINEAR_ATTENUATION,0.5);
-            // glLightf(id,GL_QUADRATIC_ATTENUATION,0.2);
+            glLightf(id,GL_CONSTANT_ATTENUATION,3.0); //constante, da más realismo al rotar la camara
+            // glLightf(id,GL_LINEAR_ATTENUATION,1.5);
+            // glLightf(id,GL_QUADRATIC_ATTENUATION,0.5);
         }
 
         // Definir y "dibujar" la posicion de la luz
