@@ -20,8 +20,10 @@ ObjRevolucion::ObjRevolucion(const std::string & archivo, int num_instancias) {
 
    ply::read_vertices(archivo, perfil);
    std::cout << perfil.size() << " vertices\n";
-   if(perfil.size()!=0)
+   if(perfil.size()!=0){
       crearMalla(perfil,num_instancias);
+      genNormales();
+   }
 
 }
 
@@ -45,11 +47,20 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
    int v_tam = (n*m)-1; // indice de ultimo vertice de la tabla
    float angulo = (2*PI)/(float)n;
    Tupla3f p_norte, p_sur, tupla;
-   bool tapa_inf = 0,
-        tapa_sup = 0;
+   bool tapa_inf = 0, tapa_sup = 0;
+   int a,b;
 
+   // si el perfil esta al reves, lo añadimos a un vector auxiliar desde el ultimo vertice del array
+   if(perfil_original.front()(Y) > perfil_original.back()(Y)){
+      std::vector<Tupla3f> aux;
+      for(int i=0;i<m;i++){
+         aux.push_back(perfil_original.back());
+         perfil_original.pop_back();
+      }
+      perfil_original = aux;
+   }
+      
    // comprobamos que los extremos no estén sobre el eje Y, si están, los guardamos aparte
-
    if(fabs(perfil_original[0](X)-perfil_original[0](Z)) < EPSILON){
       tapa_inf = 1;
       p_sur = perfil_original.front();
@@ -78,7 +89,6 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
    //por lo que el indice del ultimo elemento de v será: (m*n)-3
 
    // añadimos los vertices de las instancias a la tabla de caras
-   int a, b;
    for (int i = 0; i < n; i++) {
       for (int j = 0; j < m-1; j++) {
          a = m*i+j;
@@ -118,5 +128,5 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
    }
 
    // generamos colores, lo suyo seria ponerlo random para cada objeto
-   genColor(1.0,0.0,0.3);
+   genColor(0.3,0.6,1.0);
 }
