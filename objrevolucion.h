@@ -12,7 +12,7 @@
 
 #include "auxiliar.h"
 #include "malla.h"
-#define EPSILON 0.0000
+#define EPSILON 0.00000000
 
 // *****************************************************************************
 //

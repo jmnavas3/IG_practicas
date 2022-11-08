@@ -33,7 +33,7 @@ Cubo::Cubo(float lado)
    f[10] = {1,5,0}; //c61 INFERIOR
    f[11] = {5,4,0}; //c62
    
-   genColor(1.0,1.0,0.0,8); //generar color
+   genColor(1.0,1.0,0.0); //generar color
    genNormales();
 }
 

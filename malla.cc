@@ -129,7 +129,8 @@ void Malla3D::setBufferColor(GLuint id_c){
 // -----------------------------------------------------------------------------
 // Redimensiona las tablas de colores en caso de no estar redimensionadas y les asigna diferentes valores a cada una
 
-void Malla3D::genColor(float r, float g, float b, int n_vert){
+void Malla3D::genColor(float r, float g, float b){
+   int n_vert = v.size();
    if (cl.size()!=3){
       cl.resize(3);
       cl[0].resize(n_vert);   // puntos

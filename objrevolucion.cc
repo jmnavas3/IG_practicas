@@ -118,5 +118,5 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
    }
 
    // generamos colores, lo suyo seria ponerlo random para cada objeto
-   genColor(1.0,0.0,0.3,v_tam);
+   genColor(1.0,0.0,0.3);
 }
