@@ -18,40 +18,39 @@ Escena::Escena()
 
     ejes.changeAxisSize( 5000 );
 
+   /*
    //** objetos P1
-   #ifdef P1
-   this->cubo = new Cubo(50.0);
+   //this->cubo = new Cubo(50.0);
+   //this->piramide = new PiramidePentagonal();
+   this->cubo = new Cubo();
    this->piramide = new PiramidePentagonal(90.0,45.0);
-   #endif
    //** objetos P2
-   #ifdef P2
    this->lata = new Lata(20);
    this->esfera = new Esfera(20,20,40.0);
    this->cono = new Cono(20,20,80.0,40.0);
    this->cilindro = new Cilindro(10,10,80.0,40.0);
    // this->objetoply = new ObjPLY("./plys/beethoven");
-   #endif
+   */
 
-   //** objetos + iluminacion P3
+   //*********** P3 ************
+   //       control luces
    luz = false;
-   posicionLuz = Tupla3f(0.0f, 0.0f, 5.0f);
-   Tupla4f ambiental(0.7, 0.6, 1.0, 1.0);
-   Tupla4f difusa(0.5,0.4,0.7,1.0);
-   Tupla4f especular(0.7,1.0,1.0,0.7);
-
-   this->luzPosicional = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
+   posicionLuz = {0.0f,0.0f,5.0f};   
+   ambiental   = { 0.7 , 0.6 , 1.0 , 1.0 };
+   difusa      = { 0.5 , 0.4 , 0.7 , 1.0 };
+   especular   = { 0.7 , 1.0 , 1.0 , 0.7 };
+   //       fuentes de luz
+   this->luzPosicional  = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
    this->luzDireccional = new LuzDireccional({0.0f,0.0f}, GL_LIGHT2, ambiental, especular, difusa);
-   // this->cubo = new Cubo();
-   // this->piramide = new PiramidePentagonal();
-   this->peon = new ObjRevolucion("./plys/peon",20);
-   this->esfera = new Esfera(20,20);
-
-   Material nuevo(ambiental,difusa,especular,50.0);
+   //       materiales
    Material defecto;
-   // this->cubo->setMaterial(defecto);
-   this->peon->setMaterial(defecto);
-   // this->piramide->setMaterial(nuevo);
+   Material nuevo(ambiental,difusa,especular,50.0);
+   //       objetos
+   this->esfera = new Esfera(20,20);
+   this->prueba = new ObjRevolucion("./plys/peon",20);
+
    this->esfera->setMaterial(defecto);
+   this->prueba->setMaterial(defecto);
 
 }
 
@@ -96,20 +95,28 @@ void Escena::dibujar()
    glPopMatrix();
 
    if(luz) glEnable(GL_LIGHTING);
-   else glDisable(GL_LIGHTING);
+   else    glDisable(GL_LIGHTING);
    
    glPushMatrix();
-      glScalef(30.0,30.0,30.0);
-      luzPosicional->activar();
-      luzDireccional->activar();
-      //if(alpha_l) luzDireccional->variarAnguloAlpha(var_a);
-      //if(beta_l) luzDireccional->variarAnguloBeta(var_b);
-      //luzDireccional->cambiarAngulo();
-      esfera->draw(activo,luz);   //peón
+      glScalef(escala,escala,escala);
+      prueba->draw(activo,luz);
    glPopMatrix();
 
-   #ifdef P1
+
+   /* P3
    glPushMatrix();
+      glScalef(30.0,30.0,30.0);
+       luzPosicional->activar();
+       luzDireccional->activar();
+      if(alpha_l) luzDireccional->variarAnguloAlpha(var_a);
+      if(beta_l) luzDireccional->variarAnguloBeta(var_b);
+      luzDireccional->cambiarAngulo();
+      esfera->draw(activo,luz);   //peón
+   glPopMatrix();
+    */
+
+
+   /* glPushMatrix();
       glTranslatef(-190,0,-150);
       cubo->draw(activo,luz);
    glPopMatrix();
@@ -118,10 +125,8 @@ void Escena::dibujar()
       glTranslatef(-100,0,-150);
       piramide->draw(activo,luz);
    glPopMatrix();
-   #endif
 
    // ** objetos practica 2
-   #ifdef P2
    glPushMatrix();
       glTranslatef(-70,0,-80);
       glScalef(30,30,30);
@@ -138,7 +143,7 @@ void Escena::dibujar()
    glPopMatrix();
 
    glPushMatrix();
-      glTranslatef(0,var,0);
+      glTranslatef(0,0,0);
       esfera->draw(activo,luz);
    glPopMatrix();
 
@@ -146,8 +151,7 @@ void Escena::dibujar()
       glTranslatef(70,0,0);
       glScalef(70,70,70);
       lata->draw(activo,luz);
-   glPopMatrix();
-   #endif
+   glPopMatrix(); */
 }
 
 

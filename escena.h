@@ -1,9 +1,6 @@
 #ifndef _ESCENA_H
 #define _ESCENA_H
 
-// #define P1
-// #define P2
-
 #include "ejes.h"
 #include "malla.h"
 #include "objply.h"
@@ -30,8 +27,8 @@ class Escena
 
   // {PUNTOS,LINEAS,SOLIDO,CULL,TIPOILUMINACION}
   std::vector<bool> activo{0,0,1,1,0}; //iluminacion 0 --> GL_SMOOTH
-  float luz, alpha_l,beta_l;
   float var_a = 0.0f, var_b=0.0f;
+  float escala = 30.0f;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
        
@@ -70,13 +67,19 @@ class Escena
   Lata                 *lata = nullptr;
 
   // P3
-  LuzDireccional       *luzDireccional = nullptr;
-  LuzPosicional        *luzPosicional = nullptr;
+  //    objetos
+  ObjRevolucion        *prueba = nullptr;
   ObjRevolucion        *peonBlanco = nullptr;
   ObjRevolucion        *peonNegro = nullptr;
-  Material             *defecto = nullptr;
-  
+  //    fuentes de luz
+  LuzDireccional       *luzDireccional = nullptr;
+  LuzPosicional        *luzPosicional = nullptr;
+  //    control luces
   Tupla3f posicionLuz;
+  Tupla4f ambiental, difusa, especular;
+  float luz, alpha_l, beta_l;
+  //    materiales
+  Material             *defecto = nullptr;
 
    
   public:
