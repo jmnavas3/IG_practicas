@@ -15,4 +15,5 @@ Lata::Lata(const int num_instancias_perf)
     perfil.insert(perfil.end(), inferior.begin(), inferior.end());
 
     crearMalla(perfil,num_instancias_perf);
+    genNormales();
 }

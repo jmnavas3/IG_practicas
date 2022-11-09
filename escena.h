@@ -28,7 +28,7 @@ class Escena
   // {PUNTOS,LINEAS,SOLIDO,CULL,TIPOILUMINACION}
   std::vector<bool> activo{0,0,1,1,0}; //iluminacion 0 --> GL_SMOOTH
   float var_a = 0.0f, var_b=0.0f;
-  float escala = 30.0f;
+  float escala = 23.0f;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
        
@@ -68,9 +68,9 @@ class Escena
 
   // P3
   //    objetos
-  ObjRevolucion        *prueba = nullptr;
+  Lata                 *prueba = nullptr;
   ObjRevolucion        *peonBlanco = nullptr;
-  ObjRevolucion        *peonNegro = nullptr;
+  ObjRevolucion        *peonNegro  = nullptr;
   //    fuentes de luz
   LuzDireccional       *luzDireccional = nullptr;
   LuzPosicional        *luzPosicional = nullptr;

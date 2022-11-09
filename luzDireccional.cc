@@ -15,16 +15,16 @@ LuzDireccional::LuzDireccional (const Tupla2f & orientacion,
 
 void LuzDireccional::variarAnguloAlpha (float incremento) {
     alpha += incremento;
+    // glRotatef(alpha,0.0,1.0,0.0);
 }
 
 void LuzDireccional::variarAnguloBeta (float incremento) {
     beta += incremento;
+    // glRotatef(beta,1.0,0.0,0.0);
 }
 
 void LuzDireccional::cambiarAngulo () {
-    glPushMatrix();
         // glLoadIdentity();
         glRotatef(alpha,0.0,1.0,0.0);
-        glRotatef(beta,-1.0,0.0,0.0);
-    glPopMatrix();
+        glRotatef(beta,1.0,0.0,0.0);
 }
