@@ -37,14 +37,15 @@ ObjRevolucion::ObjRevolucion(std::vector<Tupla3f> archivo, int num_instancias) {
    }
 }
 
+
 // *****************************************************************************
 // malla de revolución obtenida a partir de un perfil y un numero de instancias
 // nota: para los objetos cilindro, cono y esfera no se pasan los vertices
 // **                                               M                N
 void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias) {
    int n = num_instancias;
-   int m = perfil_original.size();
-   int v_tam = (n*m)-1; // indice de ultimo vertice de la tabla
+   int m;
+   int v_tam;
    float angulo = (2*PI)/(float)n;
    Tupla3f p_norte, p_sur, tupla;
    bool tapa_inf = 0, tapa_sup = 0;
@@ -58,37 +59,45 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
          perfil_original.pop_back();
       }
       perfil_original = aux;
+      std::cout << "perfil ordenado ascendentemente...\n";
    }
-      
-   // comprobamos que los extremos no estén sobre el eje Y, si están, los guardamos aparte
-   if(fabs(perfil_original[0](X)-perfil_original[0](Z)) < EPSILON){
+
+   std::cout << "vértice inferior (X,Z) =" << fabs(perfil_original[0](0)) << "," << perfil_original[0](0);
+   std::cout << "\nvértice superior (X,Z)=" << fabs(perfil_original.back()(X)) << "," << perfil_original.back()(Z);
+
+   // comrobar existencia de tapas
+   if(fabs(perfil_original[0](X)) < EPSILON &&
+      fabs(perfil_original[0](Z)) < EPSILON){
       tapa_inf = 1;
       p_sur = perfil_original.front();
       perfil_original.erase(perfil_original.begin());
+      std::cout << "\nTAPA INFERIOR DETECTADA";
    }
 
-   if(fabs(perfil_original[m-1](X)-perfil_original[m-1](Z)) < EPSILON){
+   if(fabs(perfil_original.back()(X)) < EPSILON &&
+      fabs(perfil_original.back()(Z)) < EPSILON)
+   {
       tapa_sup = 1;
-      p_norte = perfil_original.back();
+      p_norte = perfil_original[perfil_original.size()-1];
       perfil_original.pop_back();
+      std::cout << "\nTAPA SUPERIOR DETECTADA";
    }
 
-   //  bucle externo que recorre el nº de instancias
-   //  bucle interno que ROTA 2*PI/N rad. los vértices de cada instancia y los añade al final
-   //  de la tabla de vertices
+   m = perfil_original.size();
+   // bucle externo que recorre el nº de instancias y bucle interno que crea sus vértices rotados 2*PI/N rad.
    for (int i = 0; i < n; i++) {
       for(int j = 0; j < m; j++){
-         tupla(X) = (float)cos(i*angulo)*perfil_original[j](X) + (float)sin(i*angulo)*perfil_original[j](Z);
+         angulo = 2*PI*i/n;
+         tupla(X) = cos(angulo)*perfil_original[j](X) + sin(angulo)*perfil_original[j](Z);
          tupla(Y) = perfil_original[j](Y);
-         tupla(Z) = (float)cos(i*angulo)*perfil_original[j](Z) - (float)sin(i*angulo)*perfil_original[j](X);
+         tupla(Z) = cos(angulo)*perfil_original[j](Z) - sin(angulo)*perfil_original[j](X);
 
          v.push_back(tupla);
       }
    }
-   // al final de bucle doble, en v hay (m*n)-2 elementos en caso de que se hayan quitado los polos
-   //por lo que el indice del ultimo elemento de v será: (m*n)-3
 
-   // añadimos los vertices de las instancias a la tabla de caras
+
+   // creación de caras
    for (int i = 0; i < n; i++) {
       for (int j = 0; j < m-1; j++) {
          a = m*i+j;
@@ -98,35 +107,27 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       }
    }
 
-   // creamos las caras de las tapas
 
+   // creación de las caras de las tapas
    if(tapa_inf){
       v.push_back(p_sur);
-      v_tam++; //indice de p_sur --> n*m
+      v_tam = v.size()-1;
       for(int i = 0; i < n; i++){
          f.push_back( {m*((i+1)%n),          // primer vertice de instancia siguiente
                        m*i ,                 // primer vertice de instancia actual
                        v_tam} );             // polo sur
       }
-      // la ultima iteracion del bucle crea la cara: {0,m*(n-1),polo sur}, donde m*(n-1) es el primer vertice
-      // de la ultima instancia
    }
 
    if(tapa_sup){
       v.push_back(p_norte);
-      v_tam++;
-      for(int i = 1; i < n+1; i++){
-         // a = m*(i+1)-1;
-         // b = m*((i+1)%n)+m-1;
-         // f.push_back({a,b,v_tam});
-         f.push_back( { v_tam ,              //polo norte
-                        m*((i+1)%n)-1 ,      //ultimo vertice de instancia siguiente
-                        (m*i)-1} );          //ultimo vertice de instancia actual
+      v_tam = v.size()-1;
+      for(int i = 0; i < n; i++){
+         a = m*(i+1)-1;
+         b = m*((i+1)%n)+m-1;
+         f.push_back({a,b,v_tam});
       }
-      // la ultima iteracion del bucle crea la cara: {p_norte, m-1, (m*n)-1 } donde m-1 es el vertice inicial
-      // de la tapa superior (m*n)-1 es el vertice final de la tapa superior
    }
 
-   // generamos colores, lo suyo seria ponerlo random para cada objeto
    genColor(0.3,0.6,1.0);
 }

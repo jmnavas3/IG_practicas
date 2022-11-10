@@ -12,7 +12,6 @@
 
 #include "auxiliar.h"
 #include "malla.h"
-#define EPSILON 0.00000000
 
 // *****************************************************************************
 //
@@ -31,6 +30,8 @@ public:
 protected:
     std::vector<Tupla3f> perfil;
     void crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias);
+    bool polo_n = false, polo_s = false;
+    const float EPSILON = 0.000001f;
 
 } ;
 
