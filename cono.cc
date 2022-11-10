@@ -5,8 +5,6 @@ Cono::Cono ( const int num_vert_perfil ,
                      const float altura ,
                      const float radio )
 {
-    //crear perfil original de un cono
-    std::vector<Tupla3f> perfil;
     float aux;
     perfil.resize(num_vert_perfil);
     for(int i = 0; i < num_vert_perfil-1; i++){
@@ -17,5 +15,6 @@ Cono::Cono ( const int num_vert_perfil ,
     perfil[num_vert_perfil-1] = {0.0f,altura,0.0f};
 
     crearMalla(perfil,num_instancias_perf);
+    genNormales();
     
 }
