@@ -73,12 +73,13 @@ class Escena
   ObjRevolucion        *peonNegro  = nullptr;
   //    fuentes de luz
   LuzDireccional       *luzDireccional = nullptr;
-  LuzPosicional        *luzPosicional = nullptr;
+  LuzPosicional        *luzEspectador  = nullptr;
   LuzPosicional        *luzPosicional1 = nullptr;
   //    control luces
   Tupla3f posicionLuz;
   Tupla4f ambiental, difusa, especular;
   float luz, alpha_l, beta_l;
+  std::vector<bool> interruptor{0,0,0};
   //    materiales
   Material             *defecto         = nullptr;
   Material             *blanco_difuso   = nullptr;

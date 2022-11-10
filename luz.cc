@@ -1,17 +1,16 @@
-// #include "auxiliar.h"
 #include "luz.h"
 
-void Luz::activar() {
+void Luz::activar(bool interruptor) {
 
     // Cap.6, Color, Pág.138. RedBook OpenGL: "if u want realistic effect, set GL_SPECULAR = GL_DIFFUSE"
+    // si la luz activada es la 0, dejamos sus valores por defecto
     if(id != GL_LIGHT0){
-        // Definir los colores de las luces (luz 0: blanco (defect.) , luz 1-8: oscuridad (defect.))
         glLightfv(id,GL_AMBIENT,colorAmbiente);
         glLightfv(id,GL_SPECULAR,colorEspecular);
         glLightfv(id,GL_DIFFUSE,colorDifuso);
 
-        // GL_LIGHT1 (spotlight)
-        if(id == GL_LIGHT1){
+        // GL_LIGHT4 (spotlight)
+        if(id == GL_LIGHT4){
             // SPOT_CUTOFF: define el doble del angulo pasado por parametro,
             // por defecto, es 180(maximo) (2*180=360º), así, ilumina toda la escena. No poner en Direccionales
             glLightf(id,GL_SPOT_CUTOFF,45.0);
@@ -29,11 +28,9 @@ void Luz::activar() {
             // glLightf(id,GL_QUADRATIC_ATTENUATION,0.5);
         }
 
-        // Definir y "dibujar" la posicion de la luz
         glLightfv(id,GL_POSITION,posicion);
     }
 
-    
-    // si la luz activada es la 0, dejamos sus valores por defecto
-    glEnable(id);           // activar fuente de luz "GL_LIGHTid"
+    if(interruptor) glEnable(id);           // activar fuente de luz "GL_LIGHTid"
+    else            glDisable(id);
 }

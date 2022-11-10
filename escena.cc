@@ -18,42 +18,50 @@ Escena::Escena()
 
     ejes.changeAxisSize( 5000 );
 
-   /*
+   
    //** objetos P1
-   //this->cubo = new Cubo(50.0);
-   this->piramide = new PiramidePentagonal(90.0,45.0);
+   this->cubo = new Cubo();
+   this->piramide = new PiramidePentagonal();
    //** objetos P2
-   this->lata = new Lata(20);
+   std::cout << "\nGenerando esfera...\n";
    this->esfera = new Esfera(20,20,40.0);
+   std::cout << "Generando peon... \n";
+   this->peon = new ObjRevolucion("./plys/peon",10);
+   std::cout << "Generando cono...\n";
    this->cono = new Cono(20,20,80.0,40.0);
-   this->objetoply = new ObjPLY("../../ideas/chopper");
-   this->cilindro = new Cilindro(10,10,80.0,40.0);
-   */
+   this->cono->setMaterial(Material());
+   std::cout << "Generando cilindro...\n";
+   this->cilindro = new Cilindro(10,10);
+   this->cilindro->setMaterial(Material());
+   // std::cout << "Generando lata... ";
+   // this->lata = new Lata(20);
+   // this->objetoply = new ObjPLY("../../ideas/chopper");
+  
    //*********** P3 ************
    //       control luces
    luz = false;
-   posicionLuz = {0.0f,0.0f,5.0f};   
-   ambiental   = { 0.7 , 0.6 , 1.0 , 1.0 };
-   difusa      = { 0.5 , 0.4 , 0.7 , 1.0 };
-   especular   = { 0.7 , 1.0 , 1.0 , 0.7 };
+   posicionLuz = {0.0f,0.0f,5.0f};
+   ambiental   = { 1.0 , 1.0 , 0.0 , 1.0 };
+   difusa      = { 1.0 , 1.0 , 0.0 , 1.0 };
+   especular   = { 1.0 , 1.0 , 0.0 , 1.0 };
    //       fuentes de luz
-   this->luzPosicional  = new LuzPosicional(posicionLuz, GL_LIGHT0, ambiental, especular, difusa);
-   this->luzDireccional = new LuzDireccional({0.0f,0.0f}, GL_LIGHT2, ambiental, especular, difusa);
-   this->luzPosicional1 = new LuzPosicional(posicionLuz, GL_LIGHT3, ambiental, especular, difusa);
+   this->luzEspectador  = new LuzPosicional(posicionLuz, GL_LIGHT0, ambiental, especular, difusa);
+   this->luzDireccional = new LuzDireccional({0.0f,0.0f}, GL_LIGHT1, ambiental, especular, difusa);
+   this->luzPosicional1 = new LuzPosicional(posicionLuz, GL_LIGHT2, {1.0,0.0,0.0,1.0}, {1.0,0.0,0.0,1.0}, {1.0,0.0,0.0,1.0});
    //       materiales
    this->defecto         = new Material();
    this->blanco_difuso   = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 0.0} , {1.0, 0.9, 0.9, 0.9}, 40.0);
    this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 40.0);
    //       objetos
-   this->esfera = new Esfera(20,20);
+   /* 
+   this->esfera = new Esfera(20,20,2);
    this->peonNegro = new ObjRevolucion("./plys/peon_inverso",20);
    this->peonBlanco = new ObjRevolucion("./plys/peon",30);
-   this->prueba = new Lata(20);
 
    this->esfera->setMaterial(*negro_especular);
-   this->prueba->setMaterial(*negro_especular);
    this->peonNegro->setMaterial(*negro_especular);
    this->peonBlanco->setMaterial(*blanco_difuso);
+   */
 
 }
 
@@ -65,12 +73,12 @@ Escena::Escena()
 
 void Escena::inicializar( int UI_window_width, int UI_window_height )
 {
-	// glClearColor( 1.0, 1.0, 1.0, 1.0 );// se indica cual sera el color para limpiar la ventana	(RGBA)
+	glClearColor( 1.0, 1.0, 1.0, 1.0 );// se indica cual sera el color para limpiar la ventana	(RGBA)
 
 	glEnable( GL_DEPTH_TEST );	// se habilita el z-bufer
 
-   // FLAGS INICIALES
-   // glEnable(CULL_FACE);
+   // **FLAGS INICIALES**
+   // glEnable(CULL_FACE); // comentado solo para pruebas
    glEnable(GL_NORMALIZE);
 
 	Width  = UI_window_width/10;
@@ -78,8 +86,6 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
 
    change_projection( float(UI_window_width)/float(UI_window_height) );
 	glViewport( 0, 0, UI_window_width, UI_window_height );
-   // luz que cambia con el espectador
-   luzPosicional->activar();
 }
 
 
@@ -94,51 +100,56 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
 void Escena::dibujar()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
+   // luz que cambia con el espectador
+   luzEspectador->activar(interruptor[0]);
 	change_observer();
+   ejes.draw();
 
    if(luz) glEnable(GL_LIGHTING);
    else    glDisable(GL_LIGHTING);
    
    
-   //P3 peones blanco y negro
+  /*  //P3 peones blanco y negro
    glPushMatrix();
-      ejes.draw();
+      if(alpha_l){
+         luzDireccional->variarAnguloAlpha(var_a);
+         var_a=0;
+      }
+      if(beta_l){
+         luzDireccional->variarAnguloBeta(var_b);
+         var_b=0;
+      }
+      luzDireccional->cambiarAngulo();
+      luzDireccional->activar(interruptor[2]);
+   glPopMatrix();
+   glPushMatrix();
       glScalef(escala,escala,escala);
-      luzPosicional1->activar();
+      luzPosicional1->activar(interruptor[1]);
       peonNegro->draw(activo,luz);
       glPushMatrix();
-         glTranslatef(-1,0,3);
+         glTranslatef(-3,0,0);
          peonBlanco->draw(activo,luz);
       glPopMatrix();
       // P3 esfera
       glPushMatrix();
-         glTranslatef(5.0,0.0,1.0);
-         // glScalef(30.0,30.0,30.0);
-         glPushMatrix();
-            if(alpha_l){
-               luzDireccional->variarAnguloAlpha(var_a);
-            }
-            if(beta_l){
-               luzDireccional->variarAnguloBeta(var_b);
-            } 
-            luzDireccional->cambiarAngulo();
-            luzDireccional->activar();
-         glPopMatrix();
+         glTranslatef(3,0,0);
          esfera->draw(activo,luz);
       glPopMatrix();
    glPopMatrix();
-  
+   */
 
    
 
 
-   /* glPushMatrix();
+   glPushMatrix();
       glTranslatef(-190,0,-150);
+      glScalef(30,30,30);
       cubo->draw(activo,luz);
    glPopMatrix();
 
    glPushMatrix();
       glTranslatef(-100,0,-150);
+      glScalef(30,30,30);
       piramide->draw(activo,luz);
    glPopMatrix();
 
@@ -150,7 +161,8 @@ void Escena::dibujar()
    glPopMatrix();
 
    glPushMatrix();
-      glTranslatef(0,-80,0);
+      glTranslatef(0,-90,0);
+      glScalef(40,40,40);
       cilindro->draw(activo,luz);
    glPopMatrix();
 
@@ -159,11 +171,11 @@ void Escena::dibujar()
    glPopMatrix();
 
    glPushMatrix();
-      glTranslatef(0,0,0);
+      glTranslatef(0,120,0);
       esfera->draw(activo,luz);
    glPopMatrix();
 
-   glPushMatrix();
+   /* glPushMatrix();
       glTranslatef(70,0,0);
       glScalef(70,70,70);
       lata->draw(activo,luz);
@@ -184,7 +196,6 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
    using namespace std ;
    cout << "Tecla pulsada: '" << tecla << "'" << endl;
    bool salir=false;
-   //bool apagar_luz=false;
 
    // OPCIONES MODO VISUALIZACION
    if ( modoMenu == SELVISUALIZACION || modoMenu == SELILUMINACION ) {
@@ -195,7 +206,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          alpha_l = beta_l = false;
          cout << "MENU PRINCIPAL\nV:seleccionar modo visualización\nQ:salir\n";
          break;
-      case 'C' :
+      case 'C' : // opcion para pruebas
          activo[CULL] = !activo[CULL];
          luz = false;
          break;
@@ -253,15 +264,20 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       break ;
    case 'V' :
       modoMenu=SELVISUALIZACION;
-      cout << "SELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nC:caras trasesras\nI:iluminacion\n";
+      cout << "SELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nC:caras trasesras\nI:iluminacion\n0-2:INTERRUPTORES\n";
       break ;
    default:
       break;
    }
 
-   // si iluminacion activa y (puntos ó lineas ó solido) están activos, apagar luz
-   //apagar_luz = activo[PUNTOS] | activo[LINEAS] | activo[SOLIDO];
-   //if (activo[SUAVE] && apagar_luz) activo[SUAVE] = 0;
+   if(modoMenu==SELILUMINACION)
+      for(int i = 0; i < interruptor.size(); i++){
+         if((tecla-'0')==i){
+            interruptor[i] = !interruptor[i];
+         }
+      }
+   
+
 
    return salir;
 }

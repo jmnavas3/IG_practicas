@@ -9,7 +9,7 @@ class Luz
 
     public:
 
-    void activar();
+    void activar(bool interruptor);
 
     protected:
 
