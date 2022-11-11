@@ -40,7 +40,6 @@ ObjRevolucion::ObjRevolucion(std::vector<Tupla3f> archivo, int num_instancias) {
 
 // *****************************************************************************
 // malla de revolución obtenida a partir de un perfil y un numero de instancias
-// nota: para los objetos cilindro, cono y esfera no se pasan los vertices
 // **                                               M                N
 void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias) {
    int n = num_instancias;
@@ -127,4 +126,18 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
    }
 
    genColor(0.3,0.6,1.0);
+}
+
+/**
+ * @brief Comprueba que no haya vértices repetidos en un perfil.
+ * Ejemplo: lata
+ * 
+ */
+void ObjRevolucion::repetidos() {
+   for(int i = 0; i< perfil.size()-1; i++){
+      if(perfil[i](X) == perfil[i+1](X) &&
+         perfil[i](Y) == perfil[i+1](Y) &&
+         perfil[i](Z) == perfil[i+1](Z))
+         perfil.erase(perfil.begin()+i+1);
+   }
 }

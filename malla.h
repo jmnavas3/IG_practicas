@@ -25,6 +25,7 @@ class Malla3D
 
    void draw(std::vector<bool> a, bool luz) ;
    void setMaterial (Material mat);
+   void genNormales();
 
 
    protected:
@@ -48,7 +49,6 @@ class Malla3D
    const float PI = 3.14159265f;
    const float EPSILON = 0.00001f;
    
-   void genNormales();
    void setBufferColor(GLuint id_c);
    void genColor(float r, float g, float b);
    GLuint CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram);

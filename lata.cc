@@ -13,6 +13,7 @@ Lata::Lata(const int num_instancias_perf)
     for(int i =0; i<cuerpo.size(); i++)
         perfil.push_back(cuerpo[i]);
 
+    repetidos();
 
     crearMalla(perfil,num_instancias_perf);
 }

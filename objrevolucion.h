@@ -29,8 +29,9 @@ public:
     ObjRevolucion(std::vector<Tupla3f> archivo, int num_instancias) ;
 protected:
     std::vector<Tupla3f> perfil;
-    void crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias);
     bool polo_n = false, polo_s = false;
+    void repetidos ();
+    void crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias);
 
 } ;
 

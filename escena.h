@@ -71,7 +71,6 @@ class Escena
 
   // P3
   //    objetos
-  Lata                 *prueba = nullptr;
   ObjRevolucion        *peonBlanco = nullptr;
   ObjRevolucion        *peonNegro  = nullptr;
   //    fuentes de luz
@@ -94,6 +93,7 @@ class Escena
   Escena();
 	void inicializar( int UI_window_width, int UI_window_height );
 	void redimensionar( int newWidth, int newHeight ) ;
+  void ScalefUniforme(GLfloat escalado);
 
 	// Dibujar
 	void dibujar() ;

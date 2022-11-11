@@ -33,8 +33,9 @@ Escena::Escena()
    std::cout << "\nGenerando cilindro...\n";
    this->cilindro = new Cilindro(10,10);
    this->cilindro->setMaterial(Material());
-   this->lata = new Lata(10);
    */
+   this->lata = new Lata(10);
+   lata->genNormales();
    //*********** P3 ************
    //       control luces
    luz = false;
@@ -51,16 +52,18 @@ Escena::Escena()
    this->blanco_difuso   = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 0.0} , {1.0, 0.9, 0.9, 0.9}, 40.0);
    this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 40.0);
    //       objetos
-   this->cilindro = new Cilindro(20,20,2);
    this->peonNegro = new ObjRevolucion("./plys/peon_inverso",20);
    this->peonBlanco = new ObjRevolucion("./plys/peon",30);
-   this->helicoptero = new ObjPLY("../../ideas/chopper");
-   this->caza = new ObjPLY("../../ideas/f16");
 
+   this->lata->setMaterial(*negro_especular);
    this->peonNegro->setMaterial(*negro_especular);
    this->peonBlanco->setMaterial(*blanco_difuso);
-   this->helicoptero->setMaterial(*negro_especular);
-   this->caza->setMaterial(*defecto);
+
+   //************ PROYECTO FINAL **************
+   // this->helicoptero = new ObjPLY("./plys/chopper");
+   // this->caza = new ObjPLY("./plys/f16");
+   // this->helicoptero->setMaterial(*negro_especular);
+   // this->caza->setMaterial(*blanco_difuso);
   
 
 }
@@ -122,15 +125,20 @@ void Escena::dibujar()
    
    //P3 peones blanco y negro
    glPushMatrix();
-      glScalef(escala,escala,escala);
+      ScalefUniforme(escala);
       peonNegro->draw(activo,luz);
       glPushMatrix();
          glTranslatef(-3,0,0);
          peonBlanco->draw(activo,luz);
       glPopMatrix();
+      glPushMatrix();
+         ScalefUniforme(4);
+         glTranslatef(1,0,0);
+         lata->draw(activo,luz);
+      glPopMatrix();
    glPopMatrix();
   
-   // ** objetos PROYECTO FINAL (chopper + f16)
+   /* // ** objetos PROYECTO FINAL (chopper + f16)
    glPushMatrix();
       glPushMatrix();
          glRotatef(180,0,1,0);
@@ -147,7 +155,7 @@ void Escena::dibujar()
          glTranslatef(0,-10,5);
          helicoptero->draw(activo,luz);   // chopper helicoptero
       glPopMatrix();
-   glPopMatrix();
+   glPopMatrix(); */
 
    /*
    glPushMatrix();
@@ -359,4 +367,8 @@ void Escena::change_observer()
    glTranslatef( 0.0, 0.0, -Observer_distance );
    glRotatef( Observer_angle_y, 0.0 ,1.0, 0.0 );
    glRotatef( Observer_angle_x, 1.0, 0.0, 0.0 );
+}
+
+void Escena::ScalefUniforme(GLfloat escalado){
+   glScalef(escalado,escalado,escalado);
 }
