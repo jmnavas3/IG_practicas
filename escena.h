@@ -28,7 +28,8 @@ class Escena
   // {PUNTOS,LINEAS,SOLIDO,CULL,TIPOILUMINACION}
   std::vector<bool> activo{0,0,1,1,0}; //iluminacion 0 --> GL_SMOOTH
   float var_a = 0.0f, var_b=0.0f;
-  float escala = 23.0f;
+  float escala = 30.0f;
+  float escala2 = 20;
    
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
        
@@ -59,8 +60,10 @@ class Escena
   PiramidePentagonal   *piramide= nullptr ;
   
   // P2
-  ObjPLY               *objetoply = nullptr;
+  ObjPLY               *helicoptero = nullptr;
+  ObjPLY               *caza = nullptr;
   ObjRevolucion        *peon = nullptr;
+  ObjRevolucion        *lata_inf = nullptr;
   Cilindro             *cilindro = nullptr;
   Cono                 *cono = nullptr;
   Esfera               *esfera = nullptr;

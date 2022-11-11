@@ -24,7 +24,7 @@
 class PiramidePentagonal: public Malla3D
 {
    public:
-      PiramidePentagonal(float h=1.0,float r=0.5);
+      PiramidePentagonal(float h=2.0,float r=1.0);
 
 } ;
 

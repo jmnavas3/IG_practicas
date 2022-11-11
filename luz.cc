@@ -1,10 +1,14 @@
 #include "luz.h"
 
+/**
+ * @brief Método que enciende/apaga la luz que lo invoca en función del parámetro.
+ * GL_LIGHT0 usa sus valores por defecto.
+ * 
+ * @param interruptor booleano para activar dicha luz
+ */
 void Luz::activar(bool interruptor) {
 
-    // Cap.6, Color, Pág.138. RedBook OpenGL: "if u want realistic effect, set GL_SPECULAR = GL_DIFFUSE"
-    // si la luz activada es la 0, dejamos sus valores por defecto
-    if(id != GL_LIGHT0){
+    if(interruptor && id != GL_LIGHT0){
         glLightfv(id,GL_AMBIENT,colorAmbiente);
         glLightfv(id,GL_SPECULAR,colorEspecular);
         glLightfv(id,GL_DIFFUSE,colorDifuso);
@@ -31,6 +35,6 @@ void Luz::activar(bool interruptor) {
         glLightfv(id,GL_POSITION,posicion);
     }
 
-    if(interruptor) glEnable(id);           // activar fuente de luz "GL_LIGHTid"
+    if(interruptor) glEnable(id);
     else            glDisable(id);
 }

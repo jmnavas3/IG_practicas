@@ -18,25 +18,23 @@ Escena::Escena()
 
     ejes.changeAxisSize( 5000 );
 
-   
+  /*  
    //** objetos P1
    this->cubo = new Cubo();
    this->piramide = new PiramidePentagonal();
    //** objetos P2
    std::cout << "\nGenerando esfera...\n";
-   this->esfera = new Esfera(20,20,40.0);
-   std::cout << "Generando peon... \n";
+   this->esfera = new Esfera(20,20);
+   std::cout << "\nGenerando peon... \n";
    this->peon = new ObjRevolucion("./plys/peon",10);
-   std::cout << "Generando cono...\n";
-   this->cono = new Cono(20,20,80.0,40.0);
+   std::cout << "\nGenerando cono...\n";
+   this->cono = new Cono(20,20);
    this->cono->setMaterial(Material());
-   std::cout << "Generando cilindro...\n";
+   std::cout << "\nGenerando cilindro...\n";
    this->cilindro = new Cilindro(10,10);
    this->cilindro->setMaterial(Material());
-   // std::cout << "Generando lata... ";
-   // this->lata = new Lata(20);
-   // this->objetoply = new ObjPLY("../../ideas/chopper");
-  
+   this->lata = new Lata(10);
+   */
    //*********** P3 ************
    //       control luces
    luz = false;
@@ -53,15 +51,17 @@ Escena::Escena()
    this->blanco_difuso   = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 0.0} , {1.0, 0.9, 0.9, 0.9}, 40.0);
    this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 40.0);
    //       objetos
-   /* 
-   this->esfera = new Esfera(20,20,2);
+   this->cilindro = new Cilindro(20,20,2);
    this->peonNegro = new ObjRevolucion("./plys/peon_inverso",20);
    this->peonBlanco = new ObjRevolucion("./plys/peon",30);
+   this->helicoptero = new ObjPLY("../../ideas/chopper");
+   this->caza = new ObjPLY("../../ideas/f16");
 
-   this->esfera->setMaterial(*negro_especular);
    this->peonNegro->setMaterial(*negro_especular);
    this->peonBlanco->setMaterial(*blanco_difuso);
-   */
+   this->helicoptero->setMaterial(*negro_especular);
+   this->caza->setMaterial(*defecto);
+  
 
 }
 
@@ -109,77 +109,88 @@ void Escena::dibujar()
    else    glDisable(GL_LIGHTING);
    
    
-  /*  //P3 peones blanco y negro
-   glPushMatrix();
-      if(alpha_l){
-         luzDireccional->variarAnguloAlpha(var_a);
-         var_a=0;
-      }
-      if(beta_l){
-         luzDireccional->variarAnguloBeta(var_b);
-         var_b=0;
-      }
-      luzDireccional->cambiarAngulo();
-      luzDireccional->activar(interruptor[2]);
-   glPopMatrix();
+   if(alpha_l){
+      luzDireccional->variarAnguloAlpha(var_a);
+      var_a=0;
+   }
+   if(beta_l){
+      luzDireccional->variarAnguloBeta(var_b);
+      var_b=0;
+   }
+   luzDireccional->activar(interruptor[2]);
+   luzPosicional1->activar(interruptor[1]);
+   
+   //P3 peones blanco y negro
    glPushMatrix();
       glScalef(escala,escala,escala);
-      luzPosicional1->activar(interruptor[1]);
       peonNegro->draw(activo,luz);
       glPushMatrix();
          glTranslatef(-3,0,0);
          peonBlanco->draw(activo,luz);
       glPopMatrix();
-      // P3 esfera
+   glPopMatrix();
+  
+   // ** objetos PROYECTO FINAL (chopper + f16)
+   glPushMatrix();
       glPushMatrix();
-         glTranslatef(3,0,0);
-         esfera->draw(activo,luz);
+         glRotatef(180,0,1,0);
+         glScalef(15,15,15);
+         glTranslatef(-10,8,0);
+         caza->draw(activo,luz);  // f16 caza
+      glPopMatrix();
+      glPushMatrix();
+         // OJO: no tiene ningún punto centrado en el origen, aunque está muy cerca (cuidado con rotate)
+         glTranslatef(20,50,0);
+         glRotatef(90,0,1,0);
+         glRotatef(-90,1,0,0);
+         // lo trasladamos al eje X para poder aplicar rotacion
+         glTranslatef(0,-10,5);
+         helicoptero->draw(activo,luz);   // chopper helicoptero
       glPopMatrix();
    glPopMatrix();
+
+   /*
+   glPushMatrix();
+      glScalef(escala2,escala2,escala2);
+      // ** objetos practica 1
+      glPushMatrix();
+         glTranslatef(-3,2,0);
+         cubo->draw(activo,luz);
+      glPopMatrix();
+
+      glPushMatrix();
+         glTranslatef(-3,0,0);
+         piramide->draw(activo,luz);
+      glPopMatrix();
+
+      // ** objetos practica 2
+      glPushMatrix();
+         glTranslatef(3,3.5,0);
+         peon->draw(activo,luz);
+      glPopMatrix();
+
+      glPushMatrix();
+         glTranslatef(3,0,0);
+         cilindro->draw(activo,luz);
+      glPopMatrix();
+
+      glPushMatrix();
+         glTranslatef(3,-2,0);
+         cono->draw(activo,luz);
+      glPopMatrix();
+
+      glPushMatrix();
+         glTranslatef(3,-3,0);
+         esfera->draw(activo,luz);
+      glPopMatrix();
+
+      // glPushMatrix();
+         // glScalef(10,10,10);
+         // glTranslatef(6,0,0);
+         // lata->draw(activo,luz);
+      // glPopMatrix();
+   glPopMatrix();
    */
-
-   
-
-
-   glPushMatrix();
-      glTranslatef(-190,0,-150);
-      glScalef(30,30,30);
-      cubo->draw(activo,luz);
-   glPopMatrix();
-
-   glPushMatrix();
-      glTranslatef(-100,0,-150);
-      glScalef(30,30,30);
-      piramide->draw(activo,luz);
-   glPopMatrix();
-
-   // ** objetos practica 2
-   glPushMatrix();
-      glTranslatef(-70,0,-80);
-      glScalef(30,30,30);
-      peon->draw(activo,luz);   //peón
-   glPopMatrix();
-
-   glPushMatrix();
-      glTranslatef(0,-90,0);
-      glScalef(40,40,40);
-      cilindro->draw(activo,luz);
-   glPopMatrix();
-
-   glPushMatrix();
-      cono->draw(activo,luz);
-   glPopMatrix();
-
-   glPushMatrix();
-      glTranslatef(0,120,0);
-      esfera->draw(activo,luz);
-   glPopMatrix();
-
-   /* glPushMatrix();
-      glTranslatef(70,0,0);
-      glScalef(70,70,70);
-      lata->draw(activo,luz);
-   glPopMatrix(); */
 }
 
 
@@ -241,15 +252,15 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          break;
       case '>':
          if(modoMenu==SELILUMINACION && alpha_l)
-            var_a=4;
+            var_a=0.5;
          if(modoMenu==SELILUMINACION && beta_l)
-            var_b=4;
+            var_b=0.5;
          break;
       case '<':
          if(modoMenu==SELILUMINACION && alpha_l)
-            var_a= -4;
+            var_a= -0.5;
          if(modoMenu==SELILUMINACION && beta_l)
-            var_b= -4;
+            var_b= -0.5;
          break;
       default :
          break;

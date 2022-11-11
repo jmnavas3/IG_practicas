@@ -6,7 +6,9 @@ LuzDireccional::LuzDireccional (const Tupla2f & orientacion,
                               Tupla4f colorEspecular,
                               Tupla4f colorDifuso)
 {
-    this->posicion = Tupla4f(orientacion(0), orientacion(1), 1.0, 0.0);
+    alpha = orientacion(0);
+    beta = orientacion(1);
+    coordenadas();
     this->id = idLuz;
     this->colorAmbiente = colorAmbiente;
     this->colorEspecular = colorEspecular;
@@ -15,16 +17,24 @@ LuzDireccional::LuzDireccional (const Tupla2f & orientacion,
 
 void LuzDireccional::variarAnguloAlpha (float incremento) {
     alpha += incremento;
-    // glRotatef(alpha,0.0,1.0,0.0);
+    coordenadas();
 }
 
 void LuzDireccional::variarAnguloBeta (float incremento) {
     beta += incremento;
-    // glRotatef(beta,1.0,0.0,0.0);
+    coordenadas();
 }
 
-void LuzDireccional::cambiarAngulo () {
-        // glLoadIdentity();
-        glRotatef(alpha,0.0,1.0,0.0);
-        glRotatef(beta,1.0,0.0,0.0);
+
+/**
+ * @brief Obtiene las coordenadas esféricas a partir de alpha y beta y
+ * actualiza la posicion de la luz direccional cada vez que se varía
+ * alguno de los dos ángulos
+ * 
+ */
+void LuzDireccional::coordenadas(){
+    x = cos(alpha)*sin(beta);
+    y = sin(alpha);
+    z = cos(alpha)*cos(beta);
+    this->posicion = {x,y,z,0.0};
 }

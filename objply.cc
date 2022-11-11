@@ -13,7 +13,7 @@ ObjPLY::ObjPLY( const std::string & nombre_archivo )
    // leer la lista de caras y vértices
    ply::read( nombre_archivo, this->v, this->f );
    genColor(1.0,0.0,0.0);
-   // genNormales();
+   genNormales();
    // ply::read_vertices( nombre_archivo, this->v, this->f );
 }
 

@@ -9,7 +9,9 @@ class LuzDireccional : public Luz
     protected:
         float alpha;
         float beta;
-
+        float x,y,z;
+        
+        void coordenadas();
 
     public:
         LuzDireccional(const Tupla2f & orientacion,
@@ -20,7 +22,6 @@ class LuzDireccional : public Luz
 
         void variarAnguloAlpha (float incremento) ;
         void variarAnguloBeta (float incremento) ;
-        void cambiarAngulo();
 };
 
 #endif
