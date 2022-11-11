@@ -27,7 +27,6 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
    // temporal
    if(a[CULL]) glEnable(GL_CULL_FACE);
    else glDisable(GL_CULL_FACE);
-   // glEnableClientState(GL_COLOR_ARRAY);
    
    if(id_vbo_v != 0){
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_v);
@@ -83,9 +82,9 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
    
    
    // Desactivamos uso de arrays
-   glDisableClientState(GL_COLOR_ARRAY);
    glDisableClientState(GL_VERTEX_ARRAY);
    if(luz) glDisableClientState(GL_NORMAL_ARRAY);
+   else glDisableClientState(GL_COLOR_ARRAY);
 
 }
 
@@ -109,8 +108,6 @@ GLuint Malla3D::CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram)
 
 void Malla3D::setBufferColor(GLuint id_c){
    if(id_c != 0){
-      // Habilita array de colores 
-         // glEnableClientState(GL_COLOR_ARRAY);
       // Activamos buffer de colores con su id
          glBindBuffer(GL_ARRAY_BUFFER, id_c);
       // Usar como buffer de colores el actualmente activo
@@ -175,17 +172,16 @@ void Malla3D::genNormales(){
       va = v[q] - v[p];
       vb = v[r] - v[p];
       pvectorial = va.cross(vb);
-      if(pvectorial.lengthSq()>0.0)
-         nCaras.push_back(pvectorial.normalized());
+      nCaras.push_back(pvectorial.normalized());
 
       // suma del vector normal obtenido a cada uno de los vertices del triangulo
       nv[p] = nv[p] + nCaras.back();
       nv[q] = nv[q] + nCaras.back();
       nv[r] = nv[r] + nCaras.back();
    }
-   std::cout << "\n----------------------\n";
 
    // obtencion de tabla de normales de vértices
    for (int i = 0; i < nv.size(); i++)
       nv[i] = nv[i].normalized();
+
 }

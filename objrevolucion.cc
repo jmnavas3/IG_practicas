@@ -44,7 +44,7 @@ ObjRevolucion::ObjRevolucion(std::vector<Tupla3f> archivo, int num_instancias) {
 // **                                               M                N
 void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias) {
    int n = num_instancias;
-   int m;
+   int m = perfil_original.size();
    int v_tam;
    float angulo = (2*PI)/(float)n;
    Tupla3f p_norte, p_sur, tupla;
@@ -62,16 +62,13 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       std::cout << "perfil ordenado ascendentemente...\n";
    }
 
-   std::cout << "vértice inferior (X,Z) =" << fabs(perfil_original[0](0)) << "," << perfil_original[0](0);
-   std::cout << "\nvértice superior (X,Z)=" << fabs(perfil_original.back()(X)) << "," << perfil_original.back()(Z);
-
    // comrobar existencia de tapas
    if(fabs(perfil_original[0](X)) < EPSILON &&
       fabs(perfil_original[0](Z)) < EPSILON){
       tapa_inf = 1;
       p_sur = perfil_original.front();
       perfil_original.erase(perfil_original.begin());
-      std::cout << "\nTAPA INFERIOR DETECTADA";
+      std::cout << "\nquitando tapa inferior...\n";
    }
 
    if(fabs(perfil_original.back()(X)) < EPSILON &&
@@ -80,7 +77,7 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       tapa_sup = 1;
       p_norte = perfil_original[perfil_original.size()-1];
       perfil_original.pop_back();
-      std::cout << "\nTAPA SUPERIOR DETECTADA";
+      std::cout << "\nquitando tapa superior...\n";
    }
 
    m = perfil_original.size();
@@ -99,16 +96,16 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
 
    // creación de caras
    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m-1; j++) {
-         a = m*i+j;
-         b = m*((i+1)%n)+j;
+      for (int j = 0; j < m-1; j++) {        // m-1: ignorar ultimo vertice de cada instancia
+         a = m*i+j;                          // primer vertice de instancia actual
+         b = m*((i+1)%n)+j;                  // primer vertice de instancia siguiente
          f.push_back({a,b,b+1});
          f.push_back({a,b+1,a+1});
       }
    }
 
 
-   // creación de las caras de las tapas
+   // caras del polo sur (tapa inferior)
    if(tapa_inf){
       v.push_back(p_sur);
       v_tam = v.size()-1;
@@ -118,14 +115,14 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
                        v_tam} );             // polo sur
       }
    }
-
+   // caras del polo norte (tapa superior)
    if(tapa_sup){
       v.push_back(p_norte);
       v_tam = v.size()-1;
       for(int i = 0; i < n; i++){
-         a = m*(i+1)-1;
-         b = m*((i+1)%n)+m-1;
-         f.push_back({a,b,v_tam});
+         a = m*(i+1)-1;                      // último vertice de instancia actual
+         b = m*((i+1)%n)+m-1;                // último vertice de instancia siguiente
+         f.push_back({a,b,v_tam});           // polo norte
       }
    }
 

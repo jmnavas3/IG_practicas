@@ -8,9 +8,7 @@
 class Lata : public ObjRevolucion
 {
     private:
-    std::vector<Tupla3f> superior;
     std::vector<Tupla3f> cuerpo;
-    std::vector<Tupla3f> inferior;
 
     public:
     Lata ( const int num_instancias_perf );
