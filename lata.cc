@@ -16,4 +16,5 @@ Lata::Lata(const int num_instancias_perf)
     repetidos();
 
     crearMalla(perfil,num_instancias_perf);
+    genNormales();
 }

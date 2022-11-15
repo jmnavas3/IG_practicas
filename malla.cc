@@ -23,10 +23,6 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
    }
    if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
 
-
-   // temporal
-   if(a[CULL]) glEnable(GL_CULL_FACE);
-   else glDisable(GL_CULL_FACE);
    
    if(id_vbo_v != 0){
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_v);
@@ -49,6 +45,7 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);
 
    if (luz) {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
    }
    else {
@@ -74,7 +71,6 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
          glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT,0);
       }
 
-      // glDisableClientState(GL_COLOR_ARRAY);
    }
 
    // Desactivamos buffer de índices
@@ -88,9 +84,15 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
 
 }
 
-// -----------------------------------------------------------------------------
-// Función de creación de VBO
 
+/**
+ * @brief Creación de VBO (Vertex Buffer Object)
+ * 
+ * @param tipo_vbo ARRAY_BUFFER | ELEMENT_ARRAY_BUFFER
+ * @param tam tamaño del buffer
+ * @param puntero_ram a los datos del buffer
+ * @return id_vbo::GLuint 
+ */
 GLuint Malla3D::CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram)
 {
    GLuint id_vbo;
@@ -98,7 +100,6 @@ GLuint Malla3D::CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram)
    glGenBuffers(1, &id_vbo);
    // activamos el vbo con su id
    glBindBuffer(tipo_vbo, id_vbo);
-
    // transferencia de datos desde ram a gpu
    glBufferData(tipo_vbo, tam, puntero_ram, GL_STATIC_DRAW);
    // desactivamos el vbo (activar a 0)
@@ -106,6 +107,12 @@ GLuint Malla3D::CrearVBO(GLuint tipo_vbo, GLuint tam, GLvoid * puntero_ram)
    return id_vbo;
 }
 
+
+/**
+ * @brief Indica el buffer que hay que usar para colorear
+ * 
+ * @param id_c id del vbo de colores que queramos usar
+ */
 void Malla3D::setBufferColor(GLuint id_c){
    if(id_c != 0){
       // Activamos buffer de colores con su id
@@ -117,9 +124,14 @@ void Malla3D::setBufferColor(GLuint id_c){
    }
 }
 
-// -----------------------------------------------------------------------------
-// Redimensiona las tablas de colores en caso de no estar redimensionadas y les asigna diferentes valores a cada una
 
+/**
+ * @brief Redimensiona las tablas de colores y asigna una combinación de colores diferentes a cada una
+ * 
+ * @param r rojo (red)
+ * @param g verde (green)
+ * @param b azul (blue)
+ */
 void Malla3D::genColor(float r, float g, float b){
    if (cl.size()!=3){
       int n_vert = v.size();
@@ -136,14 +148,21 @@ void Malla3D::genColor(float r, float g, float b){
    }
 }
 
-// -----------------------------------------------------------------------------
-// Modificador del material de cada malla
+
+/**
+ * @brief Asigna el material pasado por parámetro a una Malla3D
+ * 
+ * @param mat material que se va a asignar a la malla
+ */
 void Malla3D::setMaterial (Material mat) {
    m = mat;
 }
 
-// -----------------------------------------------------------------------------
-// Función de generación de normales de las caras
+
+/**
+ * @brief Calcula los vectores normales de los vértices de la malla en O(n)
+ * 
+ */
 void Malla3D::genNormales(){
    Tupla3f va;
    Tupla3f vb;
@@ -154,8 +173,6 @@ void Malla3D::genNormales(){
 
    nv.resize(v.size());
 
-   // nota: no es necesario puesto que todas las tuplas se inicializan a 0
-   // nv = std::vector<Tupla3f>(v.size(),Tupla3f(0.0f,0.0f,0.0f));
 
    // El vector normal a un vertice se define como la normalización de la suma de todos los vectores normales de los triángulos adyacentes a dicho vértice.
    // Para cada triángulo ó cara de la tabla de caras (f), guardamos los índices de sus vértices en 'p', 'q' y 'r' y calculamos la normal a dicho triangulo.

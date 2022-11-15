@@ -31,7 +31,7 @@ class Malla3D
    protected:
 
    // material para los objetos con iluminacion
-   Material m;
+   Material m = Material();
 
    // tablas de datos para las mallas
    std::vector<Tupla3f> nv;               // tabla de normales de vértices

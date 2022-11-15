@@ -12,7 +12,7 @@
 
 // variable que contiene un puntero a la escena
 Escena *escena = nullptr ;
-
+int Luz::nluces = 0;
 
 //***************************************************************************
 // Funcion principal que redibuja la escena

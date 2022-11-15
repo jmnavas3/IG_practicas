@@ -13,6 +13,7 @@ LuzDireccional::LuzDireccional (const Tupla2f & orientacion,
     this->colorAmbiente = colorAmbiente;
     this->colorEspecular = colorEspecular;
     this->colorDifuso = colorDifuso;
+    nluces++;
 }
 
 void LuzDireccional::variarAnguloAlpha (float incremento) {

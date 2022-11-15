@@ -10,10 +10,11 @@ class Luz
     public:
 
     void activar(bool interruptor);
+    static int nluces;          // inicializado en practicas.cc
 
     protected:
 
-    Tupla4f posicion;           // vector de 4 coordenadas, la 4ª indica si la luz es direccional (0) o posicional (!0)
+    Tupla4f posicion;           // vector de 4 coordenadas, la 4ª indica si la luz es direccional (0) o posicional (1)
     GLenum id;                  // "interruptores": GL_LIGHTi
     Tupla4f colorAmbiente;      // valor defecto: (0.0f, 0.0f, 0.0f, 1.0f) 
     Tupla4f colorDifuso;

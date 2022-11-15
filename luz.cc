@@ -2,19 +2,15 @@
 
 /**
  * @brief Método que enciende/apaga la luz que lo invoca en función del parámetro.
- * GL_LIGHT0 usa sus valores por defecto.
+ * GL_LIGHT7 tiene propiedades de foco (spotlight).
  * 
  * @param interruptor booleano para activar dicha luz
  */
 void Luz::activar(bool interruptor) {
 
-    if(interruptor && id != GL_LIGHT0){
-        glLightfv(id,GL_AMBIENT,colorAmbiente);
-        glLightfv(id,GL_SPECULAR,colorEspecular);
-        glLightfv(id,GL_DIFFUSE,colorDifuso);
-
-        // GL_LIGHT4 (spotlight)
-        if(id == GL_LIGHT4){
+    if(interruptor){
+        // GL_LIGHT7 (spotlight)
+        if(id == GL_LIGHT7){
             // SPOT_CUTOFF: define el doble del angulo pasado por parametro,
             // por defecto, es 180(maximo) (2*180=360º), así, ilumina toda la escena. No poner en Direccionales
             glLightf(id,GL_SPOT_CUTOFF,45.0);
@@ -32,9 +28,11 @@ void Luz::activar(bool interruptor) {
             // glLightf(id,GL_QUADRATIC_ATTENUATION,0.5);
         }
 
+        glLightfv(id,GL_AMBIENT,colorAmbiente);
+        glLightfv(id,GL_SPECULAR,colorEspecular);
+        glLightfv(id,GL_DIFFUSE,colorDifuso);
         glLightfv(id,GL_POSITION,posicion);
+        glEnable(id);
     }
-
-    if(interruptor) glEnable(id);
-    else            glDisable(id);
+    else glDisable(id);
 }

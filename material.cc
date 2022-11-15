@@ -1,22 +1,20 @@
 #include "material.h"
 
-//** Para este archivo se ha usado la herramienta: Doxygen Documentation Generator
-
 /**
  * @brief Constructor por defecto
  * 
  */
 Material::Material() {
-    difuso = amb_dif_defecto;
-    especular = esp_defecto;
-    ambiente = amb_dif_defecto;
-    brillo = brillo_defecto;
+    difuso    = {0.1, 0.5, 0.8, 1.0};
+    especular = {1.0, 0.5, 0.7, 1.0};
+    ambiente  = {0.0, 0.0, 0.2, 1.0};
+    brillo    = 35;
 }
 
 /**
  * @brief Constructor de copia
  * 
- * @param m 
+ * @param m material existente
  */
 Material::Material (const Material &m) {
     *this = m;
@@ -65,10 +63,9 @@ Material::Material ( Tupla4f mdifuso,
 void Material::aplicar () {
 
     glMaterialfv(GL_FRONT,GL_SPECULAR,especular);
-    // glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, amb_dif_defecto);
     glMaterialfv(GL_FRONT,GL_AMBIENT,ambiente);
     glMaterialfv(GL_FRONT,GL_DIFFUSE,difuso);
-
+    // glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, amb_dif_defecto);
 
     glMaterialf(GL_FRONT,GL_SHININESS,brillo);
 }

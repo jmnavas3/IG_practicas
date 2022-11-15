@@ -11,4 +11,5 @@ LuzPosicional::LuzPosicional (const Tupla3f & posicion,
     this->colorAmbiente = colorAmbiente;
     this->colorEspecular = colorEspecular;
     this->colorDifuso = colorDifuso;
+    nluces++;
 }
