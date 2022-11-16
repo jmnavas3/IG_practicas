@@ -26,17 +26,19 @@ Escena::Escena()
    objetos[CONO] = new Cono(20,20);
    objetos[CILINDRO] = new Cilindro(10,10);
    objetos[LATA] = new Lata(20);
+   objetos[HORMIGA] = new ObjPLY("./plys/ant");
    //*********** P3 ************
    //       control luces
    luz = false;
    alpha_l = beta_l = false;
    posicionLuz = { 0.0 , 20  , 0.0 };
-   ambiental   = { 1.0 , 1.0 , 1.0 , 1.0 };
-   difusa      = { 1.0 , 0.0 , 1.0 , 1.0 };
-   especular   = { 1.0 , 0.0 , 1.0 , 1.0 };
+   direccionLuz= { 0.0 , 0.0 };
+   ambiental   = { 0.3 , 0.0 , 0.4 , 1.0 };
+   especular   = { 1.0 , 0.7 , 1.0 , 1.0 };
+   difusa      = { 0.7 , 0.0 , 0.7 , 1.0 };
    //       fuentes de luz
-   this->luzDefecto     = new LuzDireccional({Observer_angle_x,Observer_angle_y}, GL_LIGHT0, {1,1,1,1}, {1,1,1,1}, {1,1,1,1});
-   this->luzPosicional1 = new LuzPosicional(posicionLuz, GL_LIGHT1, {1.0,0.0,0.0,1.0}, {1.0,0.0,0.0,1.0}, {1.0,0.0,0.0,1.0});
+   this->luzDefecto     = new LuzDireccional(direccionLuz, GL_LIGHT0, {1,1,1,1}, {1,1,1,1}, {1,1,1,1});
+   this->luzPosicional1 = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
    //       materiales
    this->blanco_difuso   = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 0.0} , {0.3, 0.3, 0.3, 1.0}, 40.0);
    this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 80.0);
@@ -127,7 +129,13 @@ void Escena::dibujar()
       var_b=0;
    }
    
+   // Definir transformación de vista
 	change_observer();
+
+   glPushMatrix();                           // C := M (copia de M en C)
+      glLoadIdentity();                      // M := Identidad
+      luzDefecto->activar(interruptor[0]);   // luz direccional fijada a la cámara
+   glPopMatrix();                            // restaurar transformaciones de la cámara
 
    if(luz){
    glPushMatrix();
@@ -150,10 +158,10 @@ void Escena::dibujar()
       //P3 peones blanco y negro
       ScalefUniforme(escala);
       glTranslatef(3,0,1);
-      objetos[PEONN]->draw(activo,luz);
+      objetos[PEONB]->draw(activo,luz);
       glPushMatrix();
          glTranslatef(0,0,-2);
-         objetos[PEONB]->draw(activo,luz);
+         objetos[PEONN]->draw(activo,luz);
       glPopMatrix();
    glPopMatrix();
   
@@ -180,6 +188,12 @@ void Escena::dibujar()
          ScalefUniforme(3);
          objetos[LATA]->draw(activo,luz);
       glPopMatrix();
+
+      glPushMatrix();
+         glTranslatef(0,0,-15);
+         ScalefUniforme(0.3);
+         objetos[HORMIGA]->draw(activo,luz);
+      glPopMatrix();      
    glPopMatrix();
 
    glPushMatrix();
@@ -234,12 +248,15 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
    cout << "Tecla pulsada: '" << tecla << "'" << endl;
    bool salir=false;
 
-   // OPCIONES MODO VISUALIZACION
+   // OPCIONES MODO VISUALIZACION (Leeme.txt para ver funcionamiento)
    if ( modoMenu == SELVISUALIZACION || modoMenu == SELILUMINACION ) {
       switch ( toupper(tecla) )
       {
       case 'Q' :
          modoMenu = NADA;
+         if(alpha_l || beta_l){
+            cout << "\nEstado angulo: sin seleccionar\n";
+         }
          alpha_l = beta_l = false;
          cout << "MENU PRINCIPAL\nV:seleccionar modo visualización\nQ:salir\n";
          break;
@@ -267,12 +284,14 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          if(modoMenu==SELILUMINACION){
             alpha_l = true;
             beta_l = false;
+            cout << "\nEstado angulo: ALPHA\n < : Decrementar ángulo\n > : Incrementar ángulo \n";
          }
          break;
       case 'B':
          if(modoMenu==SELILUMINACION){
             alpha_l = false;
             beta_l = true;
+            cout << "\nEstado angulo: BETA\n < : Decrementar ángulo\n > : Incrementar ángulo \n";
          }
          break;
       case '>':
@@ -300,8 +319,8 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       break ;
    case 'V' :
       modoMenu=SELVISUALIZACION;
-      cout << "SELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nI:iluminacion" <<
-            " 0-" << Luz::nluces <<  ":INTERRUPTORES\n";
+      cout << "SELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nI:activar iluminacion plana/suave\n" <<
+            " 0-" << Luz::nluces <<  ":apagar/encender luz\nA:seleccionar ALPHA\nB:seleccionar BETA\n";
       break ;
    default:
       break;
@@ -382,7 +401,7 @@ void Escena::change_observer()
    // posicion del observador
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   luzDefecto->activar(interruptor[0]);
+   //luzDefecto->activar(interruptor[0]);
    glTranslatef( 0.0, 0.0, -Observer_distance );
    glRotatef( Observer_angle_y, 0.0 ,1.0, 0.0 );
    glRotatef( Observer_angle_x, 1.0, 0.0, 0.0 );

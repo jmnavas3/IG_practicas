@@ -1,31 +1,79 @@
-Práctica 2 - Informática Gráfica. Curso 22/23
+//###########################################
+
+Práctica 3 - Informática Gráfica. Curso 22/23.
 UGR - Ing.Informática
 José María Navas Cabrera
+16/11/2022
+
+//###########################################
+    CLASES, MÉTODOS Y VARIABLES ADICIONALES
+
+1. Inicialización en archivo "practicas.cc" de variable estática de la clase Luz "static int nluces" para contador de luces.
+2. Se han añadido nuevos métodos a la clase Escena:
+ · Destructor para el array de objetos y todos los creados con la palabra reservada 'new' para evitar fugas de memoria
+ · Métodos que se llaman desde el destructor: eliminarLuces, eliminarObjetos.
+ · ScalefUniforme: Aplica un escalado en todos los ejes, salvo 0.
+3. Clase lata con constructor: Dentro de este, se leen los perfiles de la parte superior, inferior y cuerpo y se
+   juntan en un mismo perfil que después invoca al método crearMalla().
+4. Método adicional para la clase ObjRevolucion:
+ · repetidos(): comprueba que no haya vértices repetidos en un perfil, en caso de que haya, elimina uno de los dos.
+                Esto es usado en la clase Lata creada para obtener los perfiles de todos los PLY de la lata y unirlos en un solo perfil.
+5. Enumerados en archivos:
+ · "malla.h":  Facilita la comprensión de los flags de Escena correspondientes a las Mallas3D.
+ · "escena.h" (enum Mallas): Junto al array de punteros a objetos, se ha hecho esta enumeración de los objetos que se usa en el constructor de escena
+                             y a la hora de dibujar dichos objetos.
+6. Luz::activar(): para la última luz, se añaden atributos adicionales que hacen de dicha luz un foco (spotlight)
+
+7. Para esta práctica se han inicializado dos luces, una direccional fijada a la y otra posicional
+8. Cuando se incrementa o decrementa un ángulo, el valor por defecto es (+/-)0.5
+
+//###########################################
 
 Instrucciones de ejecución:
 
 - Compilar y ejecutar desde terminal:
 $ make
 
-- SALIR DEL PROGRAMA:
+- Salir del programa:
 pulsar tecla 'q' desde menú principal
 
-- ACTIVAR/DESACTIVAR CULL FACE:
-pulsar tecla 'c'
-
-### MODO VISUALIZACIÓN
-- ENTRAR a modo de VISUALIZACIÓN desde menú principal:
+- Entrar a modo de visualización desde menú principal:
 pulsar tecla 'v'
 
-- DIBUJAR en modo SÓLIDO (por defecto):
-pulsar tecla 's'
 
-- DIBUJAR en modo ALAMBRE/LÍNEAS:
-pulsar tecla 'l'
+# OPCIONES DESDE MODO VISUALIZACIÓN
 
-- DIBUJAR en modo PUNTOS:
-pulsar tecla 'd'
-
-- SALIR de modo de VISUALIZACIÓN:
+- Salir de modo de visualización:
 pulsar tecla 'q'
 
+- Activar/Desactivar modo SÓLIDO (opción por defecto):
+pulsar tecla 's'
+
+- Activar/Desactivar modo ALAMBRE/LÍNEAS:
+pulsar tecla 'l'
+
+- Activar/Desactivar modo PUNTOS:
+pulsar tecla 'p'
+
+- Activar Iluminación + Alternar modo PLANO y SUAVE:
+pulsar tecla 'i'
+
+- Desactivar Iluminación:
+pulsar tecla 's' , 'l'  ó  'p'
+
+# OPCIONES CON ILUMINACIÓN ACTIVA
+
+- Activar/Desactivar fuente de luz:
+pulsar número de la luz que desea activar de entre las que ofrece el menú
+
+- Seleccionar ángulo ALFA (Eje Y):
+pulsar tecla 'a'
+
+- Seleccionar ángulo BETA (Eje X):
+pulsar tecla 'b'
+
+- Decrementar ángulo seleccionado:
+pulsar tecla '<'
+
+- Incrementar ángulo seleccionado:
+(depende del teclado) pulsar tecla '>' (SHIFT+'<')

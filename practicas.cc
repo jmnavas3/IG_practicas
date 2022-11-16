@@ -12,6 +12,8 @@
 
 // variable que contiene un puntero a la escena
 Escena *escena = nullptr ;
+
+// atributo estático de la clase Luz
 int Luz::nluces = 0;
 
 //***************************************************************************

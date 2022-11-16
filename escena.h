@@ -23,7 +23,7 @@ enum mallas {
   //P1
   CUBO, PIRAMIDE,
   //P2
-  ESFERA, CONO, CILINDRO, LATA,
+  ESFERA, CONO, CILINDRO, LATA, HORMIGA,
   //P3
   PEONN, PEONB,
   //Tamaño
@@ -57,14 +57,15 @@ class Escena
   float var_b = 0.0f;
   bool alpha_l, beta_l;
   // inicialización de las luces
+  Tupla2f direccionLuz;
   Tupla3f posicionLuz;
   Tupla4f ambiental, difusa, especular;
   // escalados uniformes para varios objetos
   float escala = 30;
   float escala2 = 20;
   // flags pasados al método draw de Malla3D
-    // {PUNTOS, LINEAS , SOLIDO , CULL , TIPOILUMINACION} 1 --> GL_FLAT
-  std::vector<bool> activo{0,0,1,1,0}; //TIPOILUMINACION  0 --> GL_SMOOTH
+    // {PUNTOS, LINEAS , SOLIDO , SOMBRA}     1 --> GL_FLAT
+  std::vector<bool> activo{0,0,1,0}; //SOMBRA 0 --> GL_SMOOTH
 
   //  array de objetos
   Malla3D **objetos = new Malla3D*[TAM];

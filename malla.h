@@ -18,7 +18,7 @@
 //
 // *****************************************************************************
 
-enum {PUNTOS, LINEAS, SOLIDO, CULL, SOMBRA};
+enum {PUNTOS, LINEAS, SOLIDO, SOMBRA};
 class Malla3D
 {
    public:

@@ -16,11 +16,21 @@ LuzDireccional::LuzDireccional (const Tupla2f & orientacion,
     nluces++;
 }
 
+/**
+ * @brief Rotación en torno al eje Y (longitud)
+ * 
+ * @param incremento en grados del eje Y
+ */
 void LuzDireccional::variarAnguloAlpha (float incremento) {
     alpha += incremento;
     coordenadas();
 }
 
+/**
+ * @brief Rotación en torno al eje X (latitud)
+ * 
+ * @param incremento en grados del eje X
+ */
 void LuzDireccional::variarAnguloBeta (float incremento) {
     beta += incremento;
     coordenadas();
@@ -34,8 +44,8 @@ void LuzDireccional::variarAnguloBeta (float incremento) {
  * 
  */
 void LuzDireccional::coordenadas(){
-    x = cos(alpha)*sin(beta);
-    y = sin(alpha);
+    x = sin(alpha)*cos(beta);
+    y = sin(beta);
     z = cos(alpha)*cos(beta);
     this->posicion = {x,y,z,0.0};
 }
