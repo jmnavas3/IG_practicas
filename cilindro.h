@@ -9,7 +9,7 @@ class Cilindro : public ObjRevolucion
     public:
     Cilindro ( const int num_vert_perfil ,
                const int num_instancias_perf ,
-               const float altura=2 ,
+               const float altura=1 ,
                const float radio=1 );
 } ;
 

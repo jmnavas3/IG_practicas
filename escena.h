@@ -16,6 +16,10 @@
 #include "luz.h"
 #include "luzDireccional.h"
 #include "luzPosicional.h"
+// modelo jerarquico
+//#include "modeloJerarquico.h"
+#include "textura.h"
+#include "cuadro.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION, SELILUMINACION} menu;
 
@@ -26,6 +30,8 @@ enum mallas {
   ESFERA, CONO, CILINDRO, LATA, HORMIGA,
   //P3
   PEONN, PEONB,
+  //PROYECTO
+  CHOPPER, CAZA,
   //Tamaño
   TAM
 };
@@ -48,6 +54,8 @@ class Escena
   GLfloat Width, Height, Front_plane, Back_plane;
   
  // ** PARÁMETROS DE LA ESCENA
+  // animacion automatica
+  bool automatica=true;
   // "luz general"
   bool luz;
   // "interruptores" 0..7
@@ -56,6 +64,7 @@ class Escena
   float var_a = 0.0f;
   float var_b = 0.0f;
   bool alpha_l, beta_l;
+  float rot_idle = 0.0f, rot1 = 0.0f, rot2=0.0f;
   // inicialización de las luces
   Tupla2f direccionLuz;
   Tupla3f posicionLuz;
@@ -96,6 +105,7 @@ class Escena
 	void inicializar( int UI_window_width, int UI_window_height );
 	void redimensionar( int newWidth, int newHeight ) ;
   void ScalefUniforme(GLfloat escalado); // nuevo
+  void animarModeloJerarquico();
 
 	// Dibujar
 	void dibujar() ;

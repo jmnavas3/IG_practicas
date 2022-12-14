@@ -27,11 +27,13 @@ public:
     ObjRevolucion();
     ObjRevolucion(const std::string & archivo, int num_instancias);
     ObjRevolucion(std::vector<Tupla3f> archivo, int num_instancias) ;
+    ~ObjRevolucion();
 protected:
     std::vector<Tupla3f> perfil;
     bool polo_n = false, polo_s = false;
     void repetidos ();
     void crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias);
+    void crearTextura();
 
 } ;
 

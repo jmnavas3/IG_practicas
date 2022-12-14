@@ -16,14 +16,18 @@
 
 void Malla3D::draw(std::vector<bool> a, bool luz)
 {
+
+   // creacion de buffers
    if(id_vbo_v == 0) id_vbo_v   = CrearVBO(GL_ARRAY_BUFFER, sizeof(v[0]) * v.size(), v.data() );
    if(id_vbo_f == 0) id_vbo_f   = CrearVBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(f[0]) * f.size(), f.data());
+   if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
+   if(t!=nullptr && id_vbo_ct == 0) id_vbo_ct = CrearVBO(GL_ARRAY_BUFFER, sizeof(ct[0]) * ct.size(), ct.data() );
    for ( int i=0; i<3; i++ ) {
       if(id_vbos_c[i] == 0)id_vbos_c[i] = CrearVBO(GL_ARRAY_BUFFER, cl[i].size()*sizeof(cl[i][0]), cl[i].data());
    }
-   if(id_vbo_nv == 0) id_vbo_nv = CrearVBO(GL_ARRAY_BUFFER, sizeof(nv[0]) * nv.size(), nv.data() );
 
-   
+
+   // vertices
    if(id_vbo_v != 0){
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_v);
       glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -31,6 +35,7 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
       glEnableClientState(GL_VERTEX_ARRAY);
    }
    
+   // luz y normales
    if(luz && id_vbo_nv != 0){
       m.aplicar();
       if (a[SOMBRA]) glShadeModel(GL_FLAT);
@@ -41,21 +46,32 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
       glEnableClientState(GL_NORMAL_ARRAY);
    }
 
-   // Activamos buffer VBO de índices
+   // texturas
+   if(t != nullptr){
+      t->activar();
+      glBindBuffer(GL_ARRAY_BUFFER,id_vbo_ct);
+      glTexCoordPointer(2, GL_FLOAT, 0, 0);
+      glBindBuffer(GL_ARRAY_BUFFER,0);
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+   }
+
+   // índices de caras
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_vbo_f);
 
+   // modos de visualizacion
    if (luz) {
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
    }
    else {
-      //MODOS DE VISUALIZACIÓN SIN ILUMINACIÓN
+      // color
       glEnableClientState(GL_COLOR_ARRAY);
       if(a[SOLIDO]){
          glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
          setBufferColor(id_vbos_c[SOLIDO]);
          glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
       }
+
       
       if(a[LINEAS]){
          glLineWidth(1.5);
@@ -71,7 +87,9 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
          glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT,0);
       }
 
+
    }
+   
 
    // Desactivamos buffer de índices
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
@@ -81,8 +99,14 @@ void Malla3D::draw(std::vector<bool> a, bool luz)
    glDisableClientState(GL_VERTEX_ARRAY);
    if(luz) glDisableClientState(GL_NORMAL_ARRAY);
    else glDisableClientState(GL_COLOR_ARRAY);
+   
+   if(t!=nullptr){
+      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+      glDisable(GL_TEXTURE_2D);
+   }
 
 }
+
 
 
 /**
@@ -140,6 +164,12 @@ void Malla3D::genColor(float r, float g, float b){
       cl[1].resize(n_vert);   // líneas
       cl[2].resize(n_vert);   // sólido
       
+      if(t!=nullptr){
+         r=1;
+         g=1;
+         b=1;
+      }
+      
       for(int j=0; j<n_vert; j++){
          cl[2][j] = {r,g,b};
          cl[1][j] = {b,r,g};
@@ -162,22 +192,19 @@ void Malla3D::setMaterial (Material mat) {
 /**
  * @brief Calcula los vectores normales de los vértices de la malla en O(n)
  * 
+ * @param perfil defecto -1, si se pasa como argumento, se tiene en cuenta las texturas
  */
-void Malla3D::genNormales(){
+void Malla3D::genNormales(int perfil){
    Tupla3f va;
    Tupla3f vb;
    Tupla3f pvectorial;
    std::vector<Tupla3f> nCaras;
    int p,q,r;
    
-
-   nv.resize(v.size());
-
-
-   // El vector normal a un vertice se define como la normalización de la suma de todos los vectores normales de los triángulos adyacentes a dicho vértice.
-   // Para cada triángulo ó cara de la tabla de caras (f), guardamos los índices de sus vértices en 'p', 'q' y 'r' y calculamos la normal a dicho triangulo.
-   // Seguidamente, sumamos dicha normal a la posición correspondiente a cada uno de los vértices del triángulo dentro de la tabla de normales de vertices.
-   // Tras recorrer todos los triángulos, se habrá obtenido para cada vértice su vector perpendicular, sólo quedaría normalizar cada perpendicular.
+   if(perfil == -1) nv.resize(v.size());
+   else{
+      nv.resize(v.size()-perfil); // quitamos los últimos M vertices de la N+1 instancia (instancia extra)
+   }
 
    for(int i = 0; i < f.size(); i++){
       // indice de vertices del triangulo i-esimo
@@ -201,4 +228,5 @@ void Malla3D::genNormales(){
    for (int i = 0; i < nv.size(); i++)
       nv[i] = nv[i].normalized();
 
+   std::cout << nv.size() << " normales\n";
 }

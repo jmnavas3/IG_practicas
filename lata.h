@@ -12,6 +12,7 @@ class Lata : public ObjRevolucion
 
     public:
     Lata ( const int num_instancias_perf );
+    ~Lata();
 } ;
 
 #endif

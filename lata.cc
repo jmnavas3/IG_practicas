@@ -15,6 +15,14 @@ Lata::Lata(const int num_instancias_perf)
 
     repetidos();
 
+    t = new Textura("./p5/text-lata-1.jpg");
+    std::cout << "vertices perfil original " << perfil.size() << "\n"; 
     crearMalla(perfil,num_instancias_perf);
     genNormales();
+}
+
+Lata::~Lata(){
+    if(t != nullptr) delete t;
+    t = nullptr;
+    std::cout << "objeto destruido\n";
 }

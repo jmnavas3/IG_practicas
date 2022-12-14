@@ -19,19 +19,23 @@ Escena::Escena()
     ejes.changeAxisSize( 5000 );
    
    //*********** P1 ************
-   objetos[CUBO] = new Cubo();
+/*    objetos[CUBO] = new Cubo();
    objetos[PIRAMIDE] = new PiramidePentagonal();
    //*********** P2 ************
    objetos[ESFERA] = new Esfera(20,20);   
    objetos[CONO] = new Cono(20,20);
    objetos[CILINDRO] = new Cilindro(10,10);
-   objetos[LATA] = new Lata(20);
-   objetos[HORMIGA] = new ObjPLY("./plys/ant");
+   this->objetos[LATA] = new Lata(20);
+   this->objetos[HORMIGA] = new ObjPLY("./plys/ant");
+*/
    //*********** P3 ************
+   //       objetos
+ //  this->objetos[PEONN] = new ObjRevolucion("./plys/peon_inverso",20);
+ //  this->objetos[PEONB] = new ObjRevolucion("./plys/peon",30);
    //       control luces
    luz = false;
    alpha_l = beta_l = false;
-   posicionLuz = { 0.0 , 20  , 0.0 };
+   posicionLuz = { 0.0 , 10.0  , 0.0 };
    direccionLuz= { 0.0 , 0.0 };
    ambiental   = { 0.3 , 0.0 , 0.4 , 1.0 };
    especular   = { 1.0 , 0.7 , 1.0 , 1.0 };
@@ -41,14 +45,27 @@ Escena::Escena()
    this->luzPosicional1 = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
    //       materiales
    this->blanco_difuso   = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 0.0} , {0.3, 0.3, 0.3, 1.0}, 40.0);
-   this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 80.0);
-   //       objetos
-   objetos[PEONN] = new ObjRevolucion("./plys/peon_inverso",20);
-   objetos[PEONB] = new ObjRevolucion("./plys/peon",30);
-   objetos[PEONN]->setMaterial(*negro_especular);
-   objetos[PEONB]->setMaterial(*blanco_difuso);
+   this->negro_especular = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 1.0, 1.0} , {1, 1, 1, 1.0}, 40.0);
+   //this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 80.0);
    // nota: los objetos a los que no se les ha asignado ningún material, ya tienen uno por defecto
-   /* //************ PROYECTO FINAL **************
+   //************ PROYECTO FINAL **************
+   // Proyecto Final
+   this->objetos[LATA] = new Lata(10);
+   this->objetos[CUBO] = new Esfera(20,20);
+   this->objetos[LATA]->setMaterial(*blanco_difuso);
+   /* this->objetos[CONO] = new Cono(20,20,1,0.5);
+   this->objetos[PIRAMIDE] = new PiramidePentagonal(1,0.5);
+   this->objetos[CILINDRO] = new Cilindro(20,20,1,0.5);
+   this->objetos[ESFERA] = new Esfera(20,20,0.5);
+   this->objetos[CHOPPER] = new ObjPLY("./plys/chopper");
+   this->objetos[CAZA] = new ObjPLY("./plys/f16");
+   this->objetos[CHOPPER]->setMaterial(*negro_especular);
+   this->objetos[CAZA]->setMaterial(*blanco_difuso);
+   this->objetos[PEONN]->setMaterial(*negro_especular);
+   this->objetos[PEONB]->setMaterial(*blanco_difuso); */
+
+   
+   /*
    // P1
    this->cubo = new Cubo();
    this->piramide = new PiramidePentagonal();
@@ -68,15 +85,25 @@ Escena::Escena()
    this->lata->setMaterial(*negro_especular);
    this->peonNegro->setMaterial(*negro_especular);
    this->peonBlanco->setMaterial(*blanco_difuso);
-   // Proyecto Final
-   this->helicoptero = new ObjPLY("./plys/chopper");
-   this->caza = new ObjPLY("./plys/f16");
-   this->helicoptero->setMaterial(*negro_especular);
-   this->caza->setMaterial(*blanco_difuso);
    */
   
 
 }
+
+/**
+ * @brief Invoca a los diferentes métodos que alteran los valores
+ * de rotación o traslación del modelo jerárquico.
+ * 
+ * Escena no debe conocer ni cómo se llaman esos atributos ni su
+ * velocidad
+ */
+void Escena::animarModeloJerarquico(){
+   //if( automatica )
+      //modeloJerarquico->animar();
+   //rot_idle+=0.1;
+   //rot1+=0.2;
+}
+
 
 //**************************************************************************
 // inicialización de la escena (se ejecuta cuando ya se ha creado la ventana, por
@@ -99,6 +126,7 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
 
    change_projection( float(UI_window_width)/float(UI_window_height) );
 	glViewport( 0, 0, UI_window_width, UI_window_height );
+
 }
 
 
@@ -132,28 +160,173 @@ void Escena::dibujar()
    // Definir transformación de vista
 	change_observer();
 
+   // Fijar luz a la cámara
    glPushMatrix();                           // C := M (copia de M en C)
       glLoadIdentity();                      // M := Identidad
       luzDefecto->activar(interruptor[0]);   // luz direccional fijada a la cámara
    glPopMatrix();                            // restaurar transformaciones de la cámara
 
    if(luz){
-   glPushMatrix();
-      glDisable(GL_LIGHTING);
-      ejes.draw();
-      glEnable(GL_LIGHTING);
-   glPopMatrix();
-      // glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambiental);
-      // glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-      // glEnable(GL_COLOR_MATERIAL);
-      // ejes.draw();
-      // glDisable(GL_COLOR_MATERIAL);
+         glDisable(GL_LIGHTING);
+         ejes.draw();
+         glEnable(GL_LIGHTING);
    }else
       ejes.draw();
    
-
-   
    luzPosicional1->activar(interruptor[1]);
+
+/*
+  // poligonos unidad
+  if(!automatica){
+  glPushMatrix();
+   ScalefUniforme(20);
+   glRotatef(rot_idle,1,0,0);
+   glPushMatrix();
+      objetos[CUBO]->draw(activo,luz);
+      glTranslatef(0,-1,0);
+      objetos[CILINDRO]->draw(activo,luz);
+      glTranslatef(0,-1,0);
+      objetos[PIRAMIDE]->draw(activo,luz);
+      glTranslatef(0,-1,0);
+      objetos[CONO]->draw(activo,luz);
+      glTranslatef(0,-1,0);
+      objetos[ESFERA]->draw(activo,luz);
+   glPopMatrix();
+  glPopMatrix();
+  }
+  
+  if(!automatica){
+  glPushMatrix();
+   ScalefUniforme(20);
+   glRotatef(rot1,0,1,0);
+   glPushMatrix();
+         glTranslatef(0,2,0);
+         glScalef(0.5,2,0.5);
+         objetos[CILINDRO]->draw(activo,luz);
+   glPopMatrix();
+   glPushMatrix();
+      glRotatef(rot_idle,0,1,0);
+      glPushMatrix();
+         glScalef(0.5,2,0.5);
+         objetos[CILINDRO]->draw(activo,luz);
+      glPopMatrix();
+      glRotatef(90,0,0,1); // al rotar a la derecha en z, el principio del cubo coincide con el radio del cilindro de rotacion (cubo.lado=2,cilindro.radio=1)2+1=3
+      glTranslatef(1,-2.5,0); // lo ponemos por debajo de Y=0 sumando el radio del cilindro rotatorio + la altura del cubo
+      glPushMatrix();
+         glScalef(0.5,2,0.5);
+         objetos[CUBO]->draw(activo,luz); // base en el origen
+      glPopMatrix();
+      glPushMatrix();
+         glTranslatef(0,-1,0);
+         objetos[CILINDRO]->draw(activo,luz); // altura = 1, r=1
+         glTranslatef(0,-1,0);
+         glScalef(2,1,2);                     // altura = 2, r=2
+         objetos[CONO]->draw(activo,luz);
+      glPopMatrix();
+   glPopMatrix();
+  glPopMatrix();
+   }
+
+   if(automatica){
+   // ** objetos PROYECTO FINAL (chopper + f16)
+      // cuerpo helicoptero
+   glPushMatrix();
+      // glRotatef(-rot_idle,0,1,0);
+      glPushMatrix();
+         // cuerpo
+         glTranslatef(0,-15,0);
+         ScalefUniforme(20);
+         glRotatef(-15, 0, 0, 1);
+         glScalef(3,2,2);
+         objetos[ESFERA]->draw(activo,luz);
+      glPopMatrix();
+      glPushMatrix();
+         glScalef(15,10,5);
+         objetos[CILINDRO]->draw(activo,luz);
+      glPopMatrix();
+         // cola
+         glTranslatef(-20,-5,0);
+         glRotatef(90,0,0,1);
+         glScalef(10,70,10);
+         objetos[CONO]->draw(activo,luz);
+         glPushMatrix();
+            glTranslatef(0,1,0);
+            glScalef(0.5,1,0.5);
+            objetos[CUBO]->draw(activo,luz);
+         glPopMatrix();
+   glPopMatrix();
+      // ROTOR PRINCIPAL
+   glPushMatrix();
+      ScalefUniforme(8);
+      glPushMatrix();
+         glRotatef(rot_idle, 0, 1, 0);
+         glPushMatrix();
+            glTranslatef(0,1,0);
+            glScalef(0.25,1,0.25);
+            objetos[CILINDRO]->draw(activo,luz);
+         glPopMatrix();
+         glPushMatrix();
+            glTranslatef(0,2,0);
+            glPushMatrix();
+               glScalef(1,0.5,1);
+               objetos[CILINDRO]->draw(activo,luz);
+            glPopMatrix();
+            // hélice_dcha
+            glPushMatrix();
+               glRotatef(180,0,1,0);
+               glTranslatef(-1,0.125,0);
+               ScalefUniforme(0.25);
+               objetos[CUBO]->draw(activo,luz);
+               glPushMatrix();
+                  glTranslatef(-25.25,0.25,0);
+                  glScalef(50,0.1,6);
+                  objetos[CUBO]->draw(activo,luz);
+               glPopMatrix();
+            glPopMatrix();
+            // hélice_izda
+            glPushMatrix();
+               glTranslatef(-1,0.125,0);
+               ScalefUniforme(0.25);
+               objetos[CUBO]->draw(activo,luz); // union de la pala con la base
+               glPushMatrix();
+                  glTranslatef(-25.25,0.25,0);
+                  glScalef(50,0.1,6);
+                  objetos[CUBO]->draw(activo,luz);
+               glPopMatrix();
+            glPopMatrix();
+         glPopMatrix();
+      glPopMatrix();
+   glPopMatrix();
+   }
+   glPushMatrix();
+      glTranslatef(-30,90,-10);
+      glPushMatrix();
+         glRotatef(180,0,1,0);
+         ScalefUniforme(10);
+         glTranslatef(-10,10,0);
+         objetos[CAZA]->draw(activo,luz);  // f16 caza
+      glPopMatrix();
+      glPushMatrix();
+         // OJO: no tiene ningún punto centrado en el origen, aunque está muy cerca (cuidado con rotate)
+         glTranslatef(80,0,0);
+         glRotatef(90,0,1,0);
+         glRotatef(-90,1,0,0);
+         // lo trasladamos al eje X para poder aplicar rotacion
+         //glTranslatef(0,-10,5);
+         objetos[CHOPPER]->draw(activo,luz);   // chopper helicoptero
+      glPopMatrix();
+   glPopMatrix();
+*/   
+
+   glPushMatrix();
+      ScalefUniforme(60);
+      glTranslatef(-1,0,0);
+      objetos[LATA]->draw(activo,luz);
+       glTranslatef(2,0,0);
+      objetos[CUBO]->draw(activo,luz);
+   glPopMatrix();
+
+   if(!automatica){
    glPushMatrix();
       //P3 peones blanco y negro
       ScalefUniforme(escala);
@@ -204,33 +377,13 @@ void Escena::dibujar()
          glTranslatef(0,0,1);
          objetos[CUBO]->draw(activo,luz);
       glPopMatrix();
-
       glPushMatrix();
          glTranslatef(0,0,-1);
          objetos[PIRAMIDE]->draw(activo,luz);
       glPopMatrix();
    glPopMatrix();
-   
-   /* // ** objetos PROYECTO FINAL (chopper + f16)
-   glPushMatrix();
-      glTranslatef(-30,70,0);
-      glPushMatrix();
-         glRotatef(180,0,1,0);
-         ScalefUniforme(10);
-         glTranslatef(-10,10,0);
-         caza->draw(activo,luz);  // f16 caza
-      glPopMatrix();
-      glPushMatrix();
-         // OJO: no tiene ningún punto centrado en el origen, aunque está muy cerca (cuidado con rotate)
-         glTranslatef(20,50,0);
-         glRotatef(90,0,1,0);
-         glRotatef(-90,1,0,0);
-         // lo trasladamos al eje X para poder aplicar rotacion
-         glTranslatef(0,-10,5);
-         helicoptero->draw(activo,luz);   // chopper helicoptero
-      glPopMatrix();
-   glPopMatrix();
-    */
+   }
+
 }
 
 

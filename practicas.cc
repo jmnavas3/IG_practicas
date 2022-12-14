@@ -89,6 +89,17 @@ void special_keys( int tecla, int x, int y )
 	glutPostRedisplay();
 }
 
+/**
+ * @brief Función llamada cuando el gestor de eventos está libre
+ * 
+ * Se encarga de animar la escena
+ */
+void funcion_idle(){
+   if(escena!=NULL)
+      escena->animarModeloJerarquico();
+   glutPostRedisplay();
+}
+
 //***************************************************************************
 // Programa principal
 //
@@ -138,6 +149,9 @@ int main( int argc, char **argv )
 
    // asignación de la funcion llamada "tecla_Especial" al evento correspondiente
    glutSpecialFunc( special_keys );
+
+   // asignación de la función llamada "funcion_idle" al evento correspondiente
+   //glutIdleFunc( funcion_idle );
 
    // inicialización de librería GLEW (solo en Linux)
    #ifdef LINUX
