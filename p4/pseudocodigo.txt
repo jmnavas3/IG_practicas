@@ -1,0 +1,94 @@
+
+//          MODELO JERARQUICO						   nivel 0
+
+class Helicoptero {
+    Estructura *estructura = nullptr; // estructura del helicoptero
+    R_principal     *rotor = nullptr; // rotor principal
+    Gancho         *gancho = nullptr; // gancho que baja y sube
+};
+
+//---------------------------------------------------- nivel -1
+//          INSTANCIAS DE HELICOPTERO
+
+class Estructura {
+    Cuerpo   *cuerpo = nullptr; // cuerpo del helicoptero
+    Cola       *cola = nullptr; // cola y roto de cola
+    Patines *patines = nullptr; // patines de aterrizaje (son 2)
+};
+
+class R_principal {
+	int velocidad_helices; // velocidad del rotor principal
+    Rotor *rotor = nullptr;
+};
+
+class Gancho {
+	int velocidadSubeBaja; // velocidad de escalado (?)
+
+	Cilindro *c = nullptr;
+};
+
+
+//----------------------------------------------------
+//---------------------------------------------------- nivel -2
+//          INSTANCIAS DE ESTRUCTURA
+
+class Cuerpo {
+	
+	// nivel -3 --> hemos llegado a las figuras básicas
+
+	Esfera *esf = nullptr; // cabina
+	Cilindro *c = nullptr; // parte pegada al rotor principal
+};
+
+class Cola {
+	
+	Cono *cono = nullptr; // cola alargada nivel -3
+
+	Aletas *al = nullptr; // parte pegada al rotor de la cola
+	R_cola *rc = nullptr; // rotor de cola
+};
+
+class Patines {
+	Patin *pizq = nullptr; // patin izquierdo
+	Patin *pder = nullptr; // patin derecho
+};
+ç
+
+//          INSTANCIA DE R_principal y R_cola
+
+class Rotor {
+	Cilindro *c1 = nullptr; // estructura de rotor
+	Cilindro *c2 = nullptr; // estructura de rotor
+	Cubo 	*cub = nullptr; // unión de helices con rotor
+	Cubo  *palas = nullptr; // helices
+};
+
+//----------------------------------------------------
+//----------------------------------------------------
+//---------------------------------------------------- nivel -3
+//          INSTANCIA DE PATINES
+
+class Patin { //compuesto de 3 cilindros
+	
+	//	nivel -4 --> hemos llegado a las figuras básicas
+
+	Cilindro *c1 = nullptr;	// cilindro más cercano a la cola
+	Cilindro *c2 = nullptr; // cilindro más cercano al morro
+	Cilindro *cb = nullptr; // cilindro de base
+};
+
+//          INSTANCIAS DE COLA
+
+class Aletas {
+	
+	// nivel -4 --> hemos llegado a las figuras básicas
+
+	Cubo *sup = nullptr; // aleta superior
+	Cubo *inf = nullptr; // aleta inferior
+}
+
+
+class R_cola {
+	int velocidad_cola; 	// velocidad del rotor de la cola
+	Rotor *cola = nullptr;
+}

@@ -201,7 +201,7 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
  * 
  */
 void ObjRevolucion::repetidos() {
-   for(int i = 0; i< perfil.size()-1; i++){
+   for(int i = 0; i< (int)perfil.size()-1; i++){
       if(perfil[i](X) == perfil[i+1](X) &&
          perfil[i](Y) == perfil[i+1](Y) &&
          perfil[i](Z) == perfil[i+1](Z))

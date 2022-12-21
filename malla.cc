@@ -206,7 +206,7 @@ void Malla3D::genNormales(int perfil){
       nv.resize(v.size()-perfil); // quitamos los últimos M vertices de la N+1 instancia (instancia extra)
    }
 
-   for(int i = 0; i < f.size(); i++){
+   for(int i = 0; i < (int)f.size(); i++){
       // indice de vertices del triangulo i-esimo
       p = f[i](X);
       q = f[i](Y);
@@ -225,7 +225,7 @@ void Malla3D::genNormales(int perfil){
    }
 
    // obtencion de tabla de normales de vértices
-   for (int i = 0; i < nv.size(); i++)
+   for (int i = 0; i < (int)nv.size(); i++)
       nv[i] = nv[i].normalized();
 
    std::cout << nv.size() << " normales\n";

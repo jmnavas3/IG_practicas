@@ -24,7 +24,7 @@ class Malla3D
 {
    public:
 
-   void draw(std::vector<bool> a, bool luz) ;
+   void draw(std::vector<bool> a, bool luz=false) ;
    void setMaterial (Material mat);
    void genNormales(int perfil=-1);
    // textura para los objetos

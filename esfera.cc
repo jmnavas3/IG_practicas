@@ -14,7 +14,7 @@ Esfera::Esfera ( const int num_vert_perfil ,
     perfil[0](X)=0.0f;
     perfil[num_vert_perfil-1] = {0.0f,radio,0.0f};
 
-    t = new Textura("./p5/earth.jpg");
+    //t = new Textura("./p5/earth.jpg");
     crearMalla(perfil,num_instancias_perf);
     if(t!=nullptr) genNormales();
     else genNormales();

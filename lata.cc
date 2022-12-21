@@ -6,16 +6,16 @@ Lata::Lata(const int num_instancias_perf)
     perfil.pop_back();
 
     ply::read_vertices("./plys/lata-pcue",cuerpo);
-    for(int i =0; i<cuerpo.size(); i++)
+    for(int i =0; i < (int)cuerpo.size(); i++)
         perfil.push_back(cuerpo[i]);
 
     ply::read_vertices("./plys/lata-psup",cuerpo);
-    for(int i =0; i<cuerpo.size(); i++)
+    for(int i =0; i < (int)cuerpo.size(); i++)
         perfil.push_back(cuerpo[i]);
 
     repetidos();
 
-    t = new Textura("./p5/text-lata-1.jpg");
+    // t = new Textura("./p5/text-lata-1.jpg");
     std::cout << "vertices perfil original " << perfil.size() << "\n"; 
     crearMalla(perfil,num_instancias_perf);
     genNormales();
@@ -24,5 +24,5 @@ Lata::Lata(const int num_instancias_perf)
 Lata::~Lata(){
     if(t != nullptr) delete t;
     t = nullptr;
-    std::cout << "objeto destruido\n";
+    std::cout << "lata destruida\n";
 }

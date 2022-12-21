@@ -19,19 +19,19 @@ Escena::Escena()
     ejes.changeAxisSize( 5000 );
    
    //*********** P1 ************
-/*    objetos[CUBO] = new Cubo();
+   objetos[CUBO] = new Cubo();
    objetos[PIRAMIDE] = new PiramidePentagonal();
    //*********** P2 ************
    objetos[ESFERA] = new Esfera(20,20);   
    objetos[CONO] = new Cono(20,20);
    objetos[CILINDRO] = new Cilindro(10,10);
-   this->objetos[LATA] = new Lata(20);
+   this->objetos[LATA] = new Lata(10);
    this->objetos[HORMIGA] = new ObjPLY("./plys/ant");
-*/
+
    //*********** P3 ************
    //       objetos
- //  this->objetos[PEONN] = new ObjRevolucion("./plys/peon_inverso",20);
- //  this->objetos[PEONB] = new ObjRevolucion("./plys/peon",30);
+   this->objetos[PEONN] = new ObjRevolucion("./plys/peon_inverso",20);
+   this->objetos[PEONB] = new ObjRevolucion("./plys/peon",30);
    //       control luces
    luz = false;
    alpha_l = beta_l = false;
@@ -45,63 +45,23 @@ Escena::Escena()
    this->luzPosicional1 = new LuzPosicional(posicionLuz, GL_LIGHT1, ambiental, especular, difusa);
    //       materiales
    this->blanco_difuso   = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 0.0} , {0.3, 0.3, 0.3, 1.0}, 40.0);
-   this->negro_especular = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 1.0, 1.0} , {1, 1, 1, 1.0}, 40.0);
-   //this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 80.0);
-   // nota: los objetos a los que no se les ha asignado ningún material, ya tienen uno por defecto
+   //this->negro_especular = new Material({1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 1.0, 1.0} , {1, 1, 1, 1.0}, 40.0);
+   this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 80.0);
+   
    //************ PROYECTO FINAL **************
-   // Proyecto Final
-   this->objetos[LATA] = new Lata(10);
-   this->objetos[CUBO] = new Esfera(20,20);
-   this->objetos[LATA]->setMaterial(*blanco_difuso);
+   this->modelo = new Helicoptero();
    /* this->objetos[CONO] = new Cono(20,20,1,0.5);
    this->objetos[PIRAMIDE] = new PiramidePentagonal(1,0.5);
    this->objetos[CILINDRO] = new Cilindro(20,20,1,0.5);
    this->objetos[ESFERA] = new Esfera(20,20,0.5);
    this->objetos[CHOPPER] = new ObjPLY("./plys/chopper");
    this->objetos[CAZA] = new ObjPLY("./plys/f16");
-   this->objetos[CHOPPER]->setMaterial(*negro_especular);
-   this->objetos[CAZA]->setMaterial(*blanco_difuso);
-   this->objetos[PEONN]->setMaterial(*negro_especular);
-   this->objetos[PEONB]->setMaterial(*blanco_difuso); */
-
-   
-   /*
-   // P1
-   this->cubo = new Cubo();
-   this->piramide = new PiramidePentagonal();
-   // P2
-   this->esfera = new Esfera(20,20);
-   this->cono = new Cono(20,20);
-   this->cilindro = new Cilindro(10,10);
-   this->lata = new Lata(20);
-   // P3
-   this->luzPosicional2  = new LuzPosicional(posicionLuz, GL_LIGHT2, ambiental, especular, difusa);
-   this->luzDireccional = new LuzDireccional({0.0f,0.0f}, GL_LIGHT3, ambiental, especular, difusa);
-   this->peonNegro = new ObjRevolucion("./plys/peon_inverso",20);
-   this->peonBlanco = new ObjRevolucion("./plys/peon",30);
-   this->esfera->setMaterial(Material());
-   this->cono->setMaterial(Material());
-   this->cilindro->setMaterial(Material());
-   this->lata->setMaterial(*negro_especular);
-   this->peonNegro->setMaterial(*negro_especular);
-   this->peonBlanco->setMaterial(*blanco_difuso);
    */
-  
+   this->objetos[ESFERA]->setMaterial(*negro_especular);
+   this->objetos[LATA]->setMaterial(*blanco_difuso);
+   this->objetos[PEONN]->setMaterial(*negro_especular);
+   this->objetos[PEONB]->setMaterial(*blanco_difuso);
 
-}
-
-/**
- * @brief Invoca a los diferentes métodos que alteran los valores
- * de rotación o traslación del modelo jerárquico.
- * 
- * Escena no debe conocer ni cómo se llaman esos atributos ni su
- * velocidad
- */
-void Escena::animarModeloJerarquico(){
-   //if( automatica )
-      //modeloJerarquico->animar();
-   //rot_idle+=0.1;
-   //rot1+=0.2;
 }
 
 
@@ -175,61 +135,12 @@ void Escena::dibujar()
    
    luzPosicional1->activar(interruptor[1]);
 
+   // MODELO JERARQUICO
+   this->modelo->draw(activo,luz);
 /*
-  // poligonos unidad
-  if(!automatica){
-  glPushMatrix();
-   ScalefUniforme(20);
-   glRotatef(rot_idle,1,0,0);
-   glPushMatrix();
-      objetos[CUBO]->draw(activo,luz);
-      glTranslatef(0,-1,0);
-      objetos[CILINDRO]->draw(activo,luz);
-      glTranslatef(0,-1,0);
-      objetos[PIRAMIDE]->draw(activo,luz);
-      glTranslatef(0,-1,0);
-      objetos[CONO]->draw(activo,luz);
-      glTranslatef(0,-1,0);
-      objetos[ESFERA]->draw(activo,luz);
-   glPopMatrix();
-  glPopMatrix();
-  }
-  
-  if(!automatica){
-  glPushMatrix();
-   ScalefUniforme(20);
-   glRotatef(rot1,0,1,0);
-   glPushMatrix();
-         glTranslatef(0,2,0);
-         glScalef(0.5,2,0.5);
-         objetos[CILINDRO]->draw(activo,luz);
-   glPopMatrix();
-   glPushMatrix();
-      glRotatef(rot_idle,0,1,0);
-      glPushMatrix();
-         glScalef(0.5,2,0.5);
-         objetos[CILINDRO]->draw(activo,luz);
-      glPopMatrix();
-      glRotatef(90,0,0,1); // al rotar a la derecha en z, el principio del cubo coincide con el radio del cilindro de rotacion (cubo.lado=2,cilindro.radio=1)2+1=3
-      glTranslatef(1,-2.5,0); // lo ponemos por debajo de Y=0 sumando el radio del cilindro rotatorio + la altura del cubo
-      glPushMatrix();
-         glScalef(0.5,2,0.5);
-         objetos[CUBO]->draw(activo,luz); // base en el origen
-      glPopMatrix();
-      glPushMatrix();
-         glTranslatef(0,-1,0);
-         objetos[CILINDRO]->draw(activo,luz); // altura = 1, r=1
-         glTranslatef(0,-1,0);
-         glScalef(2,1,2);                     // altura = 2, r=2
-         objetos[CONO]->draw(activo,luz);
-      glPopMatrix();
-   glPopMatrix();
-  glPopMatrix();
-   }
-
    if(automatica){
    // ** objetos PROYECTO FINAL (chopper + f16)
-      // cuerpo helicoptero
+      // estructura helicoptero
    glPushMatrix();
       // glRotatef(-rot_idle,0,1,0);
       glPushMatrix();
@@ -298,35 +209,10 @@ void Escena::dibujar()
       glPopMatrix();
    glPopMatrix();
    }
-   glPushMatrix();
-      glTranslatef(-30,90,-10);
-      glPushMatrix();
-         glRotatef(180,0,1,0);
-         ScalefUniforme(10);
-         glTranslatef(-10,10,0);
-         objetos[CAZA]->draw(activo,luz);  // f16 caza
-      glPopMatrix();
-      glPushMatrix();
-         // OJO: no tiene ningún punto centrado en el origen, aunque está muy cerca (cuidado con rotate)
-         glTranslatef(80,0,0);
-         glRotatef(90,0,1,0);
-         glRotatef(-90,1,0,0);
-         // lo trasladamos al eje X para poder aplicar rotacion
-         //glTranslatef(0,-10,5);
-         objetos[CHOPPER]->draw(activo,luz);   // chopper helicoptero
-      glPopMatrix();
-   glPopMatrix();
 */   
 
-   glPushMatrix();
-      ScalefUniforme(60);
-      glTranslatef(-1,0,0);
-      objetos[LATA]->draw(activo,luz);
-       glTranslatef(2,0,0);
-      objetos[CUBO]->draw(activo,luz);
-   glPopMatrix();
 
-   if(!automatica){
+   if(automatica){
    glPushMatrix();
       //P3 peones blanco y negro
       ScalefUniforme(escala);
@@ -554,7 +440,6 @@ void Escena::change_observer()
    // posicion del observador
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   //luzDefecto->activar(interruptor[0]);
    glTranslatef( 0.0, 0.0, -Observer_distance );
    glRotatef( Observer_angle_y, 0.0 ,1.0, 0.0 );
    glRotatef( Observer_angle_x, 1.0, 0.0, 0.0 );
@@ -588,31 +473,16 @@ Escena::~Escena()
    eliminarObjetos();
    eliminarLuces();
 
+   delete modelo;
    delete blanco_difuso;
    delete negro_especular;
 
    blanco_difuso=nullptr;
    negro_especular=nullptr;
+   modelo = nullptr;
+
+   std::cout << "destructor escena\n";
    
-   /* // Mallas sin array
-   delete cubo;
-   delete piramide;
-   delete esfera;
-   delete cono;
-   delete cilindro;
-   delete lata;
-   delete peonNegro;
-   delete peonBlanco;
-
-   cubo = nullptr;
-   piramide = nullptr;
-   esfera = nullptr;
-   cono = nullptr;
-   cilindro = nullptr;
-   lata = nullptr;
-   peonNegro = nullptr;
-   peonBlanco = nullptr;  */
-
 }
 
 
@@ -650,4 +520,19 @@ void Escena::eliminarLuces()
    luzDefecto = nullptr;
    luzPosicional1 = nullptr;
    luzPosicional2 = nullptr;
+}
+
+/**
+ * @brief Invoca a los diferentes métodos que alteran los valores
+ * de rotación o traslación del modelo jerárquico.
+ * 
+ * Escena no debe conocer ni cómo se llaman esos atributos ni su
+ * velocidad
+ */
+void Escena::animarModeloJerarquico(){
+   /* if( automatica ){
+      modelo->moverGancho(0.05);
+      modelo->modificaRotacionCola(0.05);
+      modelo->modificaRotacionPrincipal(1.0);
+   } */
 }

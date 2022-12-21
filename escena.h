@@ -12,14 +12,12 @@
 #include "cono.h"
 #include "esfera.h"
 #include "lata.h"
-// luces
 #include "luz.h"
 #include "luzDireccional.h"
 #include "luzPosicional.h"
-// modelo jerarquico
-//#include "modeloJerarquico.h"
 #include "textura.h"
 #include "cuadro.h"
+#include "p4/helicoptero.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION, SELILUMINACION} menu;
 
@@ -56,9 +54,8 @@ class Escena
  // ** PARÁMETROS DE LA ESCENA
   // animacion automatica
   bool automatica=true;
-  // "luz general"
+  // "luz general" e interruptores
   bool luz;
-  // "interruptores" 0..7
   std::vector<bool> interruptor{0,0,0,0,0,0,0,0};
   // rotación luz direccional
   float var_a = 0.0f;
@@ -72,8 +69,7 @@ class Escena
   // escalados uniformes para varios objetos
   float escala = 30;
   float escala2 = 20;
-  // flags pasados al método draw de Malla3D
-    // {PUNTOS, LINEAS , SOLIDO , SOMBRA}     1 --> GL_FLAT
+  // {PUNTOS, LINEAS , SOLIDO , SOMBRA}       1 --> GL_FLAT
   std::vector<bool> activo{0,0,1,0}; //SOMBRA 0 --> GL_SMOOTH
 
   //  array de objetos
@@ -87,7 +83,8 @@ class Escena
   Material             *blanco_difuso   = nullptr;
   Material             *negro_especular = nullptr;
 
-
+  // MODELO JERARQUICO
+  Helicoptero *modelo = nullptr;
 
  // ** MÉTODOS DE LA ESCENA
 
@@ -113,26 +110,5 @@ class Escena
 	// Interacción con la escena
 	bool teclaPulsada( unsigned char Tecla1, int x, int y ) ;
 	void teclaEspecial( int Tecla1, int x, int y );
-
-
-  /* Mallas sin array
-  // P1
-  Cubo                 *cubo = nullptr ;
-  PiramidePentagonal   *piramide= nullptr ;
-  
-  // P2
-  ObjPLY               *helicoptero = nullptr;
-  ObjPLY               *caza = nullptr;
-  ObjRevolucion        *lata_inf = nullptr;
-  Cilindro             *cilindro = nullptr;
-  Cono                 *cono = nullptr;
-  Esfera               *esfera = nullptr;
-  Lata                 *lata = nullptr;
-
-  // P3
-  //    objetos
-  ObjRevolucion        *peonBlanco = nullptr;
-  ObjRevolucion        *peonNegro  = nullptr; */
-
 };
 #endif
