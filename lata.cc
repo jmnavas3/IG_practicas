@@ -1,9 +1,9 @@
 #include "lata.h"
 
-Lata::Lata(const int num_instancias_perf)
+Lata::Lata(const int num_instancias_perf, bool ponerTextura)
 {
     ply::read_vertices("./plys/lata-pinf", perfil);
-    perfil.pop_back();
+    // perfil.pop_back();
 
     ply::read_vertices("./plys/lata-pcue",cuerpo);
     for(int i =0; i < (int)cuerpo.size(); i++)
@@ -15,14 +15,13 @@ Lata::Lata(const int num_instancias_perf)
 
     repetidos();
 
-    // t = new Textura("./p5/text-lata-1.jpg");
-    std::cout << "vertices perfil original " << perfil.size() << "\n"; 
+    if(ponerTextura) t = new Textura("./p5/text-lata-1.jpg");
     crearMalla(perfil,num_instancias_perf);
     genNormales();
+    //genNormales( (t!=nullptr)? perfil.size(): -1 );
 }
 
 Lata::~Lata(){
     if(t != nullptr) delete t;
     t = nullptr;
-    std::cout << "lata destruida\n";
 }

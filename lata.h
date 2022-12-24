@@ -11,7 +11,7 @@ class Lata : public ObjRevolucion
     std::vector<Tupla3f> cuerpo;
 
     public:
-    Lata ( const int num_instancias_perf );
+    Lata ( const int num_instancias_perf, bool ponerTextura=false );
     ~Lata();
 } ;
 

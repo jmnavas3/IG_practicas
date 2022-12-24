@@ -2,6 +2,7 @@
 
 Esfera::Esfera ( const int num_vert_perfil ,
                      const int num_instancias_perf ,
+                     bool ponerTextura ,
                      const float radio )
 {
     float aux;
@@ -14,8 +15,7 @@ Esfera::Esfera ( const int num_vert_perfil ,
     perfil[0](X)=0.0f;
     perfil[num_vert_perfil-1] = {0.0f,radio,0.0f};
 
-    //t = new Textura("./p5/earth.jpg");
+    if (ponerTextura) t = new Textura("./p5/text-madera.jpg");
     crearMalla(perfil,num_instancias_perf);
-    if(t!=nullptr) genNormales();
-    else genNormales();
+    genNormales();
 }
