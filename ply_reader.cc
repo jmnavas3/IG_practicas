@@ -86,7 +86,7 @@ void read
    leer_vertices( num_vertices, vertices, src ) ;
    leer_caras( num_vertices, num_caras, caras, src ) ;
 
-   cout << "archivo ply '" << na << "' leido: núm. vértices == " << num_vertices << ", núm caras == " << num_caras << endl << flush ;
+   cout << "archivo ply '" << na << endl << flush; // << "' leido: núm. vértices == " << num_vertices << ", núm caras == " << num_caras << endl << flush ;
 }
 
 //**********************************************************************
@@ -111,7 +111,7 @@ void read_vertices
    leer_cabecera( src, num_vertices, num_caras, false ) ;
    leer_vertices( num_vertices, vertices, src ) ;
 
-   cout << "archivo ply '" << na << "' leido: núm. vértices == " << num_vertices << " (caras no leídas)." << endl << flush ;
+   cout << "\narchivo ply '" << na << endl << flush; // << "' leido: núm. vértices == " << num_vertices << " (caras no leídas)." << endl << flush ;
 }
 
 //**********************************************************************

@@ -65,8 +65,7 @@ Cubo::Cubo(float lado)
    
 
    genColor(1.0,1.0,0.0); //generar color
-   if(t!=nullptr) genNormales(6);
-   else genNormales();
+   genNormales();
 }
 
 Cubo::~Cubo() {

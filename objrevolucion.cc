@@ -27,7 +27,7 @@ ObjRevolucion::ObjRevolucion() {}
 ObjRevolucion::ObjRevolucion(const std::string & archivo, int num_instancias) {
 
    ply::read_vertices(archivo, perfil);
-   std::cout << perfil.size() << " vertices\n";
+   //std::cout << perfil.size() << " vertices\n";
    if(perfil.size()!=0){
       crearMalla(perfil,num_instancias);
       genNormales();
@@ -70,7 +70,7 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
          perfil_original.pop_back();
       }
       perfil_original = aux;
-      std::cout << "perfil ordenado ascendentemente...\n";
+      //std::cout << "perfil ordenado ascendentemente...\n";
    }
 
    // comrobar existencia de tapas
@@ -79,7 +79,7 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       tapa_inf = 1;
       p_sur = perfil_original.front();
       perfil_original.erase(perfil_original.begin());
-      std::cout << "\nquitando tapa inferior...\n";
+      //std::cout << "\nquitando tapa inferior...\n";
    }
 
    if(fabs(perfil_original.back()(X)) < EPSILON &&
@@ -88,14 +88,14 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       tapa_sup = 1;
       p_norte = perfil_original[perfil_original.size()-1];
       perfil_original.pop_back();
-      std::cout << "\nquitando tapa superior...\n";
+      //std::cout << "\nquitando tapa superior...\n";
    }
 
 
    m = perfil_original.size();
 
    if( Malla3D::t != nullptr){
-      std::cout << "\ntextura activa\n";
+      //std::cout << "\ntextura activa\n";
       dist.push_back(0);   // d0 = 0
       text_activa = true;
       n++;   // instancia extra necesaria para las coord. de textura 
@@ -156,7 +156,7 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
          //}
       }
    }
-   std::cout << f.size() << " caras sin tapas\n";
+   //std::cout << f.size() << " caras sin tapas\n";
    // caras del polo sur (tapa inferior)
    if(tapa_inf){
       v.push_back(p_sur);
@@ -188,7 +188,7 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       }
    }
 
-   std::cout << ct.size() << " coord.textura\t" << v.size() << " vertices\t" << f.size() << " caras\n";
+   // std::cout << ct.size() << " coord.textura\t" << v.size() << " vertices\t" << f.size() << " caras\n";
 
 
    genColor(0.3,0.6,1.0);

@@ -192,41 +192,43 @@ void Malla3D::setMaterial (Material mat) {
 /**
  * @brief Calcula los vectores normales de los vértices de la malla en O(n)
  * 
- * @param perfil defecto -1, si se pasa como argumento, se tiene en cuenta las texturas
+ * @details Para objetos de @class ObjRevolucion , el nº de instancias y
+ * el nº de vertices de perfil tienen que ser divisibles entre ellos, ya que, si no,
+ * se generarán números decimales largos y menores a 0.0, que es el límite de normalized()
  */
-void Malla3D::genNormales(int perfil){
-   Tupla3f va;
-   Tupla3f vb;
-   Tupla3f pvectorial;
-   std::vector<Tupla3f> nCaras;
-   int p,q,r;
+void Malla3D::genNormales(){
+   Tupla3f va, vb, perp; //perp : vector perpendicular a la cara
+   Tupla3f nCaras; // normales de las caras
+   int vt0, vt1, vt2;           // indices de vertices de una cara
    
-   if(perfil == -1) nv.resize(v.size());
-   else{
-      nv.resize(v.size()-perfil); // quitamos los últimos M vertices de la N+1 instancia (instancia extra)
-   }
+   nv.resize(v.size());
 
    for(int i = 0; i < (int)f.size(); i++){
       // indice de vertices del triangulo i-esimo
-      p = f[i](X);
-      q = f[i](Y);
-      r = f[i](Z);
+      vt0 = f[i](X);
+      vt1 = f[i](Y);
+      vt2 = f[i](Z);
 
       // obtencion del vector normal al triangulo i-esimo
-      va = v[q] - v[p];
-      vb = v[r] - v[p];
-      pvectorial = va.cross(vb);
-      nCaras.push_back(pvectorial.normalized());
+      va = v[vt1] - v[vt0];
+      vb = v[vt2] - v[vt0];
+      perp = va.cross(vb);
+      // nCaras = perp / sqrt(perp.dot(perp));
+      nCaras = perp.normalized();
 
       // suma del vector normal obtenido a cada uno de los vertices del triangulo
-      nv[p] = nv[p] + nCaras.back();
-      nv[q] = nv[q] + nCaras.back();
-      nv[r] = nv[r] + nCaras.back();
+      nv[vt0] = nv[vt0] + nCaras;
+      nv[vt1] = nv[vt1] + nCaras;
+      nv[vt2] = nv[vt2] + nCaras;
    }
 
    // obtencion de tabla de normales de vértices
    for (int i = 0; i < (int)nv.size(); i++)
       nv[i] = nv[i].normalized();
 
-   std::cout << nv.size() << " normales\n";
+   std::cout << f.size() << " caras\t" << v.size() << " vertices\t" << nv.size() << " normales\t";
+   if(!ct.empty())
+      std::cout << ct.size() << " coord.textura";
+   
+   std::cout << "\n";
 }
