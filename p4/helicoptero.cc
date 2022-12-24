@@ -4,6 +4,10 @@
 
 Helicoptero::Helicoptero()
 {
+    rotacionPrincipal = 0.4;
+    rotacionCola = 0.2;
+    movimientoGancho = 0.1;
+    escaladoGancho = 0.1;
     gancho = new Gancho();
     rotorp = new RotorPrincipal();
     estructura = new Estructura();
@@ -26,13 +30,21 @@ Helicoptero::~Helicoptero()
 void Helicoptero::draw(std::vector<bool> a, bool luz)
 {
 glPushMatrix();
-    glTranslatef(-10,10,40);
+    //glTranslatef(-10,10,40);
     estructura->draw(a,luz);
 
-    rotorp->draw(a,luz);
+    glPushMatrix();
+        rotorp->draw(a,luz);
+    glPopMatrix();
 
-    glScalef(10,15,10);
     gancho->draw(a,luz);
 
 glPopMatrix();
+}
+
+
+void Helicoptero::animar() {
+    //moverGancho();
+    //modificaRotacionCola();
+    //modificaRotacionPrincipal();
 }

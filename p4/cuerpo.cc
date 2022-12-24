@@ -20,22 +20,22 @@ Cuerpo::~Cuerpo()
 void Cuerpo::draw(std::vector<bool> activo, bool luz)
 {
 glPushMatrix();
-    
-      // glRotatef(-rot_idle,0,1,0);
-      glPushMatrix();
-        // base del rotor principal
-        glPushMatrix();
-            glTranslatef(0,10,0);
-            glScalef(15,10,5);
-            cilindro->draw(activo,luz);
-        glPopMatrix();
-         // cuerpo
-         glTranslatef(0,-17,0);
-         glScalef(20,20,20);
-         glRotatef(-15, 0, 0, 1);
-         glScalef(3,2,2);
-         esfera->draw(activo,luz);
-      glPopMatrix();
+
+    glScalef(20,20,20);
+    // glTranslatef(-0.3,0,0);
+    // cabina
+    glPushMatrix();
+        glRotatef(-15,0,0,1);
+        glScalef(2,1,1);            // r=2 d=4
+        esfera->draw(activo,luz);
+    glPopMatrix();
+    // base del rotor principal
+    glPushMatrix();
+        glTranslatef(0,0.9,0);
+        glScalef(0.3,0.3,0.3);
+        //glRotatef(15,0,0,1);
+        cilindro->draw(activo,luz);
+    glPopMatrix();
 
 glPopMatrix();
 }

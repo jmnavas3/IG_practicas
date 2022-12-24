@@ -3,12 +3,14 @@
 
 #include "../cono.h"
 #include "../cubo.h"
+#include "rotorPrincipal.h"
 
 class Cola
 {
 private:
     Cubo *cubo = nullptr;
     Cono *cono = nullptr;
+    RotorPrincipal *rotorC = nullptr;
 public:
     Cola();
     ~Cola();

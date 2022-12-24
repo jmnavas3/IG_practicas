@@ -20,8 +20,8 @@ void Gancho::draw(std::vector<bool> activo, bool luz)
 {
 glPushMatrix();
     
-    glScalef(0.3, 10 ,0.3);
-    glTranslatef(0,-1,0);
+    glTranslatef(0,-20,0);
+    glScalef(1, -50 ,1);
     cilindro->draw(activo,luz);
 
 glPopMatrix();

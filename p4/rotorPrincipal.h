@@ -13,7 +13,7 @@ public:
     RotorPrincipal(/* args */);
     ~RotorPrincipal();
 
-    void draw(std::vector<bool> activo, bool luz=false);
+    void draw(std::vector<bool> activo, bool luzActivo=false);
 };
 
 

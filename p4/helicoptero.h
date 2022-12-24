@@ -33,6 +33,8 @@ public:
     void draw(std::vector<bool> a, bool luz=false);
     
     // movimiento del modelo
+    void animar();
+
     void moverGancho(float valor=0.0f);
     void modificaRotacionCola(float valor=0.0f);
     void modificaRotacionPrincipal(float valor=0.0f);

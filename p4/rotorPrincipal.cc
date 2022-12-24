@@ -21,7 +21,7 @@ void RotorPrincipal::draw(std::vector<bool> activo, bool luz)
 glPushMatrix();
     
     glScalef(8,8,8);
-    glTranslatef(0,2,0);
+    glTranslatef(0,1.9,0);
     glPushMatrix();
         glRotatef(0.2, 0, 1, 0);
         glPushMatrix();
