@@ -43,12 +43,13 @@ void Textura::activar() {
         glBindTexture(GL_TEXTURE_2D,textura_id);
         //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
-        glBindTexture(GL_TEXTURE_2D,0);
+        //glBindTexture(GL_TEXTURE_2D,0);
         nuevo = false;
     }else{
         glBindTexture( GL_TEXTURE_2D, textura_id ); // activa el id de textura del objeto que llama a la funcion
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
     }
 
 }

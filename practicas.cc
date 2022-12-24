@@ -151,7 +151,7 @@ int main( int argc, char **argv )
    glutSpecialFunc( special_keys );
 
    // asignación de la función llamada "funcion_idle" al evento correspondiente
-   //glutIdleFunc( funcion_idle );
+   glutIdleFunc( funcion_idle );
 
    // inicialización de librería GLEW (solo en Linux)
    #ifdef LINUX

@@ -49,3 +49,11 @@ void LuzDireccional::coordenadas(){
     z = cos(alpha)*cos(beta);
     this->posicion = {x,y,z,0.0};
 }
+
+void LuzDireccional::animarColor(){
+    if(colorDifuso(1) < 1) colorDifuso(1) += 0.1;
+    else                   colorDifuso(1) = 0.1;
+
+    if(colorDifuso(2) > 0) colorDifuso(2) -= 0.1;
+    else                   colorDifuso(2) = 1;
+}

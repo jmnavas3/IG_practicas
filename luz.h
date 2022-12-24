@@ -9,7 +9,7 @@ class Luz
 
     public:
 
-    void activar(bool interruptor);
+    void activar(bool interruptor=false);
     static int nluces;          // inicializado en practicas.cc
 
     protected:

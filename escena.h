@@ -17,7 +17,8 @@
 #include "luzPosicional.h"
 #include "textura.h"
 #include "cuadro.h"
-#include "p4/helicoptero.h"
+//#include "p4/helicoptero.h"
+#include "luzAnimada.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION, SELILUMINACION} menu;
 
@@ -52,8 +53,9 @@ class Escena
   GLfloat Width, Height, Front_plane, Back_plane;
   
  // ** PARÁMETROS DE LA ESCENA
-  // animacion automatica
+  // animacion automatica y cambio de objeto
   bool automatica=true;
+  int objeto=0;
   // "luz general" e interruptores
   bool luz;
   std::vector<bool> interruptor{0,0,0,0,0,0,0,0};
@@ -79,12 +81,14 @@ class Escena
   LuzDireccional       *luzDefecto     = nullptr;
   LuzPosicional        *luzPosicional1 = nullptr;
   LuzPosicional        *luzPosicional2  = nullptr;
+  LuzAnimada           *luzAnimada     = nullptr;
   //  materiales
   Material             *blanco_difuso   = nullptr;
   Material             *negro_especular = nullptr;
+  Material             *material_text   = nullptr;
 
   // MODELO JERARQUICO
-  Helicoptero *modelo = nullptr;
+  //Helicoptero *modelo = nullptr;
 
  // ** MÉTODOS DE LA ESCENA
 
