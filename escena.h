@@ -17,8 +17,9 @@
 #include "luzPosicional.h"
 #include "textura.h"
 #include "cuadro.h"
-//#include "p4/helicoptero.h"
+#include "p4/helicoptero.h"
 #include "luzAnimada.h"
+#include "camara.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION, SELILUMINACION} menu;
 
@@ -54,8 +55,8 @@ class Escena
   
  // ** PARÁMETROS DE LA ESCENA
   // animacion automatica y cambio de objeto
-  bool automatica=true;
-  int objeto=0;
+  bool automatica=false, manual=false;
+  int objeto=0, incremento, gradoSeleccionado;
   // "luz general" e interruptores
   bool luz;
   std::vector<bool> interruptor{0,0,0,0,0,0,0,0};
@@ -80,15 +81,17 @@ class Escena
   LuzDireccional       *luzDireccional = nullptr;
   LuzDireccional       *luzDefecto     = nullptr;
   LuzPosicional        *luzPosicional1 = nullptr;
-  LuzPosicional        *luzPosicional2  = nullptr;
+  LuzPosicional        *luzPosicional2 = nullptr;
   LuzAnimada           *luzAnimada     = nullptr;
   //  materiales
   Material             *blanco_difuso   = nullptr;
   Material             *negro_especular = nullptr;
   Material             *material_text   = nullptr;
+  // cáramas
+  Camara               *camara = nullptr;
 
   // MODELO JERARQUICO
-  //Helicoptero *modelo = nullptr;
+  Helicoptero *modelo = nullptr;
 
  // ** MÉTODOS DE LA ESCENA
 
@@ -96,17 +99,27 @@ class Escena
 	void change_projection( const float ratio_xy );
 	void change_observer();
   void clear_window();
-  void eliminarObjetos(); // nuevo
-  void eliminarLuces();   // nuevo
+  void eliminarObjetos();
+  void eliminarLuces();
+
 
   public:
 
+  // estado del ratón
+  bool moviendoCamara;
+  // posición del ratón antes de ser pulsado
+  int xant, yant;
+
   Escena();
-  ~Escena();  // nuevo
+  ~Escena();
 	void inicializar( int UI_window_width, int UI_window_height );
 	void redimensionar( int newWidth, int newHeight ) ;
-  void ScalefUniforme(GLfloat escalado); // nuevo
+  void ScalefUniforme(GLfloat escalado);
   void animarModeloJerarquico();
+
+  // Funciones de cámara
+  void ratonMovido(int x, int y);
+  void change_observer_p6();
 
 	// Dibujar
 	void dibujar() ;

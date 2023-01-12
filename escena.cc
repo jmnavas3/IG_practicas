@@ -10,13 +10,19 @@
 
 Escena::Escena()
 {
-    Front_plane       = 50.0;
-    Back_plane        = 2000.0;
-    Observer_distance = 4*Front_plane;
-    Observer_angle_x  = 0.0 ;
-    Observer_angle_y  = 0.0 ;
+   Front_plane       = 50.0;
+   Back_plane        = 2000.0;
+   Observer_distance = 4*Front_plane;
+   Observer_angle_x  = 0.0 ;
+   Observer_angle_y  = 0.0 ;
 
-    ejes.changeAxisSize( 5000 );
+   ejes.changeAxisSize( 5000 );
+
+   //*********** P6 ************
+   moviendoCamara = false;
+   camara = new Camara();
+   xant = 0;
+   yant = 0;
    
    //*********** P1 ************
    objetos[CUBO] = new Cubo();
@@ -49,7 +55,7 @@ Escena::Escena()
    this->negro_especular = new Material({0.2, 0.2, 0.2, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.0, 0.0, 0.0, 1.0}, 80.0);
    //*********** P5 ************
    material_text = new Material({1.0, 1.0, 1.0, 1.0} , {1.0, 1.0, 1.0, 1.0} , {0.3, 0.3, 0.3, 1.0}, 80.0);
-   objetos[ESFERA] = new Esfera(40,40,true,20);
+   objetos[ESFERA] = new Esfera(40,40,false,20);
    objetos[LATA] = new Lata(30,true);
    objetos[CHOPPER] = new Cuadro();
    this->objetos[ESFERA]->setMaterial(*material_text);
@@ -57,7 +63,8 @@ Escena::Escena()
    this->objetos[CHOPPER]->setMaterial(*material_text);
    
    //************ PROYECTO FINAL **************
-   //this->modelo = new Helicoptero();
+   this->modelo = new Helicoptero();
+   gradoSeleccionado = -1;
    
    this->objetos[PEONN]->setMaterial(*negro_especular);
    this->objetos[PEONB]->setMaterial(*blanco_difuso);
@@ -118,7 +125,8 @@ void Escena::dibujar()
    }
    
    // Definir transformación de vista
-	change_observer();
+	// change_observer();
+   change_observer_p6();
 
    luzAnimada->draw(activo,interruptor[2]);
 
@@ -138,8 +146,9 @@ void Escena::dibujar()
    luzPosicional1->activar(interruptor[1]);
 
    // MODELO JERARQUICO
-   //this->modelo->draw(activo,luz);
-
+   glPushMatrix();
+      this->modelo->draw(activo,luz);
+   glPopMatrix();
    /* 
    glPushMatrix();
       ScalefUniforme(escala);
@@ -153,7 +162,6 @@ void Escena::dibujar()
 
       objetos[objeto]->draw(activo,luz);
    glPopMatrix();
- */
 
    glPushMatrix();
       glTranslatef(0,40,0);
@@ -217,9 +225,117 @@ void Escena::dibujar()
          objetos[PIRAMIDE]->draw(activo,luz);
       glPopMatrix();
    glPopMatrix();
+   
+   */
 
 }
 
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//-------------------- Métodos adicionales añadidos a la escena -------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+
+// método que se invoca cada vez que se mueve el ratón con algún
+// botón pulsado. Sólo realiza acciones si es el botón derecho
+void Escena::ratonMovido(int x, int y)
+{
+   if (moviendoCamara) {
+      std::cout << "x=" << x-xant << " y= " << y-yant << "\n";
+      camara->girar(x-xant, y-yant);
+      xant = x;
+      yant = y;
+      /*
+      camaras[cam_activa]->girar(x - xant, y - yant);
+      xant = x ;
+      yant = y ;
+      */
+   }
+}
+
+/**
+ * @brief Escalado uniforme
+ * 
+ * @param escalado aplicado a los ejes X Y Z
+ */
+void Escena::ScalefUniforme(GLfloat escalado)
+{
+   if(escalado != 0)
+   glScalef(escalado,escalado,escalado);
+}
+
+/**
+ * @brief Destructor de los punteros a heap usados para evitar pérdida de memoria
+ * 
+ */
+Escena::~Escena()
+{
+   eliminarObjetos();
+   eliminarLuces();
+
+   if(modelo!=nullptr) delete modelo;
+   if(blanco_difuso != nullptr) delete blanco_difuso;
+   if(negro_especular != nullptr) delete negro_especular;
+   if(material_text != nullptr) delete material_text;
+   if(camara != nullptr) delete camara;
+
+   blanco_difuso=nullptr;
+   negro_especular=nullptr;
+   modelo = nullptr;
+   camara = nullptr;
+
+}
+
+/**
+ * @brief Elimina los objetos Malla3D que se han inicializado.
+ * 
+ */
+void Escena::eliminarObjetos()
+{
+   for (int i = 0; i < TAM; i++) {
+      if(objetos[i] != nullptr){
+         delete objetos[i];
+         objetos[i] = nullptr;
+      }
+   }
+   delete [] objetos;
+   objetos=nullptr;
+}
+
+/**
+ * @brief Elimina las luces que se han inicializado
+ * 
+ */
+void Escena::eliminarLuces()
+{
+   if (luzDireccional != nullptr) delete luzDireccional;
+   if (luzDefecto != nullptr)     delete luzDefecto;
+   if (luzPosicional1 != nullptr) delete luzPosicional1;
+   if (luzPosicional2 != nullptr) delete luzPosicional2;
+   if (luzAnimada != nullptr) delete luzAnimada;
+
+   luzDireccional = nullptr;
+   luzDefecto = nullptr;
+   luzPosicional1 = nullptr;
+   luzPosicional2 = nullptr;
+   luzAnimada = nullptr;
+}
+
+/**
+ * @brief Invoca a los diferentes métodos que alteran los valores
+ * de rotación o traslación del modelo jerárquico.
+ * 
+ */
+void Escena::animarModeloJerarquico(){
+   if( automatica ){
+      luzAnimada->animar();
+      if(incremento == 0) modelo->animar();
+      else{
+         modelo->animar(incremento);
+         incremento = 0;
+      }
+   }
+}
 
 //**************************************************************************
 //
@@ -229,110 +345,126 @@ void Escena::dibujar()
 //
 //**************************************************************************
 
-bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
-{
+bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
    using namespace std ;
    // cout << "Tecla pulsada: '" << tecla << "'" << endl;
    bool salir=false;
+   string menuprincipal = "\tMENU PRINCIPAL\nV:seleccionar modo visualización\nA:activar/desactivar animacion automatica\nM:activar seleccion grado libertad\nQ:salir\n";
 
-   // OPCIONES MODO VISUALIZACION (Leeme.txt para ver funcionamiento)
-   if ( modoMenu == SELVISUALIZACION || modoMenu == SELILUMINACION ) {
-      switch ( toupper(tecla) )
-      {
-      case 'Q' :
-         modoMenu = NADA;
-         if(alpha_l || beta_l){
-            cout << "\nEstado angulo: sin seleccionar\n";
-         }
-         alpha_l = beta_l = false;
-         cout << "MENU PRINCIPAL\nV:seleccionar modo visualización\nQ:salir\n";
-         break;
-      case 'P' :
-         activo[PUNTOS] = !activo[PUNTOS];
-         luz = false;
-         break;
-      case 'L' :
-         activo[LINEAS] = !activo[LINEAS];
-         luz = false;
-         break;
-      case 'S' :
-         activo[SOLIDO] = !activo[SOLIDO];
-         luz = false;
-         break;
-      case 'I' :
-         activo[SOMBRA] = !activo[SOMBRA];
-         if (activo[PUNTOS]) activo[PUNTOS] = false;
-         if (activo[LINEAS]) activo[LINEAS] = false;
-         if (!activo[SOLIDO]) activo[SOLIDO] = true;
-         luz = true;
-         modoMenu = SELILUMINACION;
-         break;
-      case 'A':
-         if(modoMenu==SELILUMINACION){
-            alpha_l = true;
-            beta_l = false;
-            cout << "\nEstado angulo: ALPHA\n < : Decrementar ángulo\n > : Incrementar ángulo \n";
-         }
-         break;
-      case 'B':
-         if(modoMenu==SELILUMINACION){
-            alpha_l = false;
-            beta_l = true;
-            cout << "\nEstado angulo: BETA\n < : Decrementar ángulo\n > : Incrementar ángulo \n";
-         }
-         break;
-      case '>':
-         if(modoMenu==SELILUMINACION && alpha_l)
-            var_a=0.5;
-         if(modoMenu==SELILUMINACION && beta_l)
-            var_b=0.5;
-         break;
-      case '<':
-         if(modoMenu==SELILUMINACION && alpha_l)
-            var_a= -0.5;
-         if(modoMenu==SELILUMINACION && beta_l)
-            var_b= -0.5;
-         break;
-      default :
-         break;
+   if ( modoMenu == SELVISUALIZACION || modoMenu == SELILUMINACION )
+   switch ( toupper(tecla) ) {
+   // OPCIONES VISUALIZACION
+   case 'Q' :
+      if(alpha_l || beta_l) cout << "\nALPHA Y BETA REESTABLECIDOS\n";
+      cout << menuprincipal;
+      alpha_l = beta_l = false;
+      modoMenu = NADA;
+      break;
+   case 'P' :
+      activo[PUNTOS] = !activo[PUNTOS];
+      luz = false;
+      break;
+   case 'L' :
+      activo[LINEAS] = !activo[LINEAS];
+      luz = false;
+      break;
+   case 'S' :
+      activo[SOLIDO] = !activo[SOLIDO];
+      luz = false;
+      break;
+   // OPCIONES ILUMINACION
+   case 'I' :
+      activo[SOMBRA] = !activo[SOMBRA];
+      if (activo[PUNTOS])  activo[PUNTOS] = false;
+      if (activo[LINEAS])  activo[LINEAS] = false;
+      if (!activo[SOLIDO]) activo[SOLIDO] = true;
+      luz = true;
+      modoMenu = SELILUMINACION;
+      break;
+   case 'A':
+      if(modoMenu==SELILUMINACION){
+         alpha_l = true;
+         beta_l = false;
+         cout << "\nALPHA\n < : Decrementar ángulo\n > : Incrementar ángulo \n";
       }
+      break;
+   case 'B':
+      if(modoMenu==SELILUMINACION){
+         alpha_l = false;
+         beta_l = true;
+         cout << "\nBETA\n < : Decrementar ángulo\n > : Incrementar ángulo \n";
+      }
+      break;
+   case '>':
+      if(modoMenu==SELILUMINACION && alpha_l) var_a=0.5;
+      if(modoMenu==SELILUMINACION && beta_l)  var_b=0.5;
+      break;
+   case '<':
+      if(modoMenu==SELILUMINACION && alpha_l) var_a= -0.5;
+      if(modoMenu==SELILUMINACION && beta_l)  var_b= -0.5;
+      break;
+   default :
+      break;
    }
    // MENU PRINCIPAL
    else if (modoMenu == NADA)
    switch( toupper(tecla) )
    {
-   case '+' :
+   case 'O' :
       objeto++;
       objeto %= TAM-1;
       break;
-   case '-' :
+   case 'U' :
       if(objeto==0) objeto = TAM-2;
       else          objeto--;
       break;
    case 'A' :
       automatica = !automatica;
       break;
+   case 'M' :
+      cout << "SELECCIONAR GRADO DE LIBERTAD\n0: bajar/subir gancho\n1: rotar hélices superiores\n2: rotar hélices cola\n";
+      automatica = false;
+      manual = true;
+      break;
+   case '+' :
+      if(automatica || manual) incremento = 1;
+      if(manual) modelo->moverGrado(gradoSeleccionado,incremento);
+      break;
+   case '-' :
+      if(automatica || manual) incremento = -1;
+      if(manual) modelo->moverGrado(gradoSeleccionado,incremento);
+      break;
    case 'Q' :
-      salir=true ;
+      if(manual) {
+         cout << menuprincipal;
+         manual = false;
+         gradoSeleccionado = -1;
+      }
+      else{
+         cout << "\n\nFIN PROGRAMA\n\n";
+         salir = true ;
+      }
+      
       break ;
    case 'V' :
       modoMenu=SELVISUALIZACION;
       cout << "SELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nI:activar iluminacion plana/suave\n" <<
-            " 0-" << Luz::nluces <<  ":apagar/encender luz\nA:seleccionar ALPHA\nB:seleccionar BETA\n";
+            "0-" << Luz::nluces <<  ":apagar/encender luz\nA:seleccionar ALPHA\nB:seleccionar BETA\n";
       break ;
    default:
+      cout << menuprincipal;
       break;
    }
 
-   if(modoMenu==SELILUMINACION)
-      for(int i = 0; i < Luz::nluces; i++){
-         if((tecla-'0')==i){
-            interruptor[i] = !interruptor[i];
-         }
-      }
+   if(modoMenu==SELILUMINACION) {
+      for(int i = 0; i < Luz::nluces; i++)
+         if ((tecla-'0')==i) interruptor[i] = !interruptor[i];
+   }
+   else if(manual) {
+      for(int i = 0; i < modelo->numGradosLibertad; i++)
+         if ((tecla-'0') == i) gradoSeleccionado = i;
+   }
    
-
-
    return salir;
 }
 //**************************************************************************
@@ -399,105 +531,16 @@ void Escena::change_observer()
    // posicion del observador
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   glTranslatef( 0.0, 0.0, -Observer_distance );
+   glTranslatef( 0.0, 0.0, -Observer_distance ); // translada el observador -200 unidades
    glRotatef( Observer_angle_y, 0.0 ,1.0, 0.0 );
    glRotatef( Observer_angle_x, 1.0, 0.0, 0.0 );
 }
 
-
-
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//-------------------- Métodos adicionales añadidos a la escena -------------
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-
-/**
- * @brief Escalado uniforme
- * 
- * @param escalado aplicado a los ejes X Y Z
- */
-void Escena::ScalefUniforme(GLfloat escalado)
+void Escena::change_observer_p6()
 {
-   if(escalado != 0)
-   glScalef(escalado,escalado,escalado);
-}
-
-/**
- * @brief Destructor de los punteros a heap usados para evitar pérdida de memoria
- * 
- */
-Escena::~Escena()
-{
-   eliminarObjetos();
-   eliminarLuces();
-
-   //if(modelo!=nullptr) delete modelo;
-   if(blanco_difuso != nullptr) delete blanco_difuso;
-   if(negro_especular != nullptr) delete negro_especular;
-   if(material_text != nullptr) delete material_text;
-
-   blanco_difuso=nullptr;
-   negro_especular=nullptr;
-   //modelo = nullptr;
-
-   //std::cout << "destructor escena\n";
-   
-}
-
-
-/**
- * @brief Elimina los objetos Malla3D que se han inicializado.
- * 
- */
-void Escena::eliminarObjetos()
-{
-   for (int i = 0; i < TAM; i++)
-   {
-      if(objetos[i] != nullptr){
-         delete objetos[i];
-         objetos[i] = nullptr;
-      }
-   }
-
-   delete [] objetos;
-   objetos=nullptr;
-}
-
-
-/**
- * @brief Elimina las luces que se han inicializado
- * 
- */
-void Escena::eliminarLuces()
-{
-   if (luzDireccional != nullptr) delete luzDireccional;
-   if (luzDefecto != nullptr)     delete luzDefecto;
-   if (luzPosicional1 != nullptr) delete luzPosicional1;
-   if (luzPosicional2 != nullptr) delete luzPosicional2;
-   if (luzAnimada != nullptr) delete luzAnimada;
-
-   luzDireccional = nullptr;
-   luzDefecto = nullptr;
-   luzPosicional1 = nullptr;
-   luzPosicional2 = nullptr;
-   luzAnimada = nullptr;
-}
-
-/**
- * @brief Invoca a los diferentes métodos que alteran los valores
- * de rotación o traslación del modelo jerárquico.
- * 
- * Escena no debe conocer ni cómo se llaman esos atributos ni su
- * velocidad
- */
-void Escena::animarModeloJerarquico(){
-   /* if( automatica ){
-      modelo->animar();
-      modelo->moverGancho(0.05);
-      modelo->modificaRotacionCola(0.05);
-      modelo->modificaRotacionPrincipal(1.0);
-   } */
-   if(automatica)
-      luzAnimada->animar();
+   // posicion del observador
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   camara->setObserver();
+   // camara[camActiva]->setObserver();
 }

@@ -91,13 +91,55 @@ void special_keys( int tecla, int x, int y )
 
 /**
  * @brief Función llamada cuando el gestor de eventos está libre
- * 
  * Se encarga de animar la escena
  */
 void funcion_idle(){
    if(escena!=NULL)
       escena->animarModeloJerarquico();
    glutPostRedisplay();
+}
+
+/**
+ * @brief Función llamada cuando el gestor de eventos detecta
+ * la pulsación de botones del ratón.
+ * @param boton GLUT_{LEFT,MIDDLE,RIGHT}_BUTTON
+ * @param estado GLUT_{UP,DOWN} (up: soltado, down: pulsado)
+ * @param x en coord. de pantalla
+ * @param y en coord. de pantalla
+ * 
+ * Callback --> glutMouseFunc
+ * 
+ */
+void clickRaton( int boton, int estado, int x, int y ) {
+   if (boton == GLUT_RIGHT_BUTTON )
+   {
+      // escena->moviendoCamara = !escena->moviendoCamara;
+      if ( estado == GLUT_DOWN ){  // pulsado
+         escena->moviendoCamara = true;
+         escena->xant = x;
+         escena->yant = y;
+      }else                       // soltado
+         escena->moviendoCamara = false;
+   }
+   else if (boton == 3){
+      std::cout << "UP ";
+   }
+   else if (boton == 4){
+      std::cout << "DOWN ";
+   }
+   glutPostRedisplay();
+}
+
+/**
+ * @brief Función llamada cuando el gestor de eventos detecta
+ * el movimiento del ratón mientras se pulsa un botón
+ * @param x de ratón en coord. de pantalla
+ * @param y de ratón en coord. de pantalla
+ * 
+ * Callback --> glutMotionFunc
+ */
+void ratonMovido( int x, int y ) {
+   escena->ratonMovido(x,y);
 }
 
 //***************************************************************************
@@ -136,7 +178,7 @@ int main( int argc, char **argv )
 
    // llamada para crear la ventana, indicando el titulo
    // SUSTITUIR EL NOMBRE DEL ALUMNO
-   glutCreateWindow("Practicas IG: José María Navas Cabrera");
+   glutCreateWindow("Practicas IG: Jose Maria Navas Cabrera");
 
    // asignación de la funcion llamada "dibujar" al evento de dibujo
    glutDisplayFunc( draw_scene );
@@ -152,6 +194,12 @@ int main( int argc, char **argv )
 
    // asignación de la función llamada "funcion_idle" al evento correspondiente
    glutIdleFunc( funcion_idle );
+
+   // asignación de la función llamada "clickRaton" al evento correspondiente
+   glutMouseFunc( clickRaton );
+
+   // asignación de la función llamada "ratonMovido" al evento correspondiente
+   glutMotionFunc( ratonMovido );
 
    // inicialización de librería GLEW (solo en Linux)
    #ifdef LINUX
