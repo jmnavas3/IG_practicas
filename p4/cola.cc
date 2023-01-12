@@ -3,9 +3,10 @@
 
 Cola::Cola(/* args */)
 {
+    anguloRotacion = 1;
     cubo = new Cubo();
     cono = new Cono (20,20);
-    rotorC = new RotorPrincipal();
+    rotorC = new Rotor();
 }
 
 Cola::~Cola()
@@ -22,45 +23,29 @@ Cola::~Cola()
 
 void Cola::draw(std::vector<bool> activo, bool luz)
 {
+
+// cola
 glPushMatrix();
-    // parte alargada que parte del inicio
-    glTranslatef(-35,5,0);     // movemos la cola a su parte correspondiente
-    glRotatef(90,0,0,1);
-    glScalef(10,50,10);
-
-    glPushMatrix();
-        // cola
-        glPushMatrix();
-            glScalef(1,1.5,1);
-            cono->draw(activo,luz);
-        glPopMatrix();
-        // parte adherida a la cola
-        glPushMatrix();
-            glTranslatef(0,1,0);  // los movemos hacia la punta de la cola
-            // rotor cola
-            glPushMatrix();
-                glScalef(0.3,0.3,0.3);
-                rotorC->draw(activo,luz);
-            glPopMatrix();
-            // estabilizadores
-            glRotatef(90,0,0,1);
-            glScalef(1,0.2,1);  // tamaño proporcional
-            // estabilizador superior
-            glPushMatrix();
-                glRotatef(20,1,0,0);
-                glScalef(1,1,0.1);
-                cubo->draw(activo,luz);
-            glPopMatrix();
-            // estabilizador inferior
-            glPushMatrix();
-                glRotatef(-20,1,0,0);
-                glTranslatef(0,-1,0);   // lo movemos abajo
-                glScalef(1,1,0.1);
-                cubo->draw(activo,luz);
-            glPopMatrix();
-        glPopMatrix();
-
-    glPopMatrix();
-
+    glScalef(1.5,15,1.5);
+    cono->draw(activo,luz);
 glPopMatrix();
+
+// rotor cola
+glPushMatrix();
+    glTranslatef(0,10,0);  // los movemos hacia la punta de la cola
+    
+    glRotatef(anguloRotacion,0,0,1);
+    glRotatef(90,1,0,0);
+    rotorC->draw(activo,luz);
+    // helices
+    glPushMatrix();
+        glTranslatef(0,1,0);
+        for(int i = 0; i<4; i++){
+            glRotatef(90,0,1,0);
+            rotorC->drawHelice(activo,luz,15);
+        }
+    glPopMatrix();
+glPopMatrix();
+
+
 }

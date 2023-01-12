@@ -19,7 +19,7 @@ ObjRevolucion::~ObjRevolucion(){
       delete t;
    }
    t = nullptr;
-   std::cout << "objeto destruido";
+   // std::cout << "objeto destruido";
 }
 
 ObjRevolucion::ObjRevolucion() {}

@@ -6,9 +6,10 @@
 class Gancho
 {
 private:
-    int velocidad;
     Cilindro *cilindro = nullptr;
 public:
+    int velocidad;
+    
     Gancho(/* args */);
     ~Gancho();
     void draw(std::vector<bool> activo, bool luz=false);

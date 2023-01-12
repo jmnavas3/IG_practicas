@@ -20,22 +20,27 @@
 class Helicoptero
 {
 private:
-    float rotacionPrincipal, rotacionCola;
-    float movimientoGancho, escaladoGancho;
+    float rotacionPrincipal, velocidad = 0.3 ;
+    float movimientoGancho, escaladoGancho, rotacionCola;
+    const float MAX_GANCHO = 1000;
+    bool subir = false;
 
     Estructura * estructura = nullptr;
     RotorPrincipal * rotorp = nullptr;
     Gancho         * gancho = nullptr;
 public:
+    const int numGradosLibertad = 3;
+
     Helicoptero();
     ~Helicoptero();
 
     void draw(std::vector<bool> a, bool luz=false);
     
     // movimiento del modelo
-    void animar();
+    void animar(int incrementar = 0);
+    void moverGrado (int seleccion, int signo);
 
-    void moverGancho(float valor=0.0f);
+    void bajarGancho(float valor=0.0f);
     void modificaRotacionCola(float valor=0.0f);
     void modificaRotacionPrincipal(float valor=0.0f);
 };

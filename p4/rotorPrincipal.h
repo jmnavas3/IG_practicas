@@ -3,17 +3,19 @@
 
 #include "../cilindro.h"
 #include "../cubo.h"
+#include "rotor.h"
 
 class RotorPrincipal
 {
 private:
     Cilindro * cilindro = nullptr;
     Cubo * cubo = nullptr;
+    Rotor * rotor = nullptr;
 public:
     RotorPrincipal(/* args */);
     ~RotorPrincipal();
 
-    void draw(std::vector<bool> activo, bool luzActivo=false);
+    void draw(std::vector<bool> activo, bool luz);
 };
 
 

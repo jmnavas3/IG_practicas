@@ -13,6 +13,8 @@ public:
     Estructura(/* args */);
     ~Estructura();
     void draw(std::vector<bool> activo, bool luz=false);
+    void setRotacionCola(float valor = 0.05);
+    float getRotacionCola();
 };
 
 

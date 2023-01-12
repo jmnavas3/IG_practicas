@@ -3,15 +3,16 @@
 
 #include "../cono.h"
 #include "../cubo.h"
-#include "rotorPrincipal.h"
+#include "rotor.h"
 
 class Cola
 {
 private:
     Cubo *cubo = nullptr;
     Cono *cono = nullptr;
-    RotorPrincipal *rotorC = nullptr;
+    Rotor *rotorC = nullptr;
 public:
+    float anguloRotacion;
     Cola();
     ~Cola();
     void draw(std::vector<bool> activo, bool luz=false);
