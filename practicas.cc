@@ -111,22 +111,20 @@ void funcion_idle(){
  * 
  */
 void clickRaton( int boton, int estado, int x, int y ) {
-   if (boton == GLUT_RIGHT_BUTTON )
-   {
-      // escena->moviendoCamara = !escena->moviendoCamara;
-      if ( estado == GLUT_DOWN ){  // pulsado
+   if ( boton == GLUT_RIGHT_BUTTON ) {
+      if ( estado == GLUT_DOWN ) { // PULSADO
          escena->moviendoCamara = true;
          escena->xant = x;
          escena->yant = y;
-      }else                       // soltado
+      } else                       // SOLTADO
          escena->moviendoCamara = false;
    }
-   else if (boton == 3){
-      std::cout << "UP ";
-   }
-   else if (boton == 4){
-      std::cout << "DOWN ";
-   }
+   else if ( boton == 3 || boton == 4 ) // scroll_up, scroll_down
+      escena->haciendoZoom = (boton==3) ? 1 : -1;
+   // ver posición del ratón
+   else if ( boton == GLUT_LEFT_BUTTON && estado == GLUT_UP )
+      std::cout << "Raton = ( " << x << ", " << y << " )\n";
+   
    glutPostRedisplay();
 }
 

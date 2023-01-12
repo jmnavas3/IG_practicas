@@ -1,9 +1,11 @@
 #include "camara.h"
 
 Camara::Camara () {
-    eye= {0,0,200};
+    eye= {0,0,dist};
     at = {0,0,0};
     up = {0,1,0};
+    alpha = 0;
+    beta = 0;
 }
 
 Camara::Camara(Tupla3f eye1, Tupla3f at1){
@@ -12,17 +14,36 @@ Camara::Camara(Tupla3f eye1, Tupla3f at1){
     up = {0,1,0};
 }
 
+// x: beta. y: alpha
 void Camara::girar ( int x, int y ) {
-    eye(X) = x;
-    eye(Y) = y;
+    // float px,py,pz;
+    
+    alpha+=(float)(x*0.01);
+    beta+=(float)(y*0.01);
+
+    eye(Z) = dist*cos(alpha)*cos(beta);
+    eye(Y) = dist*cos(alpha)*sin(beta);
+    eye(X) = dist*sin(alpha);
+
+    // eye(X)=sin(x)*cos(y)*dist;
+    // eye(Y)=sin(y)*dist;
+    // eye(Z)= cos(alpha)*cos(beta)*dist;
+    // eye(X)+=x;
+    // eye(Z)+=sin(eye(Y));
+    // eye(Z)+=-sin(y)*cos(y);
+    // eye(Z)=cos(x)*cos(y)*dist;
+
+    std::cout << eye << "\n";
+   
 }
 
 void Camara::mover ( float x, float y, float z) {
 
 }
 
-void Camara::zoom ( float factor ) {
-    eye(Z) *=factor; // observer_distance
+// si factor es negativo, zoom_out, sino, zoom_in
+void Camara::zoom ( int factor ) {
+    eye(Z) = (factor<0) ? eye(Z)/zoom_factor : eye(Z)*zoom_factor;
 }
 
 void Camara::setObserver ( ) {

@@ -108,7 +108,8 @@ class Escena
   // estado del ratón
   bool moviendoCamara;
   // posición del ratón antes de ser pulsado
-  int xant, yant;
+  int xant, yant,
+      haciendoZoom; // 0:no hacer. 1:acercar. 2:alejar.
 
   Escena();
   ~Escena();

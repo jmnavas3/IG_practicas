@@ -21,6 +21,7 @@ Escena::Escena()
    //*********** P6 ************
    moviendoCamara = false;
    camara = new Camara();
+   haciendoZoom = 0;
    xant = 0;
    yant = 0;
    
@@ -129,7 +130,6 @@ void Escena::dibujar()
    change_observer_p6();
 
    luzAnimada->draw(activo,interruptor[2]);
-
    // Fijar luz a la cámara
    glPushMatrix();                           // C := M (copia de M en C)
       glLoadIdentity();                      // M := Identidad
@@ -162,7 +162,8 @@ void Escena::dibujar()
 
       objetos[objeto]->draw(activo,luz);
    glPopMatrix();
-
+   */
+  /*
    glPushMatrix();
       glTranslatef(0,40,0);
       ScalefUniforme(40);
@@ -241,7 +242,7 @@ void Escena::dibujar()
 void Escena::ratonMovido(int x, int y)
 {
    if (moviendoCamara) {
-      std::cout << "x=" << x-xant << " y= " << y-yant << "\n";
+      std::cout << "x=" << x-xant << " y=" << y-yant << "  ";
       camara->girar(x-xant, y-yant);
       xant = x;
       yant = y;
@@ -541,6 +542,11 @@ void Escena::change_observer_p6()
    // posicion del observador
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
+   if(haciendoZoom!=0){
+      camara->zoom(haciendoZoom);
+      haciendoZoom=0;
+   }
+
    camara->setObserver();
    // camara[camActiva]->setObserver();
 }

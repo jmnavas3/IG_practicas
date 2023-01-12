@@ -13,7 +13,8 @@ private:
     Tupla3f  up; // VECTOR del sentido con el que mira
                  // suele ser (0,1,0)
     
-
+    float alpha, beta;
+    const float zoom_factor = 1.2, dist = 200;
     int tipo; // ortogonal y perspectiva
     // parametros de volumen de visualización (frustum)
     float left,
@@ -36,7 +37,7 @@ public:
     void mover(float x, float y, float z);
     
     // se invoca cuando se detecta la rueda del ratón (cambiar ejeZ)
-    void zoom (float factor=1.2);
+    void zoom (int factor);
     
     // nota: calcular el VPN para la vista en primera persona
     // recalcula el valor de los parámetros de giro
