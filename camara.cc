@@ -14,9 +14,9 @@ Camara::Camara(Tupla3f eye1, Tupla3f at1){
     up = {0,1,0};
 }
 
-// x: beta. y: alpha
+// método de cámara orbital. Modifica el VRP ó eye (posición de la cámara)
+// esto implica un cambio en el vector VPN (view plane normal) perpendicular al plano de proyección
 void Camara::girar ( int x, int y ) {
-    // float px,py,pz;
     
     alpha+=(float)(x*0.01);
     beta+=(float)(y*0.01);
@@ -25,18 +25,11 @@ void Camara::girar ( int x, int y ) {
     eye(Y) = dist*cos(alpha)*sin(beta);
     eye(X) = dist*sin(alpha);
 
-    // eye(X)=sin(x)*cos(y)*dist;
-    // eye(Y)=sin(y)*dist;
-    // eye(Z)= cos(alpha)*cos(beta)*dist;
-    // eye(X)+=x;
-    // eye(Z)+=sin(eye(Y));
-    // eye(Z)+=-sin(y)*cos(y);
-    // eye(Z)=cos(x)*cos(y)*dist;
-
     std::cout << eye << "\n";
    
 }
 
+// método de cámara primera persona
 void Camara::mover ( float x, float y, float z) {
 
 }
@@ -44,6 +37,8 @@ void Camara::mover ( float x, float y, float z) {
 // si factor es negativo, zoom_out, sino, zoom_in
 void Camara::zoom ( int factor ) {
     eye(Z) = (factor<0) ? eye(Z)/zoom_factor : eye(Z)*zoom_factor;
+    // if(tipo==ortho)
+    // glOrtho(0.5*-wx,wx,0.5*-wy,0.5*wy)
 }
 
 void Camara::setObserver ( ) {

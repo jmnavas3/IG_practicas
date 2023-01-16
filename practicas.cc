@@ -99,6 +99,22 @@ void funcion_idle(){
    glutPostRedisplay();
 }
 
+void infoClic(int x, int y){
+   
+   // int w = glutGet(GLUT_WINDOW_WIDTH);
+   int h = glutGet(GLUT_WINDOW_HEIGHT);
+   GLbyte color[4];
+   GLfloat profundidad;
+   GLuint indice;
+   
+   glReadPixels(x, h -y -1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color );
+   glReadPixels(x, h -y -1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &profundidad );
+   glReadPixels(x, h -y -1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &indice );
+   
+   printf("Clicked on pixel %d, %d, color %02hhx%02hhx%02hhx%02hhx, depth %f, stencil index %u\n",
+         x, y, color[0], color[1], color[2], color[3], profundidad, indice);
+}
+
 /**
  * @brief Función llamada cuando el gestor de eventos detecta
  * la pulsación de botones del ratón.
@@ -112,21 +128,25 @@ void funcion_idle(){
  */
 void clickRaton( int boton, int estado, int x, int y ) {
    if ( boton == GLUT_RIGHT_BUTTON ) {
-      if ( estado == GLUT_DOWN ) { // PULSADO
+      if ( estado == GLUT_DOWN ) {
          escena->moviendoCamara = true;
          escena->xant = x;
          escena->yant = y;
-      } else                       // SOLTADO
+      } else
          escena->moviendoCamara = false;
    }
-   else if ( boton == 3 || boton == 4 ) // scroll_up, scroll_down
+   else if ( boton == 3 || boton == 4 )
       escena->haciendoZoom = (boton==3) ? 1 : -1;
-   // ver posición del ratón
-   else if ( boton == GLUT_LEFT_BUTTON && estado == GLUT_UP )
-      std::cout << "Raton = ( " << x << ", " << y << " )\n";
+   
+   // INFO DE PIXEL Y RATÓN
+   else if ( boton == GLUT_LEFT_BUTTON && estado == GLUT_UP ){
+      escena->dibujaSeleccion();
+      infoClic(x,y);
+   }
    
    glutPostRedisplay();
 }
+
 
 /**
  * @brief Función llamada cuando el gestor de eventos detecta

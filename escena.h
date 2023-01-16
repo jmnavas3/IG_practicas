@@ -97,6 +97,7 @@ class Escena
 
   // Transformación de cámara
 	void change_projection( const float ratio_xy );
+  void cambia_proyeccion( const float ratio_xy, const float ratio_yx);
 	void change_observer();
   void clear_window();
   void eliminarObjetos();
@@ -124,6 +125,7 @@ class Escena
 
 	// Dibujar
 	void dibujar() ;
+  void dibujaSeleccion();
 
 	// Interacción con la escena
 	bool teclaPulsada( unsigned char Tecla1, int x, int y ) ;

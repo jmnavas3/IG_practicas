@@ -89,15 +89,34 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
    glEnable(GL_CULL_FACE);
    glEnable(GL_NORMALIZE);
 
+   std::cout << "ancho=" << UI_window_width << " alto=" << UI_window_height << "\n";
+
 	Width  = UI_window_width/10;
 	Height = UI_window_height/10;
 
-   change_projection( float(UI_window_width)/float(UI_window_height) );
+   cambia_proyeccion( float(UI_window_width)/float(UI_window_height), float(UI_window_height)/float(UI_window_width));
 	glViewport( 0, 0, UI_window_width, UI_window_height );
 
 }
 
+void Escena::dibujaSeleccion(){
+   glDisable(GL_DITHER);
 
+   for(int i = 0; i < 2; i++)
+      for(int j = 0; j < 2; j++)
+      {
+         glPushMatrix();
+         switch(i*2+j){
+            case 0: glColor3ub(255,0,0); break;
+            case 1: glColor3ub(0,255,0); break;
+            case 2: glColor3ub(0,0,255); break;
+            case 3: glColor3ub(250,0,250); break;
+         }
+         glPopMatrix();
+      }
+   
+   glEnable(GL_DITHER);
+}
 
 // **************************************************************************
 //
@@ -242,7 +261,7 @@ void Escena::dibujar()
 void Escena::ratonMovido(int x, int y)
 {
    if (moviendoCamara) {
-      std::cout << "x=" << x-xant << " y=" << y-yant << "  ";
+      // std::cout << "x=" << x-xant << " y=" << y-yant << "  ";
       camara->girar(x-xant, y-yant);
       xant = x;
       yant = y;
@@ -511,6 +530,31 @@ void Escena::change_projection( const float ratio_xy )
    const float wx = float(Height)*ratio_xy ;
    glFrustum( -wx, wx, -Height, Height, Front_plane, Back_plane );
 }
+
+/**
+ * @brief Función para definir la transformación de proyección
+ * (P6) --> con ratio_yx no genera problemas al redimensionar la ventana
+ * 
+ * @param ratio_xy relación de aspecto del viewport en anchura ( ancho(X) / alto(Y) )
+ * @param ratio_yx relación de aspecto del viewport en altura ( alto(Y) / ancho(X) )
+ */
+void Escena::cambia_proyeccion( const float ratio_xy, const float ratio_yx ){
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+
+   const float wx = 0.5*float(Height)*ratio_xy;
+   const float wy = 0.5*float(Width)*ratio_yx;
+
+   std::cout << "PROYECCIÓN:\nleft=" << -wx << " right=" << wx
+             << " bottom=" << -wy << " top=" << wy
+             << " near=" << Front_plane << " far=" << Back_plane << "\n\n";
+   
+   // glFrustum(-wx, wx, -wy, wy, Front_plane, Back_plane);
+   // multiplicamos por 5 ya que en redimensionar() se asigna a la proyección una décima parte del viewport
+   // (width=newWidth/10) y para la proyección ortográfica hay que aumentar el rango del ancho y el alto
+   glOrtho(-wx*5, wx*5, -wy*5, wy*5, Front_plane, Back_plane);
+}
+
 //**************************************************************************
 // Funcion que se invoca cuando cambia el tamaño de la ventana
 //***************************************************************************
@@ -519,7 +563,9 @@ void Escena::redimensionar( int newWidth, int newHeight )
 {
    Width  = newWidth/10;
    Height = newHeight/10;
-   change_projection( float(newHeight)/float(newWidth) );
+   std::cout << "VIEWPORT: ancho=" << newWidth << " alto=" << newHeight << "\n";
+   // change_projection( float(newHeight)/float(newWidth) );
+   cambia_proyeccion( float(newWidth)/float(newHeight), float(newHeight)/float(newWidth));
    glViewport( 0, 0, newWidth, newHeight );
 }
 
