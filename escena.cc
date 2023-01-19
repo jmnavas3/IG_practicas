@@ -20,7 +20,9 @@ Escena::Escena()
 
    //*********** P6 ************
    moviendoCamara = false;
-   camara = new Camara();
+   camaras[0] = new Camara();
+   camaras[1] = new Camara({0,5,200},{0,0,0});
+   camaras[2] = new Camara({30,10,200},{0,5,0});
    haciendoZoom = 0;
    xant = 0;
    yant = 0;
@@ -33,7 +35,7 @@ Escena::Escena()
    objetos[CONO] = new Cono(20,20);
    objetos[CILINDRO] = new Cilindro(20,20);
    //this->objetos[LATA] = new Lata(10);
-   this->objetos[HORMIGA] = new ObjPLY("./plys/ant");
+   this->objetos[HORMIGA] = new ObjPLY("./plys/f16");
    //*********** P3 ************
    //       objetos
    this->objetos[PEONN] = new ObjRevolucion("./plys/peon_inverso", 30);
@@ -83,9 +85,7 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
 {
 	glClearColor( 1.0, 1.0, 1.0, 1.0 );// se indica cual sera el color para limpiar la ventana	(RGBA)
 
-	glEnable( GL_DEPTH_TEST );	// se habilita el z-bufer
-
-   // FLAGS INICIALES
+	glEnable(GL_DEPTH_TEST);	// se habilita el z-bufer
    glEnable(GL_CULL_FACE);
    glEnable(GL_NORMALIZE);
 
@@ -94,7 +94,8 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
 	Width  = UI_window_width/10;
 	Height = UI_window_height/10;
 
-   cambia_proyeccion( float(UI_window_width)/float(UI_window_height), float(UI_window_height)/float(UI_window_width));
+   camaras[cam_activa]->reajustar(UI_window_width, UI_window_height);
+   cambia_proyeccion();
 	glViewport( 0, 0, UI_window_width, UI_window_height );
 
 }
@@ -166,22 +167,23 @@ void Escena::dibujar()
 
    // MODELO JERARQUICO
    glPushMatrix();
+      glTranslatef(0,120,0);
       this->modelo->draw(activo,luz);
    glPopMatrix();
-   /* 
+   
    glPushMatrix();
       ScalefUniforme(escala);
       
       if(objeto==LATA)
-         ScalefUniforme(3);
+         ScalefUniforme(2);
       else if (objeto==HORMIGA)
-         ScalefUniforme(0.2);
+         ScalefUniforme(0.6);
       else if(objeto==ESFERA)
          ScalefUniforme(0.1);
 
       objetos[objeto]->draw(activo,luz);
    glPopMatrix();
-   */
+  
   /*
    glPushMatrix();
       glTranslatef(0,40,0);
@@ -262,14 +264,15 @@ void Escena::ratonMovido(int x, int y)
 {
    if (moviendoCamara) {
       // std::cout << "x=" << x-xant << " y=" << y-yant << "  ";
-      camara->girar(x-xant, y-yant);
+      camaras[cam_activa]->girar(x - xant, y - yant, 0.01);
       xant = x;
       yant = y;
-      /*
-      camaras[cam_activa]->girar(x - xant, y - yant);
-      xant = x ;
-      yant = y ;
-      */
+   }
+
+   if (haciendoZoom!=0) {
+      camaras[cam_activa]->zoom(haciendoZoom);
+      cambia_proyeccion();
+      haciendoZoom=0;
    }
 }
 
@@ -297,12 +300,10 @@ Escena::~Escena()
    if(blanco_difuso != nullptr) delete blanco_difuso;
    if(negro_especular != nullptr) delete negro_especular;
    if(material_text != nullptr) delete material_text;
-   if(camara != nullptr) delete camara;
 
    blanco_difuso=nullptr;
    negro_especular=nullptr;
    modelo = nullptr;
-   camara = nullptr;
 
 }
 
@@ -318,8 +319,18 @@ void Escena::eliminarObjetos()
          objetos[i] = nullptr;
       }
    }
+   for (int i = 0; i < NUM_CAMS; i++) {
+      if(camaras[i] != nullptr){
+         delete camaras[i];
+         camaras[i] = nullptr;
+      }
+   }
+
    delete [] objetos;
+   delete [] camaras;
+   
    objetos=nullptr;
+   camaras=nullptr;
 }
 
 /**
@@ -369,11 +380,12 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
    using namespace std ;
    // cout << "Tecla pulsada: '" << tecla << "'" << endl;
    bool salir=false;
-   string menuprincipal = "\tMENU PRINCIPAL\nV:seleccionar modo visualización\nA:activar/desactivar animacion automatica\nM:activar seleccion grado libertad\nQ:salir\n";
+   string menuprincipal = "\tMENU PRINCIPAL\nV:seleccionar modo visualización\nA:activar/desactivar animacion automatica\nM:activar seleccion grado libertad\nQ:salir\n \
++ ó - : variar velocidad de animación\nC: activar selección de cámaras\n";
 
    if ( modoMenu == SELVISUALIZACION || modoMenu == SELILUMINACION )
    switch ( toupper(tecla) ) {
-   // OPCIONES VISUALIZACION
+   // ------------------- OPCIONES VISUALIZACION ---------------
    case 'Q' :
       if(alpha_l || beta_l) cout << "\nALPHA Y BETA REESTABLECIDOS\n";
       cout << menuprincipal;
@@ -392,7 +404,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
       activo[SOLIDO] = !activo[SOLIDO];
       luz = false;
       break;
-   // OPCIONES ILUMINACION
+   // ----------------- OPCIONES ILUMINACION ---------------
    case 'I' :
       activo[SOMBRA] = !activo[SOMBRA];
       if (activo[PUNTOS])  activo[PUNTOS] = false;
@@ -426,7 +438,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
    default :
       break;
    }
-   // MENU PRINCIPAL
+   // ---------------- MENU PRINCIPAL ----------------
    else if (modoMenu == NADA)
    switch( toupper(tecla) )
    {
@@ -438,11 +450,15 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
       if(objeto==0) objeto = TAM-2;
       else          objeto--;
       break;
+   case 'C':
+      cout << "\tSELECCIONAR CAMARA DE 0 a " << NUM_CAMS-1 << "\n";
+      modoMenu = SELCAMARA;
+      break;
    case 'A' :
       automatica = !automatica;
       break;
    case 'M' :
-      cout << "SELECCIONAR GRADO DE LIBERTAD\n0: bajar/subir gancho\n1: rotar hélices superiores\n2: rotar hélices cola\n";
+      cout << "\tSELECCIONAR GRADO DE LIBERTAD\n0: bajar/subir gancho\n1: rotar hélices superiores\n2: rotar hélices cola\n";
       automatica = false;
       manual = true;
       break;
@@ -468,7 +484,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
       break ;
    case 'V' :
       modoMenu=SELVISUALIZACION;
-      cout << "SELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nI:activar iluminacion plana/suave\n" <<
+      cout << "\tSELECCIONAR TIPO DE VISUALIZACIÓN\nP:puntos\nL:lineas\nS:solido\nI:activar iluminacion plana/suave\n" <<
             "0-" << Luz::nluces <<  ":apagar/encender luz\nA:seleccionar ALPHA\nB:seleccionar BETA\n";
       break ;
    default:
@@ -476,15 +492,60 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
       break;
    }
 
-   if(modoMenu==SELILUMINACION) {
+   // ---------------- MENÚ CÁMARA ----------------
+   if (modoMenu==SELCAMARA)
+   {
+      std::cout << "\tMENU DE CAMARA\nQ:salir\nF: First Person\nE: Examinar (por defecto)\n";
+      switch (toupper(tecla))
+      {
+      case 'Q':
+         modoMenu = NADA;
+         cout << menuprincipal;
+         break;
+      case 'F':
+         std::cout << "\tMOVIMIENTO: W:avanzar, S:retroceder, A:izquierda, D:derecha\nPara mirar a los sitios, usar ratón\n";
+         camaras[cam_activa]->modo=1;
+         break;
+      case 'E':
+         camaras[cam_activa]->modo=0;
+         std::cout << "\tEXAMINAR: para mover cámara, usar flechas o ratón";
+         break;
+      case 'D':
+         camaras[cam_activa]->mover(1,0);
+         break;
+      case 'A':
+         camaras[cam_activa]->mover(-1,0);
+         break;
+      case 'S':
+         camaras[cam_activa]->mover(0,1);
+         break;
+      case 'W':
+         camaras[cam_activa]->mover(0,-1);
+         break;
+      default:
+         break;
+      }
+      
+      for(int i = 0; i < NUM_CAMS; i++)
+         if ((tecla-'0')==i){
+            cam_activa = i;
+            std::cout << "CAMARA " << cam_activa;
+            if(cam_activa==1) std::cout << ": ORTOGONAL\n";
+            else std::cout << ": PERSPECTIVA\n";
+            cambia_proyeccion();
+         } 
+   }
+   // ---------------- SELECCIONAR LUZ ----------------
+   else if(modoMenu==SELILUMINACION) {
       for(int i = 0; i < Luz::nluces; i++)
          if ((tecla-'0')==i) interruptor[i] = !interruptor[i];
    }
+   // ---------------- SELECCIONAR GRADO DE LIBERTAD ----------------
    else if(manual) {
       for(int i = 0; i < modelo->numGradosLibertad; i++)
          if ((tecla-'0') == i) gradoSeleccionado = i;
    }
-   
+
    return salir;
 }
 //**************************************************************************
@@ -495,21 +556,29 @@ void Escena::teclaEspecial( int Tecla1, int x, int y )
    {
 	   case GLUT_KEY_LEFT:
          Observer_angle_y-- ;
+         camaras[cam_activa]->girar(1,0,0.05);
          break;
 	   case GLUT_KEY_RIGHT:
          Observer_angle_y++ ;
+         camaras[cam_activa]->girar(-1,0,0.05);
          break;
 	   case GLUT_KEY_UP:
          Observer_angle_x-- ;
+         camaras[cam_activa]->girar(0,-1,0.05);
          break;
 	   case GLUT_KEY_DOWN:
          Observer_angle_x++ ;
+         camaras[cam_activa]->girar(0,1,0.05);
          break;
 	   case GLUT_KEY_PAGE_UP:
          Observer_distance *=1.2 ;
+         camaras[cam_activa]->zoom(1.2);
+         cambia_proyeccion();
          break;
 	   case GLUT_KEY_PAGE_DOWN:
          Observer_distance /= 1.2 ;
+         camaras[cam_activa]->zoom(-1.2);
+         cambia_proyeccion();
          break;
 	}
 
@@ -538,21 +607,10 @@ void Escena::change_projection( const float ratio_xy )
  * @param ratio_xy relación de aspecto del viewport en anchura ( ancho(X) / alto(Y) )
  * @param ratio_yx relación de aspecto del viewport en altura ( alto(Y) / ancho(X) )
  */
-void Escena::cambia_proyeccion( const float ratio_xy, const float ratio_yx ){
+void Escena::cambia_proyeccion(){
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-
-   const float wx = 0.5*float(Height)*ratio_xy;
-   const float wy = 0.5*float(Width)*ratio_yx;
-
-   std::cout << "PROYECCIÓN:\nleft=" << -wx << " right=" << wx
-             << " bottom=" << -wy << " top=" << wy
-             << " near=" << Front_plane << " far=" << Back_plane << "\n\n";
-   
-   // glFrustum(-wx, wx, -wy, wy, Front_plane, Back_plane);
-   // multiplicamos por 5 ya que en redimensionar() se asigna a la proyección una décima parte del viewport
-   // (width=newWidth/10) y para la proyección ortográfica hay que aumentar el rango del ancho y el alto
-   glOrtho(-wx*5, wx*5, -wy*5, wy*5, Front_plane, Back_plane);
+   camaras[cam_activa]->setProyeccion();
 }
 
 //**************************************************************************
@@ -561,11 +619,13 @@ void Escena::cambia_proyeccion( const float ratio_xy, const float ratio_yx ){
 
 void Escena::redimensionar( int newWidth, int newHeight )
 {
-   Width  = newWidth/10;
-   Height = newHeight/10;
+   // Width  = newWidth/10;
+   // Height = newHeight/10;
    std::cout << "VIEWPORT: ancho=" << newWidth << " alto=" << newHeight << "\n";
    // change_projection( float(newHeight)/float(newWidth) );
-   cambia_proyeccion( float(newWidth)/float(newHeight), float(newHeight)/float(newWidth));
+   
+   for (int i = 0; i < NUM_CAMS; i++) camaras[i]->reajustar(newWidth, newHeight);
+   cambia_proyeccion();
    glViewport( 0, 0, newWidth, newHeight );
 }
 
@@ -589,10 +649,8 @@ void Escena::change_observer_p6()
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    if(haciendoZoom!=0){
-      camara->zoom(haciendoZoom);
+      camaras[cam_activa]->zoom(haciendoZoom);
       haciendoZoom=0;
    }
-
-   camara->setObserver();
-   // camara[camActiva]->setObserver();
+   camaras[cam_activa]->setObserver();
 }

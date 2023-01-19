@@ -135,8 +135,10 @@ void clickRaton( int boton, int estado, int x, int y ) {
       } else
          escena->moviendoCamara = false;
    }
-   else if ( boton == 3 || boton == 4 )
+   else if ( boton == 3 || boton == 4 ){
       escena->haciendoZoom = (boton==3) ? 1 : -1;
+      escena->ratonMovido(x,y);
+   }
    
    // INFO DE PIXEL Y RATÓN
    else if ( boton == GLUT_LEFT_BUTTON && estado == GLUT_UP ){

@@ -21,7 +21,7 @@
 #include "luzAnimada.h"
 #include "camara.h"
 
-typedef enum {NADA, SELOBJETO,SELVISUALIZACION, SELILUMINACION} menu;
+typedef enum {NADA, SELOBJETO,SELVISUALIZACION, SELILUMINACION, SELCAMARA} menu;
 
 enum mallas {
   //P1
@@ -88,7 +88,9 @@ class Escena
   Material             *negro_especular = nullptr;
   Material             *material_text   = nullptr;
   // cáramas
-  Camara               *camara = nullptr;
+  int cam_activa = 0;
+  const int NUM_CAMS = 3;
+  Camara **camaras = new Camara*[NUM_CAMS];
 
   // MODELO JERARQUICO
   Helicoptero *modelo = nullptr;
@@ -97,7 +99,7 @@ class Escena
 
   // Transformación de cámara
 	void change_projection( const float ratio_xy );
-  void cambia_proyeccion( const float ratio_xy, const float ratio_yx);
+  void cambia_proyeccion();
 	void change_observer();
   void clear_window();
   void eliminarObjetos();
