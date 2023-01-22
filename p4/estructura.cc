@@ -5,14 +5,17 @@ Estructura::Estructura(/* args */)
 {
     cuerpo = new Cuerpo();
     cola = new Cola();
+    aterrizaje = new Aterrizaje();
 }
 
 Estructura::~Estructura()
 {
     delete cuerpo;
     delete cola;
+    delete aterrizaje;
     cuerpo = nullptr;
     cola = nullptr;
+    aterrizaje = nullptr;
 }
 
 void Estructura::draw(std::vector<bool> activo, bool luz)
@@ -22,10 +25,11 @@ glPushMatrix();
     cuerpo->draw(activo,luz);
     glPushMatrix();
         glTranslatef(-5.8,0,0);
-        glRotatef(90,0,0,1);
         cola->draw(activo,luz);
     glPopMatrix();
 
+    glTranslatef(0,-5,0);
+    aterrizaje->draw(activo,luz);
 glPopMatrix();
 }
 

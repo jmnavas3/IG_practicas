@@ -3,12 +3,14 @@
 
 #include "cuerpo.h"
 #include "cola.h"
+#include "aterrizaje.h"
 
 class Estructura
 {
 private:
     Cuerpo *cuerpo = nullptr;
     Cola *cola = nullptr;
+    Aterrizaje *aterrizaje = nullptr;
 public:
     Estructura(/* args */);
     ~Estructura();

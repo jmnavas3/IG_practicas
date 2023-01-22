@@ -1,9 +1,9 @@
 //###########################################
 
-Práctica 3 - Informática Gráfica. Curso 22/23.
+Práctica 5 - Informática Gráfica. Curso 22/23.
 UGR - Ing.Informática
 José María Navas Cabrera
-16/11/2022
+25/12/22
 
 //###########################################
     CLASES, MÉTODOS Y VARIABLES ADICIONALES
@@ -34,46 +34,39 @@ Instrucciones de ejecución:
 - Compilar y ejecutar desde terminal:
 $ make
 
-- Salir del programa:
-pulsar tecla 'q' desde menú principal
+Q : Salir del programa
 
-- Entrar a modo de visualización desde menú principal:
-pulsar tecla 'v'
+A : Activar/Desactivar animación automática de objetos y animación de luces
 
+    + | - : Incrementar/Disminuir velocidad de animación
 
-# OPCIONES DESDE MODO VISUALIZACIÓN
+M : Mover manualmente grado de libertad de modelo jerarquico
 
-- Salir de modo de visualización:
-pulsar tecla 'q'
+    0-3 : Seleccionar grado de libertad
 
-- Activar/Desactivar modo SÓLIDO (opción por defecto):
-pulsar tecla 's'
+    + | - : Aumentar/Disminuir valor del grado de libertad seleccionado
 
-- Activar/Desactivar modo ALAMBRE/LÍNEAS:
-pulsar tecla 'l'
+    Q : Salir del modo de animacion manual del modelo jerarquico
 
-- Activar/Desactivar modo PUNTOS:
-pulsar tecla 'p'
+V : Entrar a modo de visualización
 
-- Activar Iluminación + Alternar modo PLANO y SUAVE:
-pulsar tecla 'i'
+    Q : Salir de modo de visualización
 
-- Desactivar Iluminación:
-pulsar tecla 's' , 'l'  ó  'p'
+    S : Activar/Desactivar modo SÓLIDO (opción por defecto)
 
-# OPCIONES CON ILUMINACIÓN ACTIVA
+    L : Activar/Desactivar modo ALAMBRE/LÍNEAS
 
-- Activar/Desactivar fuente de luz:
-pulsar número de la luz que desea activar de entre las que ofrece el menú
+    P : Activar/Desactivar modo PUNTOS
 
-- Seleccionar ángulo ALFA (Eje Y):
-pulsar tecla 'a'
+    I : Activar Iluminación (modo PLANO)
 
-- Seleccionar ángulo BETA (Eje X):
-pulsar tecla 'b'
+        I: Alternar entre modo PLANO y SUAVE
 
-- Decrementar ángulo seleccionado:
-pulsar tecla '<'
+        0-7: Encender/Apagar luz (actualmente hay 3)
 
-- Incrementar ángulo seleccionado:
-(depende del teclado) pulsar tecla '>' (SHIFT+'<')
+        S | L | P : Desactivar Iluminación y activar modo correspondiente
+
+        A | B : seleccionar Ángulo ALPHA (eje Y) ó BETA (eje X) para luz direccional
+
+            < | > : Incrementar/Decrementar Ángulo seleccionado
+                    nota: '>' == SHIFT + '<'

@@ -69,61 +69,68 @@ Tupla3f Camara::rotarZ(Tupla3f punto, float angle){
 }
 
 void Camara::rotarXExaminar (float angle) {
-    Tupla3f p;
-    if (modo==0){
-     p = rotarX(eye-at,angle);
-     eye = at + p;
-    }
-    else {
-        p = rotarX(at-eye,angle);
-        at = eye + p;
-    }
+    Tupla3f p = (modo==0) ? (eye-at) : (at-eye);      // VPN
+    float modulo = sqrt(p.lengthSq());
+    
+    p = rotarX(p,angle);
+    p = p.normalized()*modulo;
+    // up = rotarX(up,angle);
+
+    if (modo==0) eye = at + p;
+    else         at = eye + p;
+    
 }
 
 void Camara::rotarYExaminar (float angle) {
-                             // nuevo VPN == eje_Z rotado en Y
-    if (modo==0) eye = at + rotarY(eye-at,angle);
-    else         at = eye + rotarY(at-eye, angle);
-}
+    Tupla3f p = (modo==0) ? (eye-at) : (at-eye);      // VPN
+    float modulo = sqrt(p.lengthSq());
 
-void Camara::rotarZExaminar (float angle) {
-    Tupla3f p;      // VPN
-    p = (modo==0) ? (eye-at) : (at-eye);
-    p = rotarZ(p, angle);
+    p = rotarY(p, angle);
+    p = p.normalized()*modulo;
+    up = rotarY(up,angle);
+
     if (modo==0) eye = at + p;
     else         at = eye + p;
 }
 
-// método de cámara primera persona
+void Camara::rotarZExaminar (float angle) {
+    Tupla3f p = (modo==0) ? (eye-at) : (at-eye);      // VPN
+    float modulo = sqrt(p.lengthSq());
+
+    p = rotarZ(p, angle);
+    p = p.normalized()*modulo;
+    // up = rotarZ(up,angle);
+
+    if (modo==0) eye = at + p;
+    else         at = eye + p;
+}
+
+// solo puede tomar valor x o z cada vez que se llama, no los dos a la vez
+// si se pasa x, se calcula el eje de referencia de la cámara u = up x n ,
+// si se pasa z, se calcula el sentido opuesto del vector VPN (at-eye)
 void Camara::mover ( float x, float z) {
-    eye(X) += x;
-    eye(Z) += z;
+    Tupla3f p = (x==0) ? at-eye : up.cross(eye-at); // si x==0, z!=0
+    eye = eye + p*(x+z);
+    at  = at + p*(x+z);
 }
 void Camara::girar ( int x, int y, float ratio ) {
     // eye sería el origen de coordenadas de la camara
-    Tupla3f n;
-    Tupla3f u;
-    Tupla3f v;
+    Tupla3f p;
+    float longitud, a, b, win_x, win_y;
 
-    alpha+=(float)(x*ratio);
-    beta+=(float)(y*ratio);
+    win_x = width*10;
+    win_y = height*10;
 
-    if(modo==0){
-        eye(X) = dist*sin(alpha);
-        eye(Y) = dist*cos(alpha)*sin(beta);
-        eye(Z) = dist*cos(alpha)*cos(beta);
+    a = y*M_PI/win_y;
+    // multiplicamos por 2 para que desde la izqda. de la ventana a la derecha se haga una vuelta de 360º completa
+    b = (x*2*M_PI)/win_x;
+    p = (modo==0) ? (eye-at) : (at-eye);
+    longitud = sqrt(p.lengthSq());
+    rotarXExaminar(a*p(Z)/longitud);
+    rotarZExaminar(-a*p(X)/longitud);
+    if      (modo==1) rotarYExaminar(-b);
+    else if (modo==0) rotarYExaminar(b);
+    
 
-        n = eye - at; // eje z, VPN ó n de sistema de referencia de camara
-        u = (up.cross(n)).normalized(); // eje x, "sentido a la derecha" de sistema de ref. camara
-        v = (n.cross(u)).normalized();   
-        
-        up(Y) = v(Y);
-        up(Z) = v(Z);
-    }
-    else if (modo==1){
-        at(X) = dist*alpha;
-        at(Y) = dist*beta;
-        // at(Z) = dist*cos(alpha)*cos(beta);
-    }
 
 }

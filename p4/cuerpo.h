@@ -3,14 +3,12 @@
 
 #include "../esfera.h"
 #include "../cilindro.h"
-#include "aterrizaje.h"
 
 class Cuerpo
 {
 private:
     Esfera *esfera = nullptr;
     Cilindro *cilindro = nullptr;
-    Aterrizaje *aterrizaje = nullptr;
 public:
     Cuerpo();
     ~Cuerpo();

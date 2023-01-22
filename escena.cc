@@ -38,8 +38,9 @@ Escena::Escena()
    this->objetos[HORMIGA] = new ObjPLY("./plys/f16");
    //*********** P3 ************
    //       objetos
-   this->objetos[PEONN] = new ObjRevolucion("./plys/peon_inverso", 30);
-   this->objetos[PEONB] = new ObjRevolucion("./plys/peon",30);
+   this->objetos[PEONB] = new ObjPLY("./plys/seta");
+   this->objetos[PEONN] = new ObjRevolucion("./plys/peon",30);
+   this->objetos[OCEANO] = new ObjPLY("./plys/ocean1");
    //       control luces
    luz = false;
    alpha_l = beta_l = false;
@@ -176,12 +177,31 @@ void Escena::dibujar()
       
       if(objeto==LATA)
          ScalefUniforme(2);
-      else if (objeto==HORMIGA)
-         ScalefUniforme(0.6);
       else if(objeto==ESFERA)
          ScalefUniforme(0.1);
 
       objetos[objeto]->draw(activo,luz);
+   glPopMatrix();
+
+   glPushMatrix();
+      glTranslatef(0,100,-200);
+      glRotatef(180,0,1,0);
+      ScalefUniforme(15);
+      objetos[HORMIGA]->draw(activo,luz);
+   glPopMatrix();
+
+   glPushMatrix();
+      glTranslatef(0,-100,-200);
+      glRotatef(-90,1,0,0);
+      ScalefUniforme(50);
+      objetos[OCEANO]->draw(activo,luz);
+   glPopMatrix();
+
+   glPushMatrix();
+      glTranslatef(-50,0,-500);
+      glRotatef(-90,1,0,0);
+      ScalefUniforme(5);
+      objetos[PEONB]->draw(activo,luz);
    glPopMatrix();
   
   /*
@@ -360,11 +380,8 @@ void Escena::eliminarLuces()
 void Escena::animarModeloJerarquico(){
    if( automatica ){
       luzAnimada->animar();
-      if(incremento == 0) modelo->animar();
-      else{
-         modelo->animar(incremento);
-         incremento = 0;
-      }
+      modelo->animar(incremento);
+      incremento = 0;
    }
 }
 
@@ -463,12 +480,12 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
       manual = true;
       break;
    case '+' :
-      if(automatica || manual) incremento = 1;
-      if(manual) modelo->moverGrado(gradoSeleccionado,incremento);
+      if(automatica) incremento = 1;
+      if(manual) modelo->moverGrado(gradoSeleccionado,1);
       break;
    case '-' :
-      if(automatica || manual) incremento = -1;
-      if(manual) modelo->moverGrado(gradoSeleccionado,incremento);
+      if(automatica) incremento = -1;
+      if(manual) modelo->moverGrado(gradoSeleccionado,-1);
       break;
    case 'Q' :
       if(manual) {
@@ -511,16 +528,20 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
          std::cout << "\tEXAMINAR: para mover cámara, usar flechas o ratón";
          break;
       case 'D':
-         camaras[cam_activa]->mover(1,0);
+         if (camaras[cam_activa]->modo==1)
+         camaras[cam_activa]->mover(0.1,0);
          break;
       case 'A':
-         camaras[cam_activa]->mover(-1,0);
+         if (camaras[cam_activa]->modo==1)
+         camaras[cam_activa]->mover(-0.1,0);
          break;
       case 'S':
-         camaras[cam_activa]->mover(0,1);
+         if (camaras[cam_activa]->modo==1)
+         camaras[cam_activa]->mover(0,-0.1);
          break;
       case 'W':
-         camaras[cam_activa]->mover(0,-1);
+         if (camaras[cam_activa]->modo==1)
+         camaras[cam_activa]->mover(0,0.1);
          break;
       default:
          break;
@@ -542,8 +563,12 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
    }
    // ---------------- SELECCIONAR GRADO DE LIBERTAD ----------------
    else if(manual) {
-      for(int i = 0; i < modelo->numGradosLibertad; i++)
-         if ((tecla-'0') == i) gradoSeleccionado = i;
+      for(int i = 0; i < modelo->numGradosLibertad; i++){
+         if ((tecla-'0') == i){
+            gradoSeleccionado = i;
+            cout << "Seleccionado grado " << i << "\n";
+         }
+      }
    }
 
    return salir;

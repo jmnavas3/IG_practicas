@@ -32,6 +32,7 @@ enum mallas {
   PEONN, PEONB,
   //PROYECTO
   CHOPPER, CAZA,
+  OCEANO,
   //Tamaño
   TAM
 };

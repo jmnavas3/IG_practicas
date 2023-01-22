@@ -1,18 +1,18 @@
-#ifndef ROTORP_H
-#define ROTORP_H
+#ifndef ROTORC_H
+#define ROTORC_H
 
 #include "rotor.h"
 #include "helice.h"
 
-class RotorPrincipal
+class RotorCola
 {
 private:
     Rotor * rotor = nullptr;
     Helice * heli = nullptr;
-    const int HELI = 4, LARGO = 50;
+    const int HELI = 2, LARGO = 15;
 public:
-    RotorPrincipal(/* args */);
-    ~RotorPrincipal();
+    RotorCola(/* args */);
+    ~RotorCola();
 
     void draw(std::vector<bool> activo, bool luz);
 };

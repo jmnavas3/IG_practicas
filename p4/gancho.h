@@ -8,7 +8,8 @@ class Gancho
 private:
     Cilindro *cilindro = nullptr;
 public:
-    int velocidad;
+    float velocidad;
+    float pos;
     
     Gancho(/* args */);
     ~Gancho();

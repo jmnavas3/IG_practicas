@@ -4,8 +4,8 @@
 
 Helicoptero::Helicoptero()
 {
-    rotacionCola = 0.4;
-    rotacionPrincipal = 0.2;
+    rotacionCola = 1;
+    rotacionPrincipal = 1;
     movimientoGancho = 1;
     escaladoGancho = 0.1;
     gancho = new Gancho();
@@ -30,19 +30,20 @@ Helicoptero::~Helicoptero()
 void Helicoptero::draw(std::vector<bool> a, bool luz)
 {
 glPushMatrix();
-    gancho->draw(a,luz);
 
-    glScalef(10,10,10);
     glPushMatrix();
-        estructura->draw(a,luz);
+        glTranslatef(0,-88,0);
+        gancho->draw(a,luz);
     glPopMatrix();
     
+    glScalef(10,10,10);
     glPushMatrix();
-        glRotatef(rotacionPrincipal,0,1,0);
         glTranslatef(0,4.4,0);
+        glRotatef(rotacionPrincipal,0,1,0);
         rotorp->draw(a,luz);
     glPopMatrix();
-
+    
+    estructura->draw(a,luz);
 
 glPopMatrix();
 }
@@ -50,15 +51,13 @@ glPopMatrix();
 void Helicoptero::animar( int incrementar ) {
     if(incrementar==1){
         movimientoGancho+=0.01;
-        rotacionCola+=0.01;
-        rotacionPrincipal+=0.01;
-        velocidad += 0.05;
+        velocidad += 0.1;
+        std::cout << "velocidad=" << velocidad << "\n";
     }
     else if(incrementar == -1){
         if(movimientoGancho > 0) movimientoGancho-=0.01;
-        if(rotacionCola > 0) rotacionCola-=0.01;
-        if(rotacionPrincipal > 0) rotacionPrincipal-=0.01;
-        if(velocidad > 0) velocidad -=0.05;
+        if(velocidad > 0) velocidad -=0.1;
+        std::cout << "velocidad=" << velocidad << "\n";
     }
 
     bajarGancho(velocidad);
@@ -73,33 +72,35 @@ void Helicoptero::moverGrado (int seleccion, int signo) {
         std::cout << "Gancho = " << gancho->velocidad << "\n";
         break;
     case 1:
-        modificaRotacionPrincipal(signo*velocidad);
+        modificaRotacionPrincipal(velocidad);
+        // modificaRotacionPrincipal(signo*velocidad);
         std::cout << "Rotor principal = " << rotacionPrincipal << "\n";
         break;
     case 2:
-        modificaRotacionCola(signo*velocidad);
+        // modificaRotacionCola(signo*velocidad);
+        estructura->setRotacionCola(velocidad); // aumenta 5% valor de angulo de rotacion de cola
         std::cout << "Rotor de cola = " << estructura->getRotacionCola() << "\n";
-    case 3:
-        animar(signo);  // todos los casos
-        break;
     default:
         break;
     }
 }
 
 void Helicoptero::bajarGancho(float valor) {
-    if (!subir){
-        gancho->velocidad += valor;
-        if (gancho->velocidad >= MAX_GANCHO) subir = true;
+    gancho->velocidad += (subir) ? valor : -valor;
+    if (gancho->velocidad <= MAX_GANCHO){
+        subir = true;
+    } 
+    else if(gancho->velocidad>=0){
+        subir = false;
     }
 }
 
 void Helicoptero::modificaRotacionPrincipal(float valor) {
-    rotacionPrincipal += valor;
+    rotacionPrincipal += velocidad;
     if (rotacionPrincipal>360) rotacionPrincipal = 0;
 
 }
 
 void Helicoptero::modificaRotacionCola(float valor) {
-    estructura->setRotacionCola(valor);
+    estructura->setRotacionCola(velocidad);
 }

@@ -20,9 +20,9 @@
 class Helicoptero
 {
 private:
-    float rotacionPrincipal, velocidad = 0.3 ;
+    float rotacionPrincipal, velocidad = 1 ;
     float movimientoGancho, escaladoGancho, rotacionCola;
-    const float MAX_GANCHO = 1000;
+    const float MAX_GANCHO = -80;
     bool subir = false;
 
     Estructura * estructura = nullptr;

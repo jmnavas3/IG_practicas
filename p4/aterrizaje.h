@@ -1,17 +1,16 @@
 #ifndef ATERRIZAJE_H
-#define ATERRIZAJE_h
+#define ATERRIZAJE_H
 
-#include "../cilindro.h"
+#include "patin.h"
 
 class Aterrizaje
 {
 private:
-    Cilindro *c = nullptr;
+    Patin *p = nullptr;
 public:
     Aterrizaje();
     ~Aterrizaje();
     void draw(std::vector<bool> activo, bool luz);
-    void patin(std::vector<bool> activo, bool luz);
 };
 
 

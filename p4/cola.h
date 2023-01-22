@@ -3,14 +3,14 @@
 
 #include "../cono.h"
 #include "../cubo.h"
-#include "rotor.h"
+#include "rotorCola.h"
 
 class Cola
 {
 private:
-    Cubo *cubo = nullptr;
     Cono *cono = nullptr;
-    Rotor *rotorC = nullptr;
+    RotorCola *rotorC = nullptr;
+    const int HELI = 4, LARGO = 15;
 public:
     float anguloRotacion;
     Cola();
