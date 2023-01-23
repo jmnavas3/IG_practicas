@@ -35,7 +35,8 @@ Escena::Escena()
    objetos[CONO] = new Cono(20,20);
    objetos[CILINDRO] = new Cilindro(20,20);
    //this->objetos[LATA] = new Lata(10);
-   this->objetos[HORMIGA] = new ObjPLY("./plys/f16");
+   this->objetos[HORMIGA] = new ObjPLY("./plys/ant");
+   this->objetos[CAZA] = new ObjPLY("./plys/f16");
    //*********** P3 ************
    //       objetos
    this->objetos[PEONB] = new ObjPLY("./plys/seta");
@@ -67,11 +68,12 @@ Escena::Escena()
    this->objetos[CHOPPER]->setMaterial(*material_text);
    
    //************ PROYECTO FINAL **************
-   this->modelo = new Helicoptero();
+   this->modelo = new HelicopteroCarga();
    gradoSeleccionado = -1;
    
    this->objetos[PEONN]->setMaterial(*negro_especular);
    this->objetos[PEONB]->setMaterial(*blanco_difuso);
+   this->objetos[CAZA]->setMaterial(*negro_especular);
 
 }
 
@@ -101,24 +103,6 @@ void Escena::inicializar( int UI_window_width, int UI_window_height )
 
 }
 
-void Escena::dibujaSeleccion(){
-   glDisable(GL_DITHER);
-
-   for(int i = 0; i < 2; i++)
-      for(int j = 0; j < 2; j++)
-      {
-         glPushMatrix();
-         switch(i*2+j){
-            case 0: glColor3ub(255,0,0); break;
-            case 1: glColor3ub(0,255,0); break;
-            case 2: glColor3ub(0,0,255); break;
-            case 3: glColor3ub(250,0,250); break;
-         }
-         glPopMatrix();
-      }
-   
-   glEnable(GL_DITHER);
-}
 
 // **************************************************************************
 //
@@ -179,6 +163,8 @@ void Escena::dibujar()
          ScalefUniforme(2);
       else if(objeto==ESFERA)
          ScalefUniforme(0.1);
+      else if (objeto==HORMIGA)
+         ScalefUniforme(0.5);
 
       objetos[objeto]->draw(activo,luz);
    glPopMatrix();
@@ -187,88 +173,28 @@ void Escena::dibujar()
       glTranslatef(0,100,-200);
       glRotatef(180,0,1,0);
       ScalefUniforme(15);
-      objetos[HORMIGA]->draw(activo,luz);
+      objetos[CAZA]->draw(activo,luz);
    glPopMatrix();
 
    glPushMatrix();
-      glTranslatef(0,-100,-200);
+      glTranslatef(0,0,-200);
+      ScalefUniforme(100);
+      objetos[CHOPPER]->draw(activo,luz);
+   glPopMatrix();
+
+   glPushMatrix();
+      glTranslatef(0,-200,-200);
       glRotatef(-90,1,0,0);
       ScalefUniforme(50);
       objetos[OCEANO]->draw(activo,luz);
    glPopMatrix();
 
    glPushMatrix();
-      glTranslatef(-50,0,-500);
+      glTranslatef(-50,-200,-500);
       glRotatef(-90,1,0,0);
       ScalefUniforme(5);
       objetos[PEONB]->draw(activo,luz);
    glPopMatrix();
-  
-  /*
-   glPushMatrix();
-      glTranslatef(0,40,0);
-      ScalefUniforme(40);
-      objetos[CHOPPER]->draw(activo,luz);
-   glPopMatrix();
-   
-   glPushMatrix();
-      //P3 peones blanco y negro
-      ScalefUniforme(escala);
-      glTranslatef(3,0,1);
-      objetos[PEONB]->draw(activo,luz);
-      glPushMatrix();
-         glTranslatef(0,0,-2);
-         objetos[PEONN]->draw(activo,luz);
-      glPopMatrix();
-   glPopMatrix();
-  
-   glPushMatrix();
-      ScalefUniforme(escala2);
-      // ** objetos practica 2
-      glPushMatrix();
-         glTranslatef(0,0,-5);
-         objetos[CILINDRO]->draw(activo,luz);
-      glPopMatrix();
-
-      glPushMatrix();
-         glTranslatef(0,0,-2);
-         objetos[CONO]->draw(activo,luz);
-      glPopMatrix();
-
-      glPushMatrix();
-         glTranslatef(0,0,1);
-         ScalefUniforme(0.1);
-         objetos[ESFERA]->draw(activo,luz);
-      glPopMatrix();
-
-      glPushMatrix();
-         glTranslatef(0,0,4);
-         ScalefUniforme(3);
-         objetos[LATA]->draw(activo,luz);
-      glPopMatrix();
-
-      glPushMatrix();
-         glTranslatef(0,0,-15);
-         ScalefUniforme(0.3);
-         objetos[HORMIGA]->draw(activo,luz);
-      glPopMatrix();      
-   glPopMatrix();
-
-   glPushMatrix();
-      ScalefUniforme(escala2);
-      glTranslatef(-3,0,0);
-   // ** objetos practica 1
-      glPushMatrix();
-         glTranslatef(0,0,1);
-         objetos[CUBO]->draw(activo,luz);
-      glPopMatrix();
-      glPushMatrix();
-         glTranslatef(0,0,-1);
-         objetos[PIRAMIDE]->draw(activo,luz);
-      glPopMatrix();
-   glPopMatrix();
-   
-   */
 
 }
 
@@ -462,10 +388,6 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y ) {
    case 'O' :
       objeto++;
       objeto %= TAM-1;
-      break;
-   case 'U' :
-      if(objeto==0) objeto = TAM-2;
-      else          objeto--;
       break;
    case 'C':
       cout << "\tSELECCIONAR CAMARA DE 0 a " << NUM_CAMS-1 << "\n";

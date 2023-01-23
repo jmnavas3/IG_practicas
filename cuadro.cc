@@ -2,7 +2,7 @@
 
 Cuadro::Cuadro(float l)
 {
-    t = new Textura("./p5/sample.jpg");
+    t = new Textura("./p5/city.jpg");
 
     v.resize(4);
     float arista = l/2;

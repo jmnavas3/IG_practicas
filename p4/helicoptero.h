@@ -15,7 +15,6 @@
 
 #include "estructura.h"
 #include "rotorPrincipal.h"
-#include "gancho.h"
 
 class Helicoptero
 {
@@ -27,7 +26,6 @@ private:
 
     Estructura * estructura = nullptr;
     RotorPrincipal * rotorp = nullptr;
-    Gancho         * gancho = nullptr;
 public:
     const int numGradosLibertad = 3;
 
@@ -38,9 +36,7 @@ public:
     
     // movimiento del modelo
     void animar(int incrementar = 0);
-    void moverGrado (int seleccion, int signo);
 
-    void bajarGancho(float valor=0.0f);
     void modificaRotacionCola(float valor=0.0f);
     void modificaRotacionPrincipal(float valor=0.0f);
 };

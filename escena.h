@@ -17,7 +17,7 @@
 #include "luzPosicional.h"
 #include "textura.h"
 #include "cuadro.h"
-#include "p4/helicoptero.h"
+#include "p4/helicopteroCarga.h"
 #include "luzAnimada.h"
 #include "camara.h"
 
@@ -94,7 +94,7 @@ class Escena
   Camara **camaras = new Camara*[NUM_CAMS];
 
   // MODELO JERARQUICO
-  Helicoptero *modelo = nullptr;
+  HelicopteroCarga *modelo = nullptr;
 
  // ** MÉTODOS DE LA ESCENA
 

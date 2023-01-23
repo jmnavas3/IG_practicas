@@ -142,7 +142,6 @@ void clickRaton( int boton, int estado, int x, int y ) {
    
    // INFO DE PIXEL Y RATÓN
    else if ( boton == GLUT_LEFT_BUTTON && estado == GLUT_UP ){
-      escena->dibujaSeleccion();
       infoClic(x,y);
    }
    

@@ -4,7 +4,7 @@
 Cola::Cola(/* args */)
 {
     anguloRotacion = 1;
-    cono = new Cono (20,20);
+    cono = new Cono (40,40);
     rotorC = new RotorCola();
 }
 

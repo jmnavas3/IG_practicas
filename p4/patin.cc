@@ -2,7 +2,7 @@
 #include "../auxiliar.h"
 
 Patin::Patin(){
-    c = new Cilindro(20,20);    // h=1 r=1 d=2
+    c = new Cilindro(10,10);    // h=1 r=1 d=2
 }
 
 Patin::~Patin(){
